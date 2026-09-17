@@ -18,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
     private float maxSpeed;
 
     private Vector3 moveInputs;
+    private Vector3 moveDirection;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -42,6 +43,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        moveDirection = CalcDirection();
+
         moveInputs = Move();
     }
 
@@ -49,6 +52,19 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector2 move = movement.ReadValue<Vector2>();
 
-        return new Vector3(move.x * maxSpeed, 0, move.y * maxSpeed);
+        Vector3 moveDir = transform.right * move.x + transform.forward * move.y;
+
+        moveDir = moveDir.normalized;
+
+        moveDir = new Vector3(moveDir.x, 0, moveDir.z) * maxSpeed;
+
+        return moveDir;
+    }
+
+    private Vector3 CalcDirection()
+    {
+        Vector2 move = movement.ReadValue<Vector2>();
+
+        return transform.right * move.x + transform.forward * move.y;
     }
 }

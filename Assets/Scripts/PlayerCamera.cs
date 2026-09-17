@@ -16,7 +16,7 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField]
     private PlayerInput playerInput;
 
-    private float xRot;
+    private float xRot = 0f;
 
     public InputActionAsset MasterList;
 
@@ -35,17 +35,14 @@ public class PlayerCamera : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         float mouseX = mouseInputX.ReadValue<float>() * mouseSensitivity * Time.deltaTime;
         float mouseY = mouseInputY.ReadValue<float>() * mouseSensitivity * Time.deltaTime;
 
-        float desiredX = playerTrans.localRotation.eulerAngles.y + mouseX;
-
         xRot -= mouseY;
         xRot = Mathf.Clamp(xRot, -90, 90);
 
-        playerTrans.localRotation = Quaternion.Euler(0, desiredX, 0);
         transform.localRotation = Quaternion.Euler(xRot, 0, 0);
         playerTrans.Rotate(Vector3.up * mouseX);
     }
