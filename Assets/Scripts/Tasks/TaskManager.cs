@@ -7,6 +7,8 @@ public class TaskManager : MonoBehaviour
     [SerializeField] Transform location;
     [SerializeField] float timeLimit = 60f;
 
+    public Transform Location => location;
+
     float timeRemaining;
     bool overdue;
     float nextStatusLog;
