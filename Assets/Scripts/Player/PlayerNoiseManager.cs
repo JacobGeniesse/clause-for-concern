@@ -9,8 +9,8 @@ public class PlayerNoiseManager : MonoBehaviour
     private float loudNoiseExpiration = 0; //timer float for loud noises
     private float quietNoiseExpiration = 0; //timer float for quiet noises
 
-     public bool activeLoudNoise = false; //Is there an active loud sound?
-     public bool activeQuietNoise = false; //Is there an active quiet sound?
+    [HideInInspector] public bool activeLoudNoise = false; //Is there an active loud sound?
+    [HideInInspector] public bool activeQuietNoise = false; //Is there an active quiet sound?
     
     void Update()
     {

@@ -20558,7 +20558,7 @@ MonoBehaviour:
   masterList: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   accel: 50
   maxWalkSpeed: 6
-  maxRunSpeed: 8
+  maxRunSpeed: 10
 --- !u!54 &775931135
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -35111,9 +35111,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c487cc95fc401fb45ac4bc661aded84b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Hearing
-  lSoundRadius: 10
-  qSoundRadius: 1
+  lSoundRadius: 1000
+  qSoundRadius: 100
   importantSound: {x: 0, y: 0, z: 0}
+  unexaminedSound: 0
 --- !u!1001 &1507072518
 PrefabInstance:
   m_ObjectHideFlags: 0
