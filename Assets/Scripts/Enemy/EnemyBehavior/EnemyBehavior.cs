@@ -14,7 +14,7 @@ public class EnemyBehavior : MonoBehaviour
     Node.Status treeStatus = Node.Status.RUNNING;
 
     //List for uncleared patrol points
-    private List<GameObject> unclearedPatrols = new List<GameObject>();
+    [SerializeField] private List<GameObject> unclearedPatrols = new List<GameObject>();
 
     //List for cleared patrol points
     private List<GameObject> clearedPatrols = new List<GameObject>();
@@ -25,12 +25,25 @@ public class EnemyBehavior : MonoBehaviour
     //Closest patrol point
     GameObject closestPatrol = null;
 
-
     //Reference to the nav mesh agent
     private NavMeshAgent agent;
 
+    public bool aggressive = false;
+
     //Var for the distance at which the AI can clear a patrol point
     [SerializeField] private float clearDistance = 2;
+
+    //SightCone Helper Func
+    private SightCheck sightCone;
+    private Hearing hearing;
+
+
+    //Chasing Variables
+
+    private Transform playerTrans;
+    private Vector3 lastKnownLocation;
+
+    [SerializeField] private float killRange = 2;
 
     void Start()
     {
@@ -38,21 +51,25 @@ public class EnemyBehavior : MonoBehaviour
         actions = new BehaviorTree();
 
         //Sequence Definitions
-        Sequence passivePatrol = new Sequence("Wander-Map");
+        Sequence patrol = new Sequence("Wander-Map");
         Sequence aggressivePatrol = new Sequence("Search-For-Player");
 
         //Leaf Definitions
-        Leaf obtainPoint = new Leaf("Get-new-POI", ObtainPOI);
-        Leaf passiveWander = new Leaf("Wander-Map", PassiveTravel);
-        Leaf clearPoint = new Leaf("ClearCurrentTarget", ClearPOI);
+        Leaf playerCheck = new Leaf("Look-For-Player", PlayerCheck);
+        //Leaf obtainPoint = new Leaf("Get-new-POI", ObtainPOI);
+        //Leaf passiveWander = new Leaf("Wander-Map", PassiveTravel);
+        Leaf clearPoint = new Leaf("Clear-Curren-tTarget", ClearPOI);
 
         //Slot leaves under sequences
-        passivePatrol.AddChild(obtainPoint);
-        passivePatrol.AddChild(passiveWander);
-        passivePatrol.AddChild(clearPoint);
+
+        patrol.AddChild(playerCheck);
+        
+        //patrol.AddChild(obtainPoint);
+        //patrol.AddChild(passiveWander);
+        patrol.AddChild(clearPoint);
 
         //Add Passive Patrol to the behavior tree list of actions
-        actions.AddChild(passivePatrol);
+        actions.AddChild(patrol);
 
         //Add Patrol points to uncleared patrols
         unclearedPatrols.AddRange(GameObject.FindGameObjectsWithTag("Patrol Node"));
@@ -66,6 +83,33 @@ public class EnemyBehavior : MonoBehaviour
         {
             //If this fails throw an error
             throw new ArgumentException("Unable to locate nav mesh agent!", nameof(EnemyBehavior));
+        }
+
+        try
+        {
+            sightCone = this.GetComponent<SightCheck>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to pair SightCheck with EnemyBehavior", nameof(EnemyBehavior));
+        }
+
+        try
+        {
+            hearing = GetComponent<Hearing>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to pair Hearing script with EnemyBehavior", nameof(EnemyBehavior));
+        }
+
+        try
+        {
+            playerTrans = GameObject.Find("PlayerBody").GetComponent<Transform>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to find player's transform!", nameof(SightCheck));
         }
     }
     
@@ -83,6 +127,40 @@ public class EnemyBehavior : MonoBehaviour
             treeStatus = Node.Status.RUNNING;
         }
     }
+
+    public Node.Status PlayerCheck()
+    {
+        if(aggressive == true)
+        {
+            Vector3 playerOffest = playerTrans.position - transform.position;
+            float distanceToPlayer = Vector3.SqrMagnitude(playerOffest);
+            if (sightCone.SeePlayer(playerTrans))
+            {
+                return ChasePlayer(distanceToPlayer);
+            }
+            else if (hearing.HearingCheck(distanceToPlayer) == true || hearing.unexaminedSound == true)
+            {
+                return MoveToPOI(hearing.importantSound);
+            }
+            else
+            {
+                if (lastKnownLocation != Vector3.zero)
+                {
+                    return LosePlayer();
+                }
+                else
+                {
+                    return ObtainPOI();
+                }
+            }
+        }
+        else
+        {
+            return ObtainPOI();
+        }
+        //return Node.Status.FAILURE;
+    }
+
 
     //Leaf for obtaining the next point of interest
     public Node.Status ObtainPOI()
@@ -125,11 +203,15 @@ public class EnemyBehavior : MonoBehaviour
                 }
             }
 
-            //If there is a new patrol to travel to, proceed to next leaf
+            //If there is a new patrol to travel to, proceed to next step
             if(closestPatrol != null)
             {
-                return Node.Status.SUCCESS;
+                return PassiveTravel();
             }
+        }
+        else if (closestPatrol != null)
+        {
+            return PassiveTravel();
         }
         //Fail the task is this is somehow reached
         Debug.LogWarning("Problem identified with ObtainPOI in EnemyBehavior!");
@@ -154,8 +236,10 @@ public class EnemyBehavior : MonoBehaviour
     //Leaf for clearing a point of interest and restarting the cycle
     public Node.Status ClearPOI()
     {
+        lastKnownLocation = Vector3.zero;
+        hearing.unexaminedSound = false;
         //If the current patrol is a valid patrol
-        if(currentPatrol < unclearedPatrols.Count)
+        if (currentPatrol < unclearedPatrols.Count)
         {
             //Move the current patrol from uncleared patrols to clearedPatrols
             clearedPatrols.Add(unclearedPatrols[currentPatrol]);
@@ -177,6 +261,41 @@ public class EnemyBehavior : MonoBehaviour
         }
         return Node.Status.FAILURE;
     }
+
+    public Node.Status ChasePlayer(float playerDistance)
+    {
+        lastKnownLocation = playerTrans.position;
+
+        if (!agent.isOnNavMesh)
+        {
+            Debug.LogError("Agent not on NavMesh!");
+            return Node.Status.FAILURE;
+        }
+        agent.SetDestination(playerTrans.position);
+
+        if(playerDistance <= killRange)
+        {
+            Debug.Log("Gotcha!");
+            aggressive = false;
+            return Node.Status.SUCCESS;
+        }
+        else if(playerDistance > killRange)
+        {
+            return Node.Status.RUNNING;
+        }
+        return Node.Status.FAILURE;
+    }
+
+    public Node.Status LosePlayer()
+    {
+        if (!agent.isOnNavMesh)
+        {
+            return Node.Status.FAILURE;
+        }
+
+        return MoveToPOI(lastKnownLocation);
+    }
+
 
     //Helper Func for Moving to a point of interest
     public Node.Status MoveToPOI(Vector3 destination)
