@@ -7,43 +7,59 @@ using System;
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyBehavior : MonoBehaviour
 {
-    //Definition for the Enemy's Behavior tree
-    BehaviorTree actions;
+    //Behavior Tree vars
+    BehaviorTree actions;//Declaration for the Enemy's Behavior tree
+    Node.Status treeStatus = Node.Status.RUNNING; //Current Status of the behavior tree
 
-    //Current Status of the behavior tree
-    Node.Status treeStatus = Node.Status.RUNNING;
+    //Patroling vars
+    private List<GameObject> unclearedPatrols = new List<GameObject>(); //List for uncleared patrol points
+    private List<GameObject> clearedPatrols = new List<GameObject>(); //List for cleared patrol points
+    private int currentPatrol = 0; //Current patrol point of interest
+    GameObject closestPatrol = null; //Closest patrol point
 
-    //List for uncleared patrol points
-    [SerializeField] private List<GameObject> unclearedPatrols = new List<GameObject>();
+    [Header("Patrolling Variables")]
+    [Tooltip("How close the enemy needs to be to a patrol point to clear it")]
+    [SerializeField] private float clearDistance = 7; //Var for the distance at which the AI can clear a patrol point
+    private bool increment = true; //Var for whether to mark a patrol point as cleared
+    private float hearingDelay = 25; //Distance gaps to prevent constant path re-drawing
 
-    //List for cleared patrol points
-    private List<GameObject> clearedPatrols = new List<GameObject>();
+    //Chasing variables
+    [Tooltip("To be linked with Task System, toggles if the enemy is capable of chasing the player")]
+    /*[HideInInspector]*/ public bool aggressive = false; //Is the enemy capable of killing the player, to be linked with task system when that is ready
+    private Vector3 interestingNoise; //Current noise to investigate
+    private Transform playerTrans; //Ref to the player's transform
+    private Vector3 lastKnownLocation; //player's last known location
 
-    //Current patrol point of interest
-    private int currentPatrol = 0;
+    [Header("Movement Variables")]
+    //List for storing various movement speeds
+    [Tooltip("0 = standard,\n1 = investigating,\n2 = furious")]
+    [SerializeField] private List<float> movementSpeed = new List<float>() 
+    {
+        3.5f,
+        7f,
+        10f
+    };
+    //List for storing various accelerations
+    [Tooltip("0 = standard,\n1 = investigating,\n2 = furious")]
+    [SerializeField] private List<float> accel = new List<float>() 
+    {
+        8f,
+        16f,
+        32f
+    };
+    private NavMeshAgent agent; //Reference to the nav mesh agent
 
-    //Closest patrol point
-    GameObject closestPatrol = null;
+    private float chaseTimer = 0f; //Var for how long the enemy will remain at max movement speed for
+    [Header("Chasing Variables")]
+    [Tooltip("How long the enemy will stay at high movement speed while pursuing the player")]
+    [SerializeField] private float maxChaseTimer = 10f; //Maximum time the enemy will remain enraged for
+    
+    [Tooltip("How close the enemy needs to be in order to kill the player")]
+    [SerializeField] private float killRange = 2; //Var for kill range of the enemy, currently debug only
 
-    //Reference to the nav mesh agent
-    private NavMeshAgent agent;
-
-    public bool aggressive = false;
-
-    //Var for the distance at which the AI can clear a patrol point
-    [SerializeField] private float clearDistance = 2;
-
-    //SightCone Helper Func
+    //Helper Functions
     private SightCheck sightCone;
     private Hearing hearing;
-
-
-    //Chasing Variables
-
-    private Transform playerTrans;
-    private Vector3 lastKnownLocation;
-
-    [SerializeField] private float killRange = 2;
 
     void Start()
     {
@@ -85,6 +101,7 @@ public class EnemyBehavior : MonoBehaviour
             throw new ArgumentException("Unable to locate nav mesh agent!", nameof(EnemyBehavior));
         }
 
+        //Find and assign the sight cone variable
         try
         {
             sightCone = this.GetComponent<SightCheck>();
@@ -94,6 +111,7 @@ public class EnemyBehavior : MonoBehaviour
             throw new ArgumentException("Unable to pair SightCheck with EnemyBehavior", nameof(EnemyBehavior));
         }
 
+        //Find and assign the hearing variable
         try
         {
             hearing = GetComponent<Hearing>();
@@ -103,6 +121,7 @@ public class EnemyBehavior : MonoBehaviour
             throw new ArgumentException("Unable to pair Hearing script with EnemyBehavior", nameof(EnemyBehavior));
         }
 
+        //Find and assign the player's transform
         try
         {
             playerTrans = GameObject.Find("PlayerBody").GetComponent<Transform>();
@@ -126,39 +145,79 @@ public class EnemyBehavior : MonoBehaviour
         {
             treeStatus = Node.Status.RUNNING;
         }
+
+        //If the chase timer is greater than 0 lower it
+        if(chaseTimer > 0)
+        {
+            chaseTimer -= Time.deltaTime;
+        }
     }
 
+    //Node checks what task to undergo
     public Node.Status PlayerCheck()
     {
+        //Check if the enemy is aggressive
         if(aggressive == true)
         {
+            //If the chase timer is not active set the enemy's move speed to aggressive
+            if (chaseTimer <= 0)
+            {
+                SetSpeed(1);
+            }
+
+            //Calculate player "distance" once for all functions
             Vector3 playerOffest = playerTrans.position - transform.position;
             float distanceToPlayer = Vector3.SqrMagnitude(playerOffest);
             if (sightCone.SeePlayer(playerTrans))
             {
+                //If you can see the player while aggressive, chase them
                 return ChasePlayer(distanceToPlayer);
             }
             else if (hearing.HearingCheck(distanceToPlayer) == true || hearing.unexaminedSound == true)
             {
-                return MoveToPOI(hearing.importantSound);
+                //If you can hear the player while aggressive, check if a new target is needed and move towards it
+                increment = false;
+
+                //set possible target for comparison
+                Vector3 possibleTarget = hearing.importantSound;
+
+                //Decalre local var for calcing distance from sound
+                float distanceToTarget = 0;
+
+                if (interestingNoise != Vector3.zero)
+                {
+                    //If there is a current interesting noise check based off of that
+                    Vector3 currOffset = possibleTarget - interestingNoise;
+                    distanceToTarget = Vector3.SqrMagnitude(currOffset);
+                }
+
+                //If the distance check goes through set what the interesting noise is
+                if (distanceToTarget > hearingDelay || interestingNoise == Vector3.zero)
+                {
+                    interestingNoise = possibleTarget;
+                }
+
+                //Move towards the interesting noise
+                return MoveToPOI(interestingNoise);
             }
             else
             {
+                //If there is a last known location move towards that
                 if (lastKnownLocation != Vector3.zero)
                 {
                     return LosePlayer();
                 }
                 else
-                {
+                { //Otherwise roam like normal
                     return ObtainPOI();
                 }
             }
         }
         else
         {
+            //If not aggressive just roam like normal
             return ObtainPOI();
         }
-        //return Node.Status.FAILURE;
     }
 
 
@@ -180,13 +239,13 @@ public class EnemyBehavior : MonoBehaviour
             {
                 //Calculate the path for comparison
                 var pathStorage = new NavMeshPath();
-                agent.CalculatePath(unclearedPatrols[i].transform.position, pathStorage);
-
+                agent.CalculatePath(unclearedPatrols[i].transform.position, pathStorage); //Calc desired path
                 if (pathStorage != null && !agent.pathPending)
                 {
                     //determine the length of the path
                     Vector3 offsetPoint = pathStorage.corners[0] - transform.position;
                     float distanceToNode = Vector3.SqrMagnitude(offsetPoint);
+                    //For each corner calc the distance between the points to get total distance
                     for (int j = 1; j < pathStorage.corners.Length; j++)
                     {
                         offsetPoint = pathStorage.corners[j] - pathStorage.corners[j - 1];
@@ -196,6 +255,7 @@ public class EnemyBehavior : MonoBehaviour
                     //Check if the length of the path is shorter than what is currently stored
                     if (distanceToNode < lowestDistance || closestPatrol == null)
                     {
+                        //Set new values if the check goes through
                         lowestDistance = distanceToNode;
                         closestPatrol = unclearedPatrols[i];
                         currentPatrol = i;
@@ -203,8 +263,10 @@ public class EnemyBehavior : MonoBehaviour
                 }
             }
 
+            SetSpeed(0); //Set speed
+
             //If there is a new patrol to travel to, proceed to next step
-            if(closestPatrol != null)
+            if (closestPatrol != null)
             {
                 return PassiveTravel();
             }
@@ -224,6 +286,7 @@ public class EnemyBehavior : MonoBehaviour
         //Run the function through MoveToPOI to move to the destination
         try
         {
+            increment = true;
             return MoveToPOI(closestPatrol.transform.position);
         }
         catch
@@ -236,10 +299,13 @@ public class EnemyBehavior : MonoBehaviour
     //Leaf for clearing a point of interest and restarting the cycle
     public Node.Status ClearPOI()
     {
+        //Clear other values that would cause infinite loops
         lastKnownLocation = Vector3.zero;
+        interestingNoise = Vector3.zero;
         hearing.unexaminedSound = false;
+        
         //If the current patrol is a valid patrol
-        if (currentPatrol < unclearedPatrols.Count)
+        if (currentPatrol < unclearedPatrols.Count && increment == true)
         {
             //Move the current patrol from uncleared patrols to clearedPatrols
             clearedPatrols.Add(unclearedPatrols[currentPatrol]);
@@ -256,43 +322,55 @@ public class EnemyBehavior : MonoBehaviour
                     clearedPatrols.RemoveAt(0);
                 }
             }
-            //Return succes if all goes well
-            return Node.Status.SUCCESS;
         }
-        return Node.Status.FAILURE;
+        return Node.Status.SUCCESS; //Once everything is done return success
     }
 
+    //Func for chasing the player
     public Node.Status ChasePlayer(float playerDistance)
     {
-        lastKnownLocation = playerTrans.position;
+        SetSpeed(2); //Set speed
+        chaseTimer = maxChaseTimer; //Set the maxChaseTimer
+
+        lastKnownLocation = playerTrans.position; //Update last known location
 
         if (!agent.isOnNavMesh)
         {
+            //Throw an error if the agent isn't on the nav mesh
             Debug.LogError("Agent not on NavMesh!");
             return Node.Status.FAILURE;
         }
-        agent.SetDestination(playerTrans.position);
 
-        if(playerDistance <= killRange)
+        //If the distance to the player is greater than the kill distance update the player's position
+        if(playerDistance > killRange)
+        {
+            agent.SetDestination(playerTrans.position);
+        }
+
+        //If the player is within kill range give a debug and then ClearPOI
+        if (playerDistance <= killRange)
         {
             Debug.Log("Gotcha!");
             aggressive = false;
+            increment = false;
+            SetSpeed(0);
             return Node.Status.SUCCESS;
         }
         else if(playerDistance > killRange)
         {
-            return Node.Status.RUNNING;
+            return Node.Status.RUNNING; //Keep it running if outside kill range
         }
-        return Node.Status.FAILURE;
+        return Node.Status.FAILURE; //If this is somehow reached fail the func
     }
 
+    //Func for when the player has been lost during chase
     public Node.Status LosePlayer()
     {
         if (!agent.isOnNavMesh)
         {
             return Node.Status.FAILURE;
         }
-
+        increment = false;
         return MoveToPOI(lastKnownLocation);
     }
 
@@ -307,12 +385,15 @@ public class EnemyBehavior : MonoBehaviour
             return Node.Status.FAILURE;
         }
 
+        if(agent.destination != destination)
+        {
+            agent.SetDestination(destination); //Set destination to the POI
+        }
+
         //Calculate how far away the enemy is from the POI
         Vector3 offsetPOI = destination - transform.position;
 
         float distanceToNode = Vector3.SqrMagnitude(offsetPOI);
-
-        agent.SetDestination(destination); //Set destination to the POI
 
         if (distanceToNode > clearDistance)
         {
@@ -321,9 +402,16 @@ public class EnemyBehavior : MonoBehaviour
         }
         else if(distanceToNode <= clearDistance)
         {
+            SetSpeed(0);
             //If not pass success
             return Node.Status.SUCCESS;
         }
         return Node.Status.FAILURE; //If something breaks fail the func
+    }
+
+    private void SetSpeed(int setSpeed)
+    {
+        agent.speed = movementSpeed[setSpeed];
+        agent.acceleration = accel[setSpeed];
     }
 }

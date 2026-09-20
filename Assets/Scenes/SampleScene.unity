@@ -10264,7 +10264,7 @@ Transform:
   m_GameObject: {fileID: 391988116}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -10.7, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -17286,13 +17286,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
   m_SerializedVersion: 0
   m_AgentTypeID: 0
-  m_CollectObjects: 0
+  m_CollectObjects: 2
   m_Size: {x: 10, y: 10, z: 10}
   m_Center: {x: 0, y: 2, z: 0}
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_UseGeometry: 0
+  m_UseGeometry: 1
   m_DefaultArea: 0
   m_GenerateLinks: 0
   m_IgnoreNavMeshAgent: 1
@@ -20454,7 +20454,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 775931129}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 7d2b3ee163e3df942a9d210328833f59, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -23916,7 +23916,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 924134826}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 7d2b3ee163e3df942a9d210328833f59, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -35043,10 +35043,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3eea53cf21aff8f4593489cfa9246e19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBehavior
-  unclearedPatrols: []
-  aggressive: 1
   clearDistance: 7
-  killRange: 2.65
+  aggressive: 1
+  movementSpeed:
+  - 3.5
+  - 6.5
+  - 11
+  accel:
+  - 8
+  - 16
+  - 32
+  maxChaseTimer: 10
+  killRange: 4
 --- !u!195 &1504670951
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -35056,7 +35064,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 1504670949}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 1
+  m_Radius: 1.25
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50

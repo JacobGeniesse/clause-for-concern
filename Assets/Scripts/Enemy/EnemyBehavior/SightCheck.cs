@@ -3,14 +3,16 @@ using System;
 
 public class SightCheck : MonoBehaviour
 {
-    [SerializeField, Range(0, 180f)] private float visionRadius;
-    [SerializeField, Range(0f, 30f)] private float visionRange;
+    [Tooltip("How wide the enemy's FOV is.")]
+    [SerializeField, Range(0, 180f)] private float visionRadius; //Var for enemy FOV range
+    [Tooltip("How far away the enemy can see.")]
+    [SerializeField, Range(0f, 30f)] private float visionRange; //Var for how far away the enemy can see
 
-    private Vector3 coneOrigin;
+    private Vector3 coneOrigin; //origin point for the enemy's sight cone
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        //Try catch for setting the cone's origin point
         try
         {
             coneOrigin = transform.position;
@@ -21,6 +23,7 @@ public class SightCheck : MonoBehaviour
         }
     }
 
+    //Public func for running a sight check
     public bool SeePlayer(Transform target)
     {
         //Do a line cast to see if the player is visible
