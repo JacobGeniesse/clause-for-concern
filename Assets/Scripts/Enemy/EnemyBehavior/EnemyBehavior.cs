@@ -351,10 +351,10 @@ public class EnemyBehavior : MonoBehaviour
         if (playerDistance <= killRange)
         {
             Debug.Log("Gotcha!");
-            aggressive = false;
+            //aggressive = false;
             increment = false;
             SetSpeed(0);
-            return Node.Status.SUCCESS;
+            return Node.Status.RUNNING;
         }
         else if(playerDistance > killRange)
         {

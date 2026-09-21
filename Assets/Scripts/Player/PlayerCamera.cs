@@ -13,9 +13,6 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField]
     private Transform playerTrans;
 
-    [SerializeField]
-    private PlayerInput playerInput;
-
     private float xRot = 0f;
 
     public InputActionAsset MasterList;
