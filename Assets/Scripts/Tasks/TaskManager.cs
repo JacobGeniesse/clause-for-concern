@@ -1,10 +1,21 @@
 using UnityEngine;
+using System;
 using UnityEngine.InputSystem;
 
 public class TaskManager : MonoBehaviour
 {
+    [SerializeField] private string[] taskNames;
+    [SerializeField] private string[] taskLocation;
+    [SerializeField] private TaskInteractable[] taskObjects;
+    private int currentTask;
+
+
     [SerializeField] string taskName = "Unjam the Printer";
-    [SerializeField] Transform location;
+    private Transform location;
+
+    private float timerPenalty = 0;
+    [SerializeField] float addedPenalty = 5f;
+
     [SerializeField] float timeLimit = 60f;
 
     public Transform Location => location;
@@ -13,8 +24,19 @@ public class TaskManager : MonoBehaviour
     bool overdue;
     float nextStatusLog;
 
+    [SerializeField]private EnemyBehavior enemyBehavior;
+
     void Start()
     {
+        try
+        {
+            enemyBehavior = GameObject.Find("Enemy").GetComponent<EnemyBehavior>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to find EnemyBehavior.", nameof(TaskManager));
+        }
+
         BeginTask();
     }
 
@@ -22,6 +44,7 @@ public class TaskManager : MonoBehaviour
     {
         if (!overdue)
         {
+            enemyBehavior.aggressive = false;
             timeRemaining -= Time.deltaTime;
             if (timeRemaining <= 0f)
             {
@@ -30,6 +53,11 @@ public class TaskManager : MonoBehaviour
                 Debug.LogWarning($"Task overdue: {taskName}");
             }
         }
+        else
+        {
+            enemyBehavior.aggressive = true;
+            timerPenalty = 0;
+        }
 
         if (Time.time >= nextStatusLog)
         {
@@ -37,24 +65,29 @@ public class TaskManager : MonoBehaviour
             nextStatusLog = Time.time + 10f;
         }
 
-        if (Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame)
-        {
-            CompleteTask();
-        }
+        //if (Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame)
+        //{
+        //    CompleteTask();
+        //}
     }
 
     void BeginTask()
     {
-        timeRemaining = timeLimit;
+        currentTask = UnityEngine.Random.Range(0, taskNames.Length);
+        taskObjects[currentTask].currentTask = true;
+        timeRemaining = timeLimit - timerPenalty;
         overdue = false;
         nextStatusLog = Time.time + 10f;
+        location = taskObjects[currentTask].transform;
         string where = location != null ? location.name : "nowhere";
-        Debug.Log($"Task started: {taskName} at {where}. {timeLimit:0}s. Press F to complete.");
+        Debug.Log($"Task started: {taskNames[currentTask]} at {taskLocation[currentTask]}. {timeLimit:0}s.");
     }
 
-    void CompleteTask()
+    public void CompleteTask()
     {
-        Debug.Log($"Task completed: {taskName}");
+        taskObjects[currentTask].currentTask = false;
+        Debug.Log($"Task completed: {taskNames[currentTask]}");
+        timerPenalty += addedPenalty;
         BeginTask();
     }
 
@@ -63,7 +96,7 @@ public class TaskManager : MonoBehaviour
         int seconds = Mathf.CeilToInt(timeRemaining);
         string where = location != null ? location.name : "nowhere";
         string status = overdue ? "OVERDUE" : "Active";
-        Debug.Log($"{taskName} | {where} | {seconds / 60:00}:{seconds % 60:00} | {status}");
+        Debug.Log($"{taskNames[currentTask]} | {taskLocation[currentTask]} | {seconds / 60:00}:{seconds % 60:00} | {status}");
     }
 
     void OnDrawGizmos()
