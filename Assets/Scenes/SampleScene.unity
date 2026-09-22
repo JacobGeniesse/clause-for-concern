@@ -6121,7 +6121,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8205915560668034777, guid: 74797b0832a17014eac6c6b7444f8fc4, type: 3}
       propertyPath: m_Name
-      value: Interactable (1)
+      value: WinConditionInteractable2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10244,7 +10244,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 15396229524077665, guid: f844a31a98dabd54c8ee7f8840d06781, type: 3}
       propertyPath: m_Name
-      value: TestInteractable (1)
+      value: WinConditionInteractable3
       objectReference: {fileID: 0}
     - target: {fileID: 2516253186260525392, guid: f844a31a98dabd54c8ee7f8840d06781, type: 3}
       propertyPath: m_LocalPosition.x
@@ -51768,7 +51768,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8205915560668034777, guid: 74797b0832a17014eac6c6b7444f8fc4, type: 3}
       propertyPath: m_Name
-      value: Interactable
+      value: WinConditionInteractable0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -51785,7 +51785,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 15396229524077665, guid: f844a31a98dabd54c8ee7f8840d06781, type: 3}
       propertyPath: m_Name
-      value: TestInteractable
+      value: WinConditionInteractable1
       objectReference: {fileID: 0}
     - target: {fileID: 2516253186260525392, guid: f844a31a98dabd54c8ee7f8840d06781, type: 3}
       propertyPath: m_LocalPosition.x
