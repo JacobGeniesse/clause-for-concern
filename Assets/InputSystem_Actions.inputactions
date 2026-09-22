@@ -32,7 +32,7 @@
                     "id": "852140f2-7766-474d-8707-702459ba45f3",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": "Hold",
+                    "interactions": "",
                     "initialStateCheck": false,
                     "priority": 0
                 },
@@ -90,6 +90,16 @@
                     "name": "Pause",
                     "type": "Button",
                     "id": "a713e03a-2041-4d82-bf4d-b99d8bf8f9f7",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "Map",
+                    "type": "Button",
+                    "id": "c4e8a91b-2d7f-4a16-9e3c-8b5d0f1a2c47",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -403,6 +413,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e1a2b3c4-d5e6-4f70-8901-23456789abcd",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Map",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -1,7 +1,5 @@
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
 
 public class PlayerInteract : MonoBehaviour
 {
@@ -10,19 +8,17 @@ public class PlayerInteract : MonoBehaviour
     private InputAction interact;
 
     [SerializeField]
-    private float interactRange = 3f;
+    private float interactRange = 4f;
 
-    private Camera camera;
+    private Camera playerCamera;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         interact = MasterList["Interact"];
-
-        camera = Camera.main;
+        interact.Enable();
+        playerCamera = Camera.main;
     }
 
-    // Update is called once per frame
     void Update()
     {
         Interaction();
@@ -30,23 +26,39 @@ public class PlayerInteract : MonoBehaviour
 
     void Interaction()
     {
-        // Make it so it only detects the button press on the frame the button was pressed
-        if (interact.WasPressedThisFrame())
+        if (interact == null || !interact.WasPressedThisFrame())
         {
-            if (camera != null)
-            {
-                Ray ray = new Ray(camera.transform.position, camera.transform.forward);
+            return;
+        }
 
-                if (Physics.Raycast(ray, out RaycastHit hit, interactRange))
-                {
-                    if (hit.collider.TryGetComponent(out IInteractable interactable))   // Check if the the collider object has a script that inherets from the IInteractable interface
-                    {
-                        interactable.Interact();
-                    }
-                }
+        if (playerCamera == null)
+        {
+            playerCamera = Camera.main;
+        }
+
+        if (playerCamera == null)
+        {
+            return;
+        }
+
+        Ray ray = new Ray(
+            playerCamera.transform.position + playerCamera.transform.forward * 0.6f,
+            playerCamera.transform.forward);
+
+        RaycastHit[] hits = Physics.RaycastAll(ray, interactRange);
+        if (hits.Length == 0)
+        {
+            return;
+        }
+
+        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+        for (int i = 0; i < hits.Length; i++)
+        {
+            if (hits[i].collider.TryGetComponent(out IInteractable interactable))
+            {
+                interactable.Interact();
+                return;
             }
         }
     }
-
-    
 }

@@ -37,6 +37,13 @@ public class TaskManager : MonoBehaviour
             throw new ArgumentException("Unable to find EnemyBehavior.", nameof(TaskManager));
         }
 
+        if (!HasTasks())
+        {
+            Debug.LogError("TaskManager has empty or mismatched task lists.");
+            enabled = false;
+            return;
+        }
+
         BeginTask();
     }
 
@@ -71,8 +78,21 @@ public class TaskManager : MonoBehaviour
         //}
     }
 
+    bool HasTasks()
+    {
+        int count = taskNames != null ? taskNames.Length : 0;
+        return count > 0
+            && taskLocation != null && taskLocation.Length == count
+            && taskObjects != null && taskObjects.Length == count;
+    }
+
     void BeginTask()
     {
+        if (!HasTasks())
+        {
+            return;
+        }
+
         currentTask = UnityEngine.Random.Range(0, taskNames.Length);
         taskObjects[currentTask].currentTask = true;
         timeRemaining = timeLimit - timerPenalty;
@@ -93,6 +113,11 @@ public class TaskManager : MonoBehaviour
 
     void LogStatus()
     {
+        if (!HasTasks())
+        {
+            return;
+        }
+
         int seconds = Mathf.CeilToInt(timeRemaining);
         string where = location != null ? location.name : "nowhere";
         string status = overdue ? "OVERDUE" : "Active";

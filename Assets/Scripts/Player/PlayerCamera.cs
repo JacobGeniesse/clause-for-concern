@@ -34,6 +34,11 @@ public class PlayerCamera : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+        if (Minimap.IsOpen)
+        {
+            return;
+        }
+
         float mouseX = mouseInputX.ReadValue<float>() * mouseSensitivity * Time.deltaTime;
         float mouseY = mouseInputY.ReadValue<float>() * mouseSensitivity * Time.deltaTime;
 

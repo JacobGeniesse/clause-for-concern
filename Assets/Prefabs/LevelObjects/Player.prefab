@@ -139,6 +139,7 @@ GameObject:
   - component: {fileID: 464369051023159301}
   - component: {fileID: 2078051210299357438}
   - component: {fileID: 6820340293772664597}
+  - component: {fileID: 6820340293772664598}
   m_Layer: 0
   m_Name: PlayerBody
   m_TagString: Player
@@ -302,3 +303,17 @@ MonoBehaviour:
   lastQuietNoise: {x: 0, y: 0, z: 0}
   activeLoudNoise: 0
   activeQuietNoise: 0
+--- !u!114 &6820340293772664598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6432477090040158998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b04f0dcfbd8fa354b897e24e02248814, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteract
+  MasterList: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  interactRange: 4
