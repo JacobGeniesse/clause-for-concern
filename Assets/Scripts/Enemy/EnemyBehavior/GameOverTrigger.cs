@@ -5,6 +5,7 @@ public class GameOverTrigger : MonoBehaviour
 {
     private GameOverManager gameOverManager;
     [SerializeField] private GameObject jumpscareCam;
+    [SerializeField] private Animator anim;
     private GameObject playerCam;
     private bool isGamingOver = false;
 
@@ -37,7 +38,7 @@ public class GameOverTrigger : MonoBehaviour
         if(collision.collider.tag == "Player" && isGamingOver == false && enemyBehavior.aggressive == true)
         {
             isGamingOver = true;
-            gameOverManager.GameOver(jumpscareCam, playerCam);
+            gameOverManager.GameOver(jumpscareCam, playerCam, anim);
         }
     }
 }

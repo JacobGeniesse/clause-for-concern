@@ -3,24 +3,24 @@ using UnityEngine;
 public class WinConditionInteractable : MonoBehaviour, IInteractable
 {
     private int taskCompletion = 0;     // Number of tasks completed 
-    private int taskAmount = 4;         // Number of tasks in the level. Could probably be automated by automatically finding task objects and putting them in a list and using the list.count value
+    [SerializeField] private int taskAmount = 4;         // Number of tasks in the level. Could probably be automated by automatically finding task objects and putting them in a list and using the list.count value
+
+    private GameManager gameManager;
+    [SerializeField] private GameObject winScreen;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     public void Interact()
     {
         if (taskCompletion == taskAmount)
         {
+            gameManager.ModTime(0);
+            Cursor.lockState = CursorLockMode.None;
+            winScreen.SetActive(true);
             Debug.Log("A winner is you");
         }
     }

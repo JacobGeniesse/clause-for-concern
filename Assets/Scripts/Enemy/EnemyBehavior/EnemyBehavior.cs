@@ -61,6 +61,9 @@ public class EnemyBehavior : MonoBehaviour
     private SightCheck sightCone;
     private Hearing hearing;
 
+    //Animation vars
+    [SerializeField] private Animator anim;
+
     void Start()
     {
         //Behavior tree definintion
@@ -151,6 +154,15 @@ public class EnemyBehavior : MonoBehaviour
         {
             chaseTimer -= Time.deltaTime;
         }
+
+        if(agent.velocity != Vector3.zero)
+        {
+            anim.SetFloat("Movement", 1);
+        }
+        else
+        {
+            anim.SetFloat("Movement", 0);
+        }
     }
 
     //Node checks what task to undergo
@@ -162,6 +174,7 @@ public class EnemyBehavior : MonoBehaviour
             //If the chase timer is not active set the enemy's move speed to aggressive
             if (chaseTimer <= 0)
             {
+                anim.SetBool("Pissy", false);
                 SetSpeed(1);
             }
 
@@ -411,6 +424,17 @@ public class EnemyBehavior : MonoBehaviour
 
     private void SetSpeed(int setSpeed)
     {
+        switch (setSpeed)
+        {
+            case 0:
+            case 1:
+                anim.SetBool("Pissy", false);
+                break;
+            case 2:
+                anim.SetBool("Pissy", true);
+                break;
+        }
+
         agent.speed = movementSpeed[setSpeed];
         agent.acceleration = accel[setSpeed];
     }

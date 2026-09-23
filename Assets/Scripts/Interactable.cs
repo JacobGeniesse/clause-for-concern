@@ -3,6 +3,14 @@ using UnityEngine;
 public class Interactable : MonoBehaviour, IInteractable
 {
     private bool _isInteractable = true;
+
+    private WinConditionInteractable win;
+
+    private void Start()
+    {
+        win = GameObject.Find("EscapeElevatorDoors").GetComponent<WinConditionInteractable>();
+    }
+
     public void Interact()
     {
         Debug.Log("Interaction 1");
@@ -15,10 +23,10 @@ public class Interactable : MonoBehaviour, IInteractable
 
     public void IncrementTask()
     {
-        WinConditionInteractable win = GameObject.Find("EscapeElevatorDoors").GetComponent<WinConditionInteractable>();
         if (win != null)
         {
             win.IncrementTaskCompletion();
+            this.gameObject.SetActive(false);
         }
     }
 }
