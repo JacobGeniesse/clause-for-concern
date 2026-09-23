@@ -251,19 +251,22 @@ public class EnemyBehavior : MonoBehaviour
             for(int i = 0; i < unclearedPatrols.Count; i++)
             {
                 //Calculate the path for comparison
-                var pathStorage = new NavMeshPath();
-                agent.CalculatePath(unclearedPatrols[i].transform.position, pathStorage); //Calc desired path
-                if (pathStorage != null && !agent.pathPending)
-                {
-                    //determine the length of the path
-                    Vector3 offsetPoint = pathStorage.corners[0] - transform.position;
+                //var pathStorage = new NavMeshPath();
+                //agent.CalculatePath(unclearedPatrols[i].transform.position, pathStorage); //Calc desired path
+                //if (pathStorage != null && !agent.pathPending)
+                //{
+                    //    //determine the length of the path
+                    //    Vector3 offsetPoint = pathStorage.corners[0] - transform.position;
+                    //    float distanceToNode = Vector3.SqrMagnitude(offsetPoint);
+                    //    //For each corner calc the distance between the points to get total distance
+                    //    for (int j = 1; j < pathStorage.corners.Length; j++)
+                    //    {
+                    //        offsetPoint = pathStorage.corners[j] - pathStorage.corners[j - 1];
+                    //        distanceToNode += Vector3.SqrMagnitude(offsetPoint);
+                    //    }
+
+                    Vector3 offsetPoint = unclearedPatrols[i].transform.position - transform.position;
                     float distanceToNode = Vector3.SqrMagnitude(offsetPoint);
-                    //For each corner calc the distance between the points to get total distance
-                    for (int j = 1; j < pathStorage.corners.Length; j++)
-                    {
-                        offsetPoint = pathStorage.corners[j] - pathStorage.corners[j - 1];
-                        distanceToNode += Vector3.SqrMagnitude(offsetPoint);
-                    }
 
                     //Check if the length of the path is shorter than what is currently stored
                     if (distanceToNode < lowestDistance || closestPatrol == null)
@@ -273,7 +276,7 @@ public class EnemyBehavior : MonoBehaviour
                         closestPatrol = unclearedPatrols[i];
                         currentPatrol = i;
                     }
-                }
+                //}
             }
 
             SetSpeed(0); //Set speed
@@ -329,11 +332,8 @@ public class EnemyBehavior : MonoBehaviour
             if(unclearedPatrols.Count == 0)
             {
                 //Move all patrols from clearedPatrols back to unclearedPatrols
-                while(clearedPatrols.Count > 0)
-                {
-                    unclearedPatrols.Add(clearedPatrols[0]);
-                    clearedPatrols.RemoveAt(0);
-                }
+                unclearedPatrols.AddRange(clearedPatrols);
+                clearedPatrols.Clear();
             }
         }
         return Node.Status.SUCCESS; //Once everything is done return success

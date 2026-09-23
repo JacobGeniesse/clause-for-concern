@@ -8,9 +8,6 @@ public class TaskManager : MonoBehaviour
     [SerializeField] private string[] taskLocation;
     [SerializeField] private TaskInteractable[] taskObjects;
     private int currentTask;
-
-
-    [SerializeField] string taskName = "Unjam the Printer";
     private Transform location;
 
     private float timerPenalty = 0;
@@ -28,11 +25,14 @@ public class TaskManager : MonoBehaviour
     [HideInInspector] public bool overdue;
     float nextStatusLog;
 
+    [SerializeField] TaskUI taskUI;
     private EnemyBehavior enemyBehavior;
 
     void Start()
     {
         maxLimit = timeLimit;
+
+        currentTask = UnityEngine.Random.Range(0, taskNames.Length);
 
         try
         {
@@ -65,20 +65,20 @@ public class TaskManager : MonoBehaviour
             {
                 timeRemaining = 0f;
                 overdue = true;
-                Debug.LogWarning($"Task overdue: {taskName}");
+                timerPenalty = 0;
+                //Debug.LogWarning($"Task overdue: {taskName}");
             }
         }
         else
         {
             enemyBehavior.aggressive = true;
-            timerPenalty = 0;
         }
 
-        if (Time.time >= nextStatusLog)
-        {
-            LogStatus();
-            nextStatusLog = Time.time + 10f;
-        }
+        //if (Time.time >= nextStatusLog)
+        //{
+        //    LogStatus();
+        //    nextStatusLog = Time.time + 10f;
+        //}
 
         //if (Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame)
         //{
@@ -100,21 +100,22 @@ public class TaskManager : MonoBehaviour
         {
             return;
         }
-        RandomizeTasks();
+        IncrementTasks();
         taskObjects[currentTask].currentTask = true;
         timeRemaining = timeLimit - timerPenalty;
         maxLimit = timeRemaining;
         overdue = false;
         nextStatusLog = Time.time + 10f;
         location = taskObjects[currentTask].transform;
-        string where = location != null ? location.name : "nowhere";
-        Debug.Log($"Task started: {taskNames[currentTask]} at {taskLocation[currentTask]}. {maxLimit:0}s.");
+        //string where = location != null ? location.name : "nowhere";
+        taskUI.SetTask(taskNames[currentTask], taskLocation[currentTask]);
+        //Debug.Log($"Task started: {taskNames[currentTask]} at {taskLocation[currentTask]}. {maxLimit:0}s.");
     }
 
     public void CompleteTask()
     {
         taskObjects[currentTask].currentTask = false;
-        Debug.Log($"Task completed: {taskNames[currentTask]}");
+        //Debug.Log($"Task completed: {taskNames[currentTask]}");
         timerPenalty += addedPenalty;
         BeginTask();
     }
@@ -142,13 +143,15 @@ public class TaskManager : MonoBehaviour
         Gizmos.DrawSphere(location.position, 0.4f);
     }
 
-    void RandomizeTasks()
+    void IncrementTasks()
     {
-        currentTask = UnityEngine.Random.Range(0, taskNames.Length);
-        if (currentTask == lastNum)
+        if(currentTask + 1 < taskNames.Length)
         {
-            RandomizeTasks();
+            currentTask++;
         }
-        lastNum = currentTask;
+        else
+        {
+            currentTask = 0;
+        }
     }
 }

@@ -1,10 +1,14 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class TaskUI : MonoBehaviour
 {
     [SerializeField] private Slider timerSlider;
+
+    [SerializeField] private TextMeshProUGUI taskText;
+
     [SerializeField] private TaskManager taskManager;
 
     [SerializeField] private Animator clockAnim;
@@ -28,5 +32,10 @@ public class TaskUI : MonoBehaviour
         {
             clockAnim.SetBool("Overtime", false);
         }
+    }
+
+    public void SetTask(string taskName, string taskLocation)
+    {
+        taskText.text = $"Task: {taskName}\nLocation: {taskLocation}";
     }
 }

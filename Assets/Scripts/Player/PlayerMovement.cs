@@ -61,6 +61,10 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        moveDirection = CalcDirection();
+
+        moveInputs = Move();
+
         Vector3 velocity = rb.linearVelocity;
 
         float maxSpeedChange = accel * Time.deltaTime;
@@ -74,13 +78,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        moveDirection = CalcDirection();
 
-        moveInputs = Move();
-
-        if(sprint.WasPressedThisFrame() == true)
+        if (sprint.WasPressedThisFrame() == true)
         {
-            if(sprinting == false)
+            if (sprinting == false)
             {
                 sprinting = true;
             }
