@@ -5,8 +5,8 @@ public class Minimap : MonoBehaviour
 {
     public static bool IsOpen { get; private set; }
 
-    [SerializeField] Transform player;
-    [SerializeField] TaskManager taskManager;
+    private Transform player;
+    private TaskManager taskManager;
     [SerializeField] RectTransform mapRect;
     [SerializeField] RectTransform playerMarker;
     [SerializeField] RectTransform taskMarker;
@@ -19,9 +19,14 @@ public class Minimap : MonoBehaviour
 
     void Start()
     {
+        if (player == null)
+        {
+            player = GameObject.Find("Player").GetComponent<Transform>();
+        }
+
         if (taskManager == null)
         {
-            taskManager = FindFirstObjectByType<TaskManager>();
+            taskManager = GameObject.Find("GameManager").GetComponent<TaskManager>();
         }
 
         if (masterList != null)

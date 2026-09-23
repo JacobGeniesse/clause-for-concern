@@ -44,7 +44,6 @@ public class PlayerInteract : MonoBehaviour
         Ray ray = new Ray(
             playerCamera.transform.position + playerCamera.transform.forward * 0.6f,
             playerCamera.transform.forward);
-
         RaycastHit[] hits = Physics.RaycastAll(ray, interactRange);
         if (hits.Length == 0)
         {

@@ -20,11 +20,13 @@ public class TaskManager : MonoBehaviour
 
     public Transform Location => location;
 
+    private int lastNum;
+
     float timeRemaining;
     bool overdue;
     float nextStatusLog;
 
-    [SerializeField] private EnemyBehavior enemyBehavior;
+    private EnemyBehavior enemyBehavior;
 
     void Start()
     {
@@ -43,6 +45,8 @@ public class TaskManager : MonoBehaviour
             enabled = false;
             return;
         }
+
+        lastNum = taskNames.Length + 1;
 
         BeginTask();
     }
@@ -92,8 +96,7 @@ public class TaskManager : MonoBehaviour
         {
             return;
         }
-
-        currentTask = UnityEngine.Random.Range(0, taskNames.Length);
+        RandomizeTasks();
         taskObjects[currentTask].currentTask = true;
         timeRemaining = timeLimit - timerPenalty;
         overdue = false;
@@ -132,5 +135,15 @@ public class TaskManager : MonoBehaviour
 
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(location.position, 0.4f);
+    }
+
+    void RandomizeTasks()
+    {
+        currentTask = UnityEngine.Random.Range(0, taskNames.Length);
+        if (currentTask == lastNum)
+        {
+            RandomizeTasks();
+        }
+        lastNum = currentTask;
     }
 }
