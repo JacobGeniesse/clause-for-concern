@@ -7,6 +7,8 @@ public class GameOverTrigger : MonoBehaviour
     [SerializeField] private GameObject jumpscareCam;
     private GameObject playerCam;
     private bool isGamingOver = false;
+
+    [SerializeField] EnemyBehavior enemyBehavior;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -32,7 +34,7 @@ public class GameOverTrigger : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.collider.tag == "Player" && isGamingOver == false)
+        if(collision.collider.tag == "Player" && isGamingOver == false && enemyBehavior.aggressive == true)
         {
             isGamingOver = true;
             gameOverManager.GameOver(jumpscareCam, playerCam);

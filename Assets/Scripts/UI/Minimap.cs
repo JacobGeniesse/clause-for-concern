@@ -6,6 +6,7 @@ public class Minimap : MonoBehaviour
     public static bool IsOpen { get; private set; }
 
     private Transform player;
+    private GameManager gameManager;
     private TaskManager taskManager;
     [SerializeField] RectTransform mapRect;
     [SerializeField] RectTransform playerMarker;
@@ -21,12 +22,17 @@ public class Minimap : MonoBehaviour
     {
         if (player == null)
         {
-            player = GameObject.Find("Player").GetComponent<Transform>();
+            player = GameObject.Find("PlayerBody").GetComponent<Transform>();
         }
 
         if (taskManager == null)
         {
             taskManager = GameObject.Find("GameManager").GetComponent<TaskManager>();
+        }
+
+        if(gameManager == null)
+        {
+            gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         }
 
         if (masterList != null)
@@ -55,15 +61,15 @@ public class Minimap : MonoBehaviour
 
     void Update()
     {
-        if (Time.timeScale == 0f)
-        {
-            if (IsOpen)
-            {
-                SetOpen(false);
-            }
+        //if (Time.timeScale == 0f)
+        //{
+        //    if (IsOpen)
+        //    {
+        //        SetOpen(false);
+        //    }
 
-            return;
-        }
+        //    return;
+        //}
 
         if (WasMapPressed())
         {
@@ -118,6 +124,15 @@ public class Minimap : MonoBehaviour
         if (mapRoot != null)
         {
             mapRoot.SetActive(open);
+        }
+
+        if (open == true)
+        {
+            gameManager.ModTime(0);
+        }
+        else
+        {
+            gameManager.ModTime(1);
         }
     }
 
