@@ -16,20 +16,24 @@ public class TaskManager : MonoBehaviour
     private float timerPenalty = 0;
     [SerializeField] float addedPenalty = 5f;
 
+    [HideInInspector] public float maxLimit;
     [SerializeField] float timeLimit = 60f;
+
 
     public Transform Location => location;
 
     private int lastNum;
 
-    float timeRemaining;
-    bool overdue;
+    [HideInInspector] public float timeRemaining;
+    [HideInInspector] public bool overdue;
     float nextStatusLog;
 
     private EnemyBehavior enemyBehavior;
 
     void Start()
     {
+        maxLimit = timeLimit;
+
         try
         {
             enemyBehavior = GameObject.Find("Enemy").GetComponent<EnemyBehavior>();
@@ -99,11 +103,12 @@ public class TaskManager : MonoBehaviour
         RandomizeTasks();
         taskObjects[currentTask].currentTask = true;
         timeRemaining = timeLimit - timerPenalty;
+        maxLimit = timeRemaining;
         overdue = false;
         nextStatusLog = Time.time + 10f;
         location = taskObjects[currentTask].transform;
         string where = location != null ? location.name : "nowhere";
-        Debug.Log($"Task started: {taskNames[currentTask]} at {taskLocation[currentTask]}. {timeLimit:0}s.");
+        Debug.Log($"Task started: {taskNames[currentTask]} at {taskLocation[currentTask]}. {maxLimit:0}s.");
     }
 
     public void CompleteTask()
