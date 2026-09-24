@@ -5,6 +5,8 @@ using System.Collections;
 
 public class GameOverManager : MonoBehaviour
 {
+    [SerializeField] private AudioSource deathSound;
+    [SerializeField] private AudioSource jumpscareSound;
     [SerializeField] private GameObject gameOverCanvas;
     private IEnumerator gameOverCoroutine;
     [SerializeField]private GameManager gameManager;
@@ -22,10 +24,14 @@ public class GameOverManager : MonoBehaviour
 
     private IEnumerator GameOverProcess(GameObject jumpscareCam, GameObject playerCam, Animator anim)
     {
+        jumpscareSound.Play();
         jumpscareCam.SetActive(true);
         playerCam.SetActive(false);
         anim.SetTrigger("Jumpscare");
+        yield return new WaitForSeconds(0.2f);
+        deathSound.Play();
         yield return new WaitForSeconds(0.45f);
+        jumpscareSound.Stop();
         Cursor.lockState = CursorLockMode.None;
         gameOverCanvas.SetActive(true);
         gameManager.ModTime(0);

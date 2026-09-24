@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private GameObject pauseMenu;
+    private Minimap map;
     [SerializeField] private InputActionAsset masterList;
     private InputAction pause;
 
@@ -15,6 +16,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         pause = masterList["Pause"];
+
+        map = FindAnyObjectByType<Minimap>();
     }
 
     private void Update()
@@ -34,6 +37,7 @@ public class GameManager : MonoBehaviour
 
     public void Pause()
     {
+        map.SetOpen(false);
         ModTime(0);
         paused = true;
         Cursor.lockState = CursorLockMode.None;

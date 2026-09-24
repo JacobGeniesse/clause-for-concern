@@ -60,9 +60,12 @@ public class EnemyBehavior : MonoBehaviour
     //Helper Functions
     private SightCheck sightCone;
     private Hearing hearing;
+    [HideInInspector] public DevCheats devCheat;
+    private EnemySound enemySound;
 
     //Animation vars
     [SerializeField] private Animator anim;
+
 
     void Start()
     {
@@ -133,6 +136,10 @@ public class EnemyBehavior : MonoBehaviour
         {
             throw new ArgumentException("Unable to find player's transform!", nameof(SightCheck));
         }
+
+        enemySound = GetComponent<EnemySound>();
+
+        devCheat = FindAnyObjectByType<DevCheats>();
     }
     
     void Update()
@@ -169,7 +176,7 @@ public class EnemyBehavior : MonoBehaviour
     public Node.Status PlayerCheck()
     {
         //Check if the enemy is aggressive
-        if(aggressive == true)
+        if(aggressive == true && devCheat.cheating == false)
         {
             //If the chase timer is not active set the enemy's move speed to aggressive
             if (chaseTimer <= 0)
@@ -437,5 +444,6 @@ public class EnemyBehavior : MonoBehaviour
 
         agent.speed = movementSpeed[setSpeed];
         agent.acceleration = accel[setSpeed];
+        enemySound.SetSound(setSpeed);        
     }
 }

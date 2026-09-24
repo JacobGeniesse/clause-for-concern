@@ -118,7 +118,7 @@ public class Minimap : MonoBehaviour
         return Keyboard.current != null && Keyboard.current.tabKey.wasPressedThisFrame;
     }
 
-    void SetOpen(bool open)
+    public void SetOpen(bool open)
     {
         IsOpen = open;
         if (mapRoot != null)

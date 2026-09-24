@@ -35,7 +35,7 @@ public class GameOverTrigger : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if(collision.collider.tag == "Player" && isGamingOver == false && enemyBehavior.aggressive == true)
+        if(collision.collider.tag == "Player" && isGamingOver == false && enemyBehavior.aggressive == true && enemyBehavior.devCheat.cheating == false)
         {
             isGamingOver = true;
             gameOverManager.GameOver(jumpscareCam, playerCam, anim);

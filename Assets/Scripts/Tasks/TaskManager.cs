@@ -105,7 +105,7 @@ public class TaskManager : MonoBehaviour
         timeRemaining = timeLimit - timerPenalty;
         maxLimit = timeRemaining;
         overdue = false;
-        nextStatusLog = Time.time + 10f;
+        //nextStatusLog = Time.time + 10f;
         location = taskObjects[currentTask].transform;
         //string where = location != null ? location.name : "nowhere";
         taskUI.SetTask(taskNames[currentTask], taskLocation[currentTask]);
@@ -115,8 +115,11 @@ public class TaskManager : MonoBehaviour
     public void CompleteTask()
     {
         taskObjects[currentTask].currentTask = false;
-        //Debug.Log($"Task completed: {taskNames[currentTask]}");
-        timerPenalty += addedPenalty;
+    //Debug.Log($"Task completed: {taskNames[currentTask]}");
+        if (maxLimit - timerPenalty > 30)
+        {
+            timerPenalty += addedPenalty;
+        }
         BeginTask();
     }
 
