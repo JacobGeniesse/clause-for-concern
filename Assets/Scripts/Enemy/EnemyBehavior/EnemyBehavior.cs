@@ -66,6 +66,8 @@ public class EnemyBehavior : MonoBehaviour
     //Animation vars
     [SerializeField] private Animator anim;
 
+    private PlayerHealth playerHealth;//Reference to the player's health
+
 
     void Start()
     {
@@ -135,6 +137,13 @@ public class EnemyBehavior : MonoBehaviour
         catch
         {
             throw new ArgumentException("Unable to find player's transform!", nameof(SightCheck));
+        }
+        //Find and assign the player's health
+        playerHealth = playerTrans.GetComponent<PlayerHealth>();
+        if(playerHealth == null)
+        {
+            Debug.LogError("Unable to find player's health!");
+            playerHealth = null;
         }
 
         enemySound = GetComponent<EnemySound>();
@@ -371,6 +380,7 @@ public class EnemyBehavior : MonoBehaviour
         if (playerDistance <= killRange)
         {
             Debug.Log("Gotcha!");
+            playerHealth.TakeDamage(10);
             //aggressive = false;
             increment = false;
             SetSpeed(0);
