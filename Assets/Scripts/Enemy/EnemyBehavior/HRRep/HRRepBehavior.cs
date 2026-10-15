@@ -22,6 +22,8 @@ public class HRRepBehavior : MonoBehaviour
     #region chase Vars
     private Vector3 lastKnownLocation; //Last spot the enemy spotted the player at
 
+    private float attackDistance = 10f;
+
     #endregion
 
     private Transform playerTrans; //Point representing the player's position
@@ -69,7 +71,15 @@ public class HRRepBehavior : MonoBehaviour
         {
             lastKnownLocation = playerTrans.position; //Update the last known location
             Debug.Log("I see you!"); //Debug Message
-            return move.MoveToPOI(agent, playerTrans.position);
+            move.MoveToPOI(agent, playerTrans.position);
+            if(DistanceCheck(playerTrans) <= attackDistance)
+            {
+                return Node.Status.SUCCESS;
+            }
+            else
+            {
+                return Node.Status.RUNNING;
+            }
         }
         else
         {
@@ -77,7 +87,19 @@ public class HRRepBehavior : MonoBehaviour
         }
     }
 
-    //Still need to make a leaf for attacking, it's on the to-do list currently
+    private Node.Status Attack()
+    {
+        Debug.Log("Get a load of this!");
+        //Attack Animation
+        //if(Physics.Linecast(transform.position, playerTrans.position, out RaycastHit hit))
+        //{
+        //    if(hit.collider.gameObject.TryGetComponent<PlayerHealth>(out PlayerHealth healthComponent))
+        //    {
+        //        Debug.Log("Take this!");
+        //    }
+        //}
+        return Node.Status.SUCCESS;
+    }
 
     #endregion
 
@@ -284,8 +306,10 @@ public class HRRepBehavior : MonoBehaviour
         //Define the chase sequence
         Sequence chase = new Sequence("Chase-Player"); //Make the sequence
         Leaf look = new Leaf("Sight-Check", Look); //Leaf 1: Conduct a sight check and if it passes, go to that point
+        Leaf attack = new Leaf("Beat-Them-Up", Attack);
         //Add leaves to the sequence
         chase.AddChild(look);
+        chase.AddChild(attack);
         
 
         //Define the losePlayer sequence
