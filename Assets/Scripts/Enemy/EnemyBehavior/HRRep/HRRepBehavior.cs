@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -23,6 +24,10 @@ public class HRRepBehavior : MonoBehaviour
     private Vector3 lastKnownLocation; //Last spot the enemy spotted the player at
 
     private float attackDistance = 10f;
+
+    private bool attacking;
+
+    private IEnumerator grabAttack;
 
     #endregion
 
@@ -89,7 +94,6 @@ public class HRRepBehavior : MonoBehaviour
 
     private Node.Status Attack()
     {
-        Debug.Log("Get a load of this!");
         //Attack Animation
         //if(Physics.Linecast(transform.position, playerTrans.position, out RaycastHit hit))
         //{
@@ -98,7 +102,30 @@ public class HRRepBehavior : MonoBehaviour
         //        Debug.Log("Take this!");
         //    }
         //}
-        return Node.Status.SUCCESS;
+
+        if(grabAttack == null)
+        {
+            Debug.Log("Get a load of this!"); //Debug message showing that the attack worked
+            grabAttack = GrabAttack();
+            StartCoroutine(GrabAttack());
+        }
+
+        if(attacking == false)
+        {
+            grabAttack = null;
+            return Node.Status.SUCCESS; //After the attack is done, end the sequence
+        }
+        else
+        {
+            return Node.Status.RUNNING; //If the attack is still underway, keep running this node
+        }
+    }
+
+    private IEnumerator GrabAttack()
+    {
+        attacking = true;
+        yield return new WaitForSeconds(2);
+        attacking = false;
     }
 
     #endregion
