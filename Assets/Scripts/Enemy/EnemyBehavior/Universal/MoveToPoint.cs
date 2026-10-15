@@ -22,7 +22,6 @@ public class MoveToPoint : MonoBehaviour
         if (agent.destination != destination)
         {
             agent.SetDestination(destination); //Set destination to the POI
-            Debug.Log("Setting Destination");
         }
 
         //Calculate how far away the enemy is from the POI
