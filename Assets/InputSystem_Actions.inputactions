@@ -428,11 +428,33 @@
                 },
                 {
                     "name": "",
+                    "id": "56da0836-aaac-4e3c-90da-3bc714636cbb",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "e1a2b3c4-d5e6-4f70-8901-23456789abcd",
                     "path": "<Keyboard>/tab",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
+                    "action": "Map",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dbc92a50-ed57-45bf-92f9-0d21c36b6390",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
                     "action": "Map",
                     "isComposite": false,
                     "isPartOfComposite": false
