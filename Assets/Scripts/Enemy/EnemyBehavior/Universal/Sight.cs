@@ -13,7 +13,7 @@ public class Sight : MonoBehaviour
     public bool SightCheck(Transform target)
     {
         //Do a line cast to see if the player is visible
-        if (Physics.Linecast(transform.position, target.position, out RaycastHit hit))
+        if (Physics.Raycast(transform.position, target.position - transform.position, out RaycastHit hit, range))
         {
             //First vector is the hit object's position
             Vector3 playerPos = hit.transform.position - transform.position;
@@ -25,7 +25,7 @@ public class Sight : MonoBehaviour
             float angleDif = Mathf.Abs(Vector3.SignedAngle(playerPos, forward, Vector3.up));
 
             //If the object hit is the player, and the angle is within the vision radius, and the hit is within a certain range
-            if (hit.collider.tag == "Player" && angleDif <= fovRadius && hit.distance <= range)
+            if (hit.collider.tag == "Player" && angleDif <= fovRadius)
             {
                 //Return true for the player being seen
                 detection = true;
@@ -40,6 +40,7 @@ public class Sight : MonoBehaviour
         }
         else
         {
+            detection = false;
             return false; //Return false if the linecast fails
         }
     }
