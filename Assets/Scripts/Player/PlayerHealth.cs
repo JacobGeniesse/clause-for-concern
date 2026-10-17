@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public int maxHealth = 100; // max health of the player
-    public int currentHealth; // current health of the player
+    public float maxHealth = 100; // max health of the player
+    public float currentHealth; // current health of the player
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -16,9 +16,9 @@ public class PlayerHealth : MonoBehaviour
         
     }
 
-    public void TakeDamage(int damage){
+    public void TakeDamage(float damage){
         currentHealth -= damage; // subtracts the damage from the current health
-        if(currentHealth <= 0){
+        if (currentHealth <= 0){
             Die(); // calls the Die function
         }
     }

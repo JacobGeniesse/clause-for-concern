@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
@@ -27,6 +28,15 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 moveDirection;
 
     private PlayerNoiseManager playerNoiseManager;
+
+    private bool canMove = true;
+
+
+    [SerializeField]private Vector3 pushForce;
+    private float pushDuration;
+
+    private bool pushed = false;
+    private IEnumerator pushCoroutine;
 
     void Start()
     {
@@ -61,19 +71,35 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        moveDirection = CalcDirection();
+        if (canMove && !pushed)
+        {
+            moveDirection = CalcDirection();
 
-        moveInputs = Move();
+            moveInputs = Move();
 
-        Vector3 velocity = rb.linearVelocity;
+            Vector3 velocity = rb.linearVelocity;
 
-        float maxSpeedChange = accel * Time.deltaTime;
+            float maxSpeedChange = accel * Time.deltaTime;
 
-        velocity.x = Mathf.MoveTowards(velocity.x, moveInputs.x, maxSpeedChange);
-        velocity.y = Mathf.MoveTowards(velocity.y, moveInputs.y, maxSpeedChange);
-        velocity.z = Mathf.MoveTowards(velocity.z, moveInputs.z, maxSpeedChange);
+            velocity.x = Mathf.MoveTowards(velocity.x, moveInputs.x, maxSpeedChange);
+            velocity.y = Mathf.MoveTowards(velocity.y, moveInputs.y, maxSpeedChange);
+            velocity.z = Mathf.MoveTowards(velocity.z, moveInputs.z, maxSpeedChange);
 
-        rb.linearVelocity = velocity;
+            rb.linearVelocity = velocity;
+        }
+
+        if (pushed)
+        {
+            Vector3 velocity = rb.linearVelocity;
+
+            float maxSpeedChange = accel * Time.deltaTime;
+
+            velocity.x = Mathf.MoveTowards(velocity.x, pushForce.x, maxSpeedChange);
+            velocity.y = Mathf.MoveTowards(velocity.y, 0, maxSpeedChange);
+            velocity.z = Mathf.MoveTowards(velocity.z, pushForce.z, maxSpeedChange);
+
+            rb.linearVelocity = velocity;
+        }
     }
 
     private void Update()
@@ -125,5 +151,34 @@ public class PlayerMovement : MonoBehaviour
         Vector2 move = movement.ReadValue<Vector2>();
 
         return transform.right * move.x + transform.forward * move.y;
+    }
+
+    public void AlterMoveState(bool movability)
+    {
+        canMove = movability;
+    }
+
+    public void StopPlayer()
+    {
+        rb.linearVelocity = Vector3.zero;
+    }
+
+    public void Push(Vector3 pushDir, float pushDur)
+    {
+        pushForce = pushDir;
+        if (pushCoroutine == null)
+        {
+            pushCoroutine = ExecutePush(pushDur);
+            StartCoroutine(pushCoroutine);
+        }
+    }
+
+    private IEnumerator ExecutePush(float pushDuration)
+    {
+        pushed = true;
+        yield return new WaitForSeconds(pushDuration);
+        pushed = false;
+        AlterMoveState(true);
+        pushCoroutine = null;
     }
 }
