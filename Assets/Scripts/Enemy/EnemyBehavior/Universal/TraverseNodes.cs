@@ -7,8 +7,8 @@ using UnityEngine.AI;
 
 public class TraverseNodes : MonoBehaviour
 {
-    [SerializeField]private List<Vector3> patrolPoints; //Patrol points to navigate between
-    [SerializeField] private int currentPatrol = 0; //Current patrol point
+    [SerializeField, HideInInspector]private List<Vector3> patrolPoints; //Patrol points to navigate between
+    [SerializeField, HideInInspector] private int currentPatrol = 0; //Current patrol point
 
     private MoveToPoint move; //Ref to the move to point script
 
@@ -38,7 +38,33 @@ public class TraverseNodes : MonoBehaviour
             return false;
             throw new ArgumentException("Unable to assign patrol points", nameof(TraverseNodes));
         }
+
+        PickClosestPatrol(); //Pick the closest node for the enemy to path to
+
         return true; //If all goes well return true
+    }
+
+    //Helper func for picking the closest node to patrol towards
+    public void PickClosestPatrol()
+    {
+        //Assign placeholder vars for the closest node and the closeness of that node
+        int closestNodeSlot = 0; 
+        float closeness = Mathf.Infinity;
+
+        //For each node, calc its proximity to the enemy and determine if its closer than another node
+        for (int i = 0; i < patrolPoints.Count; i++)
+        {
+            float disToNode = DistanceCheck(transform, patrolPoints[i]);
+
+            //If that node is closer to the enemy than other nodes, mark it as the closest node and repeat until no nodes remain
+            if(disToNode < closeness)
+            {
+                closestNodeSlot = i;
+                closeness = disToNode;
+            }
+        }
+
+        currentPatrol = closestNodeSlot; //After going through every node, assign the currentPatrol to the closestNodeSlot
     }
 
     //Helper func for moving to a patrol point
@@ -70,4 +96,10 @@ public class TraverseNodes : MonoBehaviour
         }
     }
 
+    private float DistanceCheck(Transform playerTrans, Vector3 nodePos)
+    {
+        Vector3 playerOffest = playerTrans.position - nodePos;
+        float distanceToPlayer = Vector3.SqrMagnitude(playerOffest);
+        return distanceToPlayer;
+    }
 }

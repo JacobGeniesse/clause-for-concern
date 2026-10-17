@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,13 @@ public class HRRepBehavior : MonoBehaviour
     #endregion
     private NavMeshAgent agent; //Ref to the nav mesh agent
 
+    [Tooltip("Is the enemy aggressive?")]
     [SerializeField] private bool aggressive = true; //Determines if the enemy is aggressive currently unused.
 
     #region hearing Vars
     private Vector3 interestingSound; //Sound for the enemy to investigate
+
+    private HearingSequence hearingNodes; //Ref to the hearing sequence script
 
     #endregion
 
@@ -28,12 +32,25 @@ public class HRRepBehavior : MonoBehaviour
 
     #endregion
 
+    #region Stun Vars
+    private bool stunned; //Is the enemy stunned
+
+    private IEnumerator stunCoroutine = null; //Holder var for the active stun coroutine
+
+    [Tooltip("Length of the HR Rep's stun upon dying.")]
+    [SerializeField] private float maxStunDuration = 5;
+
+    private EnemyHealth enemyHealth; //Reference to the enemy health variable
+
+    #endregion
+
+
     #region cheat Vars
 
     private HRTeleport teleportScript; //Ref  to the teleportation script
 
-    private float minCheatCooldown = 0; //Lowest time limit before the enemy can warp
-    private float maxCheatCooldown = 0.1f; //Highest time limit before the enemy can warp
+    private float minCheatCooldown = 10; //Lowest time limit before the enemy can warp
+    private float maxCheatCooldown = 25f; //Highest time limit before the enemy can warp
     private float cheatCooldown = 0; //Current warp cooldown
 
     #endregion
@@ -44,9 +61,9 @@ public class HRRepBehavior : MonoBehaviour
     #region Helper Scripts
     private TraverseNodes patrolScript; //Helper script for patrolling between points
     private Sight sightScript; //Helper script for vision checks
-    private Hearing hearingScript; //Helper script for hearing checks
-
     private MoveToPoint move; //Helper script for moving to a point
+
+    private HRSpeedControl speedHandler;
     #endregion
 
 
@@ -78,24 +95,39 @@ public class HRRepBehavior : MonoBehaviour
         {
             treeStatus = Node.Status.RUNNING;
         }
+
+        //If the enemy's cheat cooldown is greater than 0 reduce it
+        if (cheatCooldown > 0)
+        {
+            cheatCooldown -= Time.deltaTime;
+        }
     }
 
     #region Chase Sequence Leaves
+    
+    //Node for the HR Vision check
     private Node.Status Look()
     {
         //Do a sight check, if the player is spotted, move towards them
         if (aggressive && sightScript.SightCheck(playerTrans))
         {
             lastKnownLocation = playerTrans.position; //Update the last known location
-            Debug.Log("I see you!"); //Debug Message
-            move.MoveToPOI(agent, playerTrans.position);
-            if(DistanceCheck(playerTrans) <= attackDistance)
+            //Debug.Log("I see you!"); //Debug Message
+            move.MoveToPOI(agent, playerTrans.position); //Start moving towards the player's position
+
+            if (speedHandler.ShouldChangeSpeed(1))
+            {
+                speedHandler.ChangeAgentSpeed(1); //Set the speed to the minimum
+            }
+
+            //If the player is within a certain range, continue to the next node for the attack sequence
+            if (DistanceCheck(playerTrans) <= attackDistance)
             {
                 return Node.Status.SUCCESS;
             }
             else
             {
-                return Node.Status.RUNNING;
+                return Node.Status.RUNNING; //If not, continue moving towards the player
             }
         }
         else
@@ -104,15 +136,19 @@ public class HRRepBehavior : MonoBehaviour
         }
     }
 
+    //!!! Other Leaves Contained in the "HRATTACKS" Script!!!
+
     #endregion
 
     #region Lose Player Leaves
+
+    //Node for losing track of the player
     private Node.Status LosePlayer()
     {
         //If there is a last known location, move towards it
         if (aggressive && lastKnownLocation != Vector3.zero)
         {
-            Debug.Log("I can't see or hear you. I will investigate where I saw you last");
+            //Debug.Log("I can't see or hear you. I will investigate where I saw you last");
             return move.MoveToPOI(agent, lastKnownLocation);
         }
         else
@@ -122,76 +158,122 @@ public class HRRepBehavior : MonoBehaviour
         }
     }
 
+    //Node for resetting the chase and returning to patrolling behavior
     private Node.Status ResetChase()
     {
         //Reset the lastKnownLocation
-        lastKnownLocation = Vector3.zero;
+        lastKnownLocation = Vector3.zero; //Clear the lastKnownLocation
         return Node.Status.SUCCESS; //End the Sequence
     }
     #endregion
 
-    #region Hear Sequence Leaves
-    private Node.Status Hear()
+    #region Stun Check Leaves
+
+    //Node for checking if the enemy is stunned
+    private Node.Status StunCheck()
     {
-        if (aggressive)
+        //If the HR is dead stun the enemy
+        if (enemyHealth.dead == true)
         {
-            float distance = DistanceCheck(playerTrans); //Do a distance check between the player and the HR Rep
-            interestingSound = hearingScript.HearingCheck(distance); //Do a hearing check assigning the interesting sound point if successful
-            if (interestingSound != Vector3.zero)
+            Debug.Log("Stunned"); //Debug message
+            if (agent.isStopped != true)
             {
-                //If successful proceed to the next node
-                Debug.Log("I can't see you, but I can hear you!");
-                return Node.Status.SUCCESS;
+                agent.isStopped = true; //Stop the agent from moving
             }
-            else
-            {
-                //If not fail the node
-                return Node.Status.FAILURE;
-            }
+
+            return Node.Status.SUCCESS; //Continue to the next role
         }
         else
         {
-            return Node.Status.FAILURE;
+            return Node.Status.FAILURE; //Otherwise fail the stun check
+        }
+    }
+
+    //Node for executing the enemy stun
+    private Node.Status ExecuteStun()
+    {
+        //If there is not a currently active stun routine, make one and begin the enemy's stun
+        if (stunCoroutine == null)
+        {
+            stunCoroutine = StunDelay();
+            StartCoroutine(stunCoroutine);
         }
 
+        //Debug.Log(stunned);
+
+
+        //If the enemy is stunned continue running this node, if not end this node
+        if (stunned == true)
+        {
+            return Node.Status.RUNNING;
+        }
+        else
+        {
+            stunCoroutine = null;
+            return Node.Status.SUCCESS;
+        }
     }
 
-    private Node.Status InvestigateSound()
+    //Coroutine for the stun duration, prevented a big frame dip and I am not entirely sure why
+    private IEnumerator StunDelay()
     {
-        return move.MoveToPOI(agent, interestingSound); //Move towards the sound of interest
+        stunned = true;
+        yield return new WaitForSeconds(maxStunDuration);
+        stunned = false;
     }
 
-    private Node.Status DismissSound()
+    //Node for ending the currently active stun
+    private Node.Status EndStun()
     {
-        hearingScript.clearSound(); //Mark that there is no longer an unexamined sound
-        interestingSound = Vector3.zero; //Reset the intersting sound
-        return Node.Status.SUCCESS; //End the sequence
+        //Debug.Log("Returning to patrolling routine.");
+        agent.isStopped = false; //Let the agent move again
+        enemyHealth.ResetHealth(0); //Rest the enemy's health, parameter is the added health after each death
+        return Node.Status.SUCCESS; //End the node
     }
-
-    #endregion
+    #endregion 
 
     #region Patrol Sequence Leaves
-    
+
     //Node for teleporting to a jumpscare location, currently not being called for some reason
     private Node.Status Teleport()
     {
-        if(aggressive && cheatCooldown <= 0)
+        //If the enemy is aggressive and the cheatCooldown is less than 0, do a warp check
+        if (aggressive && cheatCooldown <= 0)
         {
-            return teleportScript.Teleport(); //Try to teleport
+            return teleportScript.WarpCheck();
         }
         else
         {
-            Debug.Log("Warping");
-            return Node.Status.FAILURE;
+            return Node.Status.FAILURE; //Otherwise skip this
         }
     }
-    
-    
+
+    //Node for executing a warp to a jumpscare position
+    private Node.Status ExecuteWarp()
+    {
+        Debug.Log("Warping"); //Debug Message
+        return teleportScript.Teleport(); //Try to teleport
+    }
+
+    //Node for finishign a warp
+    private Node.Status FinishWarp()
+    {
+        patrolScript.PickClosestPatrol(); //Pick the closest patrol node to continue patroling from
+        cheatCooldown = UnityEngine.Random.Range(minCheatCooldown, maxCheatCooldown); //Set the cheat cooldown to a random value between the min and max
+        return Node.Status.SUCCESS; //End the node
+    }
+
+    //Node for patrolling behavior
     private Node.Status Wander()
     {
+        if (speedHandler.ShouldChangeSpeed(0))
+        {
+            speedHandler.ChangeAgentSpeed(0); //Set the speed to the minimum
+        }
         return patrolScript.Patrol(agent); //Return the result of the Patrol function.
     } 
 
+    //Node for incrementing to the next patrol point
     private Node.Status ResetPatrol()
     {
         Debug.Log("Reset"); //Debug Message indicating a reset
@@ -212,6 +294,7 @@ public class HRRepBehavior : MonoBehaviour
     public void MakeAggressive()
     {
         aggressive = true;
+        cheatCooldown = UnityEngine.Random.Range(minCheatCooldown, maxCheatCooldown);
     }
 
 
@@ -235,12 +318,11 @@ public class HRRepBehavior : MonoBehaviour
     //Func for assigning the points the enemy can jump to for a jumpscare
     private void AssignWarpPoints()
     {
-        List<Vector3> nodePoints = GrabTransforms("TeleportSpot");
-
+        List<Vector3> fillerList = GrabTransforms("TeleportSpot");
         //Assign the patrol points in conversionList to the patrol script
-        if (teleportScript != null && nodePoints.Count > 0)
+        if (teleportScript != null && fillerList.Count > 0)
         {
-            teleportScript.AddWarps(nodePoints);
+            teleportScript.AddWarps(fillerList);
         }
         else
         {
@@ -303,18 +385,6 @@ public class HRRepBehavior : MonoBehaviour
             return false;
         }
 
-        //Get the Hearing component
-        try
-        {
-            hearingScript = GetComponentInChildren<Hearing>();
-        }
-        catch
-        {
-            //Give an error if this fails and return false
-            Debug.LogError($"No Hearing script attached to {this.gameObject}");
-            return false;
-        }
-
         //Get the MoveToPoint component
         try
         {
@@ -360,7 +430,37 @@ public class HRRepBehavior : MonoBehaviour
             Debug.LogError($"No HRAttacks script attached to {this.gameObject}!");
             return false;
         }
-        
+
+        //Add the hearingSequence
+        try
+        {
+            hearingNodes = GetComponentInChildren<HearingSequence>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to assign HearingSequence component", nameof(HRRepBehavior));
+        }
+
+        //Add the enemyhealth component
+        try
+        {
+            enemyHealth = GetComponent<EnemyHealth>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to assign EnemyHealth component", nameof(HRRepBehavior));
+        }
+
+        //Add the HRSpeedController component
+        try
+        {
+            speedHandler = GetComponent<HRSpeedControl>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to assign HRSpeedController component", nameof(HRRepBehavior));
+        }
+
         //Get the player body component
         playerTrans = GameObject.Find("PlayerBody").GetComponent<Transform>();
 
@@ -375,15 +475,30 @@ public class HRRepBehavior : MonoBehaviour
 
         Selector sensoryInput = new Selector("Sense Environment"); //Selector for determining enemy behavior
 
+        //Define the stunned sequence
+        Sequence stun = new Sequence("Stunned-Cooldown"); //Sequence for the enemy stun
+        Leaf stunCheck = new Leaf("Check-For-Stun", StunCheck); //Leaf 1: check if the enemy is stunned
+        Leaf activeStun = new Leaf("Execute-Stun", ExecuteStun); //Leaf 2: the actual stun coroutine
+        Leaf stunEnd = new Leaf("End-Stun", EndStun); //Leaf 3: End the stun of the enemy
+        //Add leaves to the sequence
+        stun.AddChild(stunCheck);
+        stun.AddChild(activeStun);
+        stun.AddChild(stunEnd);
+
+
         //Define the patrol sequence
         Selector patrolMethod = new Selector("Teleport-or-Walk"); //Selector for determining if the enemy should teleport to a jumpscare spot or patrol the map normally
         Sequence teleport = new Sequence("Teleport"); //Sequence for if the enemy teleports to a jumpscare spot
-        Leaf warp = new Leaf("Warp-to-Point", Teleport); //Leaf 1: Teleport to node of choice
+        Leaf warpCheck = new Leaf("Warp-Check", Teleport); //Leaf 1: Check if enemy can teleport
+        Leaf warpExecute = new Leaf("Warp-Execute", ExecuteWarp); //Leaf 2: Execute the teleport
+        Leaf warpFinish = new Leaf("Finish-Warp", FinishWarp); //Leaf 3: Finish the teleport
         Sequence patrol = new Sequence("Wander-Map"); //Create sequence for patrolling
         Leaf wander = new Leaf("Sensory-Input", Wander); //Leaf 1: Pick a node and travel to it
         Leaf clearPatrol = new Leaf("Clear-Patrol-Points", ResetPatrol); //Leaf 2: Clear the node and prep for the next one
         //Add leaves to the sequence
-        teleport.AddChild(warp);
+        teleport.AddChild(warpCheck);
+        teleport.AddChild(warpExecute);
+        teleport.AddChild(warpFinish);
         patrolMethod.AddChild(teleport);
         patrol.AddChild(wander);
         patrol.AddChild(clearPatrol);
@@ -425,9 +540,9 @@ public class HRRepBehavior : MonoBehaviour
 
         //Define the hearing sequence
         Sequence hear = new Sequence("Listen"); //Make the sequence
-        Leaf listen = new Leaf("Audio-Input", Hear); //Leaf 1: Conduct hearing check
-        Leaf investigateSound = new Leaf("Investigate-Sound", InvestigateSound); //Leaf 2: Investigate the origin point of the sound
-        Leaf clearSound = new Leaf("Clear-Sound-Location", DismissSound); //Leaf 3: After reaching the sound, clear the point of origin.
+        Leaf listen = new Leaf("Audio-Input", hearingNodes.Hear); //Leaf 1: Conduct hearing check
+        Leaf investigateSound = new Leaf("Investigate-Sound", hearingNodes.InvestigateSound); //Leaf 2: Investigate the origin point of the sound
+        Leaf clearSound = new Leaf("Clear-Sound-Location", hearingNodes.DismissSound); //Leaf 3: After reaching the sound, clear the point of origin.
         //Add the leaves to the hear sequence.
         hear.AddChild(listen);
         hear.AddChild(investigateSound);
@@ -435,10 +550,11 @@ public class HRRepBehavior : MonoBehaviour
 
 
         //Add the different behavior routes to the selector
+        sensoryInput.AddChild(stun);
         sensoryInput.AddChild(chase);
         sensoryInput.AddChild(hear);
         sensoryInput.AddChild(losePlayer);
-        sensoryInput.AddChild(patrol);
+        sensoryInput.AddChild(patrolMethod);
 
 
         actions.AddChild(sensoryInput); //Add sensory input to the master behavior tree

@@ -20,6 +20,7 @@ public class HRAttacks : MonoBehaviour
     [Tooltip("Duration the player is thrown for.")]
     [SerializeField] private float pushDuration = 0.5f;
 
+    [Tooltip("Point the player should be attached to for the duration of the grab animation.")]
     [SerializeField] private Transform armHitbox; //Arms position in space, used for the grab animation
     private Transform playerTrans; //Player's transform position
 
@@ -41,6 +42,7 @@ public class HRAttacks : MonoBehaviour
         //Get the player body component
         playerTrans = GameObject.Find("PlayerBody").GetComponent<Transform>();
 
+        //Assign playerHealth var
         try
         {
             playerHealth = playerTrans.GetComponent<PlayerHealth>();
@@ -50,6 +52,7 @@ public class HRAttacks : MonoBehaviour
             throw new ArgumentException("Unable to assign player health var", nameof(HRAttacks));
         }
 
+        //Assign playermovement variable
         try
         {
             playerMove = playerTrans.GetComponent<PlayerMovement>();
@@ -59,6 +62,7 @@ public class HRAttacks : MonoBehaviour
             throw new ArgumentException("Unable to assign player movement var", nameof(HRAttacks));
         }
 
+        //Assign reference to the enemy's nav mesh agent
         try
         {
             agent = GetComponent<NavMeshAgent>();
@@ -130,14 +134,14 @@ public class HRAttacks : MonoBehaviour
 
     public Node.Status EndGrab()
     {
-        Debug.Log("I hit you!"); //Debug Message
+        //Debug.Log("I hit you!"); //Debug Message
         return Node.Status.SUCCESS;
     }
 
     //Func for failing the grab if the player isn't in range once the actual grab happens
     public Node.Status FailGrab()
     {
-        Debug.Log("I missed >:("); //Debug Message
+       // Debug.Log("I missed >:("); //Debug Message
         return Node.Status.SUCCESS;
     }
 
