@@ -39,7 +39,7 @@ public class ControlRebind : MonoBehaviour
             .WithControlsExcluding("<Mouse>/delta")
             .WithTimeout(10f)
             .OnComplete(operation => FinishRebinding())
-            //.OnCancel(operation => FinishRebinding())
+            .OnCancel(operation => FinishRebinding())
             .Start();
     }
 
@@ -58,7 +58,7 @@ public class ControlRebind : MonoBehaviour
     {
         if (targetAction != null)
         {
-            bindingDisplayText.text = targetAction.GetBindingDisplayString();
+            bindingDisplayText.text = targetAction.GetBindingDisplayString(bindingId);
         }
     }
 
