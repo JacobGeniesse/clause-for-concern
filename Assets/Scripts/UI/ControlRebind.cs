@@ -14,6 +14,7 @@ public class ControlRebind : MonoBehaviour
     // UI elements
     [SerializeField] private Button rebindButton;
     [SerializeField] private TextMeshProUGUI bindingDisplayText;
+    [SerializeField] private TextMeshProUGUI bindWarningText;
 
     private InputAction targetAction;
     private InputActionRebindingExtensions.RebindingOperation rebindingOperation;
@@ -25,6 +26,7 @@ public class ControlRebind : MonoBehaviour
 
         LoadBindings();
         UpdateUI();
+        bindWarningText.text = "";
     }
 
     public void StartRebinding()
@@ -34,13 +36,39 @@ public class ControlRebind : MonoBehaviour
         rebindButton.interactable = false;
         bindingDisplayText.text = "Press new button";
 
+        // The initial binding of the target action, saved incase the new binding is already used for another action
+        InputBinding originalBinding = targetAction.bindings[bindingId];
+
         rebindingOperation = targetAction.PerformInteractiveRebinding(bindingId)
             .WithControlsExcluding("<Mouse>/position")
             .WithControlsExcluding("<Mouse>/delta")
             .WithTimeout(10f)
-            .OnComplete(operation => FinishRebinding())
+            .OnComplete(operation => FinishRebinding(originalBinding))
             .OnCancel(operation => FinishRebinding())
             .Start();
+    }
+
+    private void FinishRebinding(InputBinding originaBinding)
+    {
+        rebindingOperation.Dispose();
+
+        // Check if the new binding is currently in use with another action
+        if (IsBindingDuplicate(targetAction, bindingId))
+        {
+            // Warn the player the selected binding is already in use, and revert to the previous binding
+            bindWarningText.text = targetAction.GetBindingDisplayString(bindingId) + " already in use";
+            targetAction.ChangeBinding(bindingId).To(originaBinding);
+            UpdateUI();
+        }
+        else
+        {
+            UpdateUI();
+            SaveBindings();
+            bindWarningText.text = "";
+        }
+
+        targetAction.Enable();
+        rebindButton.interactable = true;
     }
 
     private void FinishRebinding()
@@ -54,6 +82,22 @@ public class ControlRebind : MonoBehaviour
         SaveBindings();
     }
 
+    private bool IsBindingDuplicate(InputAction actionRebind, int bindingId)
+    {
+        string newPath = actionRebind.bindings[bindingId].effectivePath;
+
+        foreach (var action in actionRebind.actionMap.actions)
+        {
+            if (action == actionRebind) continue;
+
+            foreach (var binding in action.bindings)
+            {
+                if (binding.effectivePath == newPath) return true;
+            }
+        }
+        return false;
+    }
+
     private void UpdateUI()
     {
         if (targetAction != null)
@@ -64,6 +108,7 @@ public class ControlRebind : MonoBehaviour
 
     private void SaveBindings()
     {
+        // Save the rebind to player prefs
         string overridesJson = inputActions.SaveBindingOverridesAsJson();
         PlayerPrefs.SetString(SaveKey, overridesJson);
         PlayerPrefs.Save();
@@ -71,6 +116,7 @@ public class ControlRebind : MonoBehaviour
 
     private void LoadBindings()
     {
+        // Load rebind from player prefs
         if (PlayerPrefs.HasKey(SaveKey))
         {
             string overridesJson = PlayerPrefs.GetString(SaveKey);
