@@ -2,13 +2,71 @@ using UnityEngine;
 
 public class Minimap : MonoBehaviour
 {
+<<<<<<< Updated upstream
     [SerializeField] Transform player;
     [SerializeField] TaskManager taskManager;
+=======
+    public static bool IsOpen { get; private set; }
+
+    private Transform player;
+    private TaskManager taskManager;
+>>>>>>> Stashed changes
     [SerializeField] RectTransform mapRect;
     [SerializeField] RectTransform playerMarker;
     [SerializeField] RectTransform taskMarker;
     [SerializeField] Transform worldMin;
     [SerializeField] Transform worldMax;
+<<<<<<< Updated upstream
+=======
+    [SerializeField] GameObject mapRoot;
+    [SerializeField] InputActionAsset masterList;
+
+    InputAction mapToggle;
+
+    void Start()
+    {
+        if (player == null)
+        {
+            player = GameObject.Find("PlayerBody").GetComponent<Transform>();
+        }
+
+        if (taskManager == null)
+        {
+            taskManager = GameObject.Find("GameManager").GetComponent<TaskManager>();
+        }
+
+        if (masterList != null)
+        {
+            try
+            {
+                mapToggle = masterList["Map"];
+                mapToggle.Enable();
+            }
+            catch
+            {
+                mapToggle = null;
+            }
+        }
+
+        SetOpen(false);
+    }
+
+    void OnDisable()
+    {
+        if (IsOpen)
+        {
+            SetOpen(false);
+        }
+    }
+
+    void Update()
+    {
+        if (WasMapPressed())
+        {
+            SetOpen(!IsOpen);
+        }
+    }
+>>>>>>> Stashed changes
 
     void LateUpdate()
     {
@@ -36,6 +94,30 @@ public class Minimap : MonoBehaviour
         }
     }
 
+<<<<<<< Updated upstream
+=======
+    bool WasMapPressed()
+    {
+        if (mapToggle != null)
+        {
+            return mapToggle.WasPressedThisFrame();
+        }
+
+        return Keyboard.current != null && Keyboard.current.tabKey.wasPressedThisFrame;
+    }
+
+    public void SetOpen(bool open)
+    {
+        IsOpen = open;
+        if (mapRoot != null)
+        {
+            mapRoot.SetActive(open);
+        }
+
+        Cursor.lockState = open ? CursorLockMode.None : CursorLockMode.Locked;
+    }
+
+>>>>>>> Stashed changes
     void PlaceMarker(RectTransform marker, Vector3 worldPos)
     {
         Vector2 local = WorldToMap(worldPos);

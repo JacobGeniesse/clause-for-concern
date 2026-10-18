@@ -25,6 +25,11 @@ public class PlayerInteract : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Minimap.IsOpen)
+        {
+            return;
+        }
+
         Interaction();
     }
 
