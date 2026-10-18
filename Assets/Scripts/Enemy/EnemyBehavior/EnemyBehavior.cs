@@ -60,6 +60,14 @@ public class EnemyBehavior : MonoBehaviour
     //Helper Functions
     private SightCheck sightCone;
     private Hearing hearing;
+    [HideInInspector] public DevCheats devCheat;
+    private EnemySound enemySound;
+
+    //Animation vars
+    [SerializeField] private Animator anim;
+
+    private PlayerHealth playerHealth;//Reference to the player's health
+
 
     void Start()
     {
@@ -130,6 +138,17 @@ public class EnemyBehavior : MonoBehaviour
         {
             throw new ArgumentException("Unable to find player's transform!", nameof(SightCheck));
         }
+        //Find and assign the player's health
+        playerHealth = playerTrans.GetComponent<PlayerHealth>();
+        if(playerHealth == null)
+        {
+            Debug.LogError("Unable to find player's health!");
+            playerHealth = null;
+        }
+
+        enemySound = GetComponent<EnemySound>();
+
+        devCheat = FindAnyObjectByType<DevCheats>();
     }
     
     void Update()
@@ -151,17 +170,27 @@ public class EnemyBehavior : MonoBehaviour
         {
             chaseTimer -= Time.deltaTime;
         }
+
+        if(agent.velocity != Vector3.zero)
+        {
+            anim.SetFloat("Movement", 1);
+        }
+        else
+        {
+            anim.SetFloat("Movement", 0);
+        }
     }
 
     //Node checks what task to undergo
     public Node.Status PlayerCheck()
     {
         //Check if the enemy is aggressive
-        if(aggressive == true)
+        if(aggressive == true && devCheat.cheating == false)
         {
             //If the chase timer is not active set the enemy's move speed to aggressive
             if (chaseTimer <= 0)
             {
+                anim.SetBool("Pissy", false);
                 SetSpeed(1);
             }
 
@@ -238,19 +267,22 @@ public class EnemyBehavior : MonoBehaviour
             for(int i = 0; i < unclearedPatrols.Count; i++)
             {
                 //Calculate the path for comparison
-                var pathStorage = new NavMeshPath();
-                agent.CalculatePath(unclearedPatrols[i].transform.position, pathStorage); //Calc desired path
-                if (pathStorage != null && !agent.pathPending)
-                {
-                    //determine the length of the path
-                    Vector3 offsetPoint = pathStorage.corners[0] - transform.position;
+                //var pathStorage = new NavMeshPath();
+                //agent.CalculatePath(unclearedPatrols[i].transform.position, pathStorage); //Calc desired path
+                //if (pathStorage != null && !agent.pathPending)
+                //{
+                    //    //determine the length of the path
+                    //    Vector3 offsetPoint = pathStorage.corners[0] - transform.position;
+                    //    float distanceToNode = Vector3.SqrMagnitude(offsetPoint);
+                    //    //For each corner calc the distance between the points to get total distance
+                    //    for (int j = 1; j < pathStorage.corners.Length; j++)
+                    //    {
+                    //        offsetPoint = pathStorage.corners[j] - pathStorage.corners[j - 1];
+                    //        distanceToNode += Vector3.SqrMagnitude(offsetPoint);
+                    //    }
+
+                    Vector3 offsetPoint = unclearedPatrols[i].transform.position - transform.position;
                     float distanceToNode = Vector3.SqrMagnitude(offsetPoint);
-                    //For each corner calc the distance between the points to get total distance
-                    for (int j = 1; j < pathStorage.corners.Length; j++)
-                    {
-                        offsetPoint = pathStorage.corners[j] - pathStorage.corners[j - 1];
-                        distanceToNode += Vector3.SqrMagnitude(offsetPoint);
-                    }
 
                     //Check if the length of the path is shorter than what is currently stored
                     if (distanceToNode < lowestDistance || closestPatrol == null)
@@ -260,7 +292,7 @@ public class EnemyBehavior : MonoBehaviour
                         closestPatrol = unclearedPatrols[i];
                         currentPatrol = i;
                     }
-                }
+                //}
             }
 
             SetSpeed(0); //Set speed
@@ -316,11 +348,8 @@ public class EnemyBehavior : MonoBehaviour
             if(unclearedPatrols.Count == 0)
             {
                 //Move all patrols from clearedPatrols back to unclearedPatrols
-                while(clearedPatrols.Count > 0)
-                {
-                    unclearedPatrols.Add(clearedPatrols[0]);
-                    clearedPatrols.RemoveAt(0);
-                }
+                unclearedPatrols.AddRange(clearedPatrols);
+                clearedPatrols.Clear();
             }
         }
         return Node.Status.SUCCESS; //Once everything is done return success
@@ -351,6 +380,7 @@ public class EnemyBehavior : MonoBehaviour
         if (playerDistance <= killRange)
         {
             Debug.Log("Gotcha!");
+            playerHealth.TakeDamage(10);
             //aggressive = false;
             increment = false;
             SetSpeed(0);
@@ -411,7 +441,19 @@ public class EnemyBehavior : MonoBehaviour
 
     private void SetSpeed(int setSpeed)
     {
+        switch (setSpeed)
+        {
+            case 0:
+            case 1:
+                anim.SetBool("Pissy", false);
+                break;
+            case 2:
+                anim.SetBool("Pissy", true);
+                break;
+        }
+
         agent.speed = movementSpeed[setSpeed];
         agent.acceleration = accel[setSpeed];
+        enemySound.SetSound(setSpeed);        
     }
 }

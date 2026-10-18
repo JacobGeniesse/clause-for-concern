@@ -61,22 +61,10 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-<<<<<<< Updated upstream
-=======
-        if (Minimap.IsOpen)
-        {
-            Vector3 stopped = rb.linearVelocity;
-            stopped.x = 0f;
-            stopped.z = 0f;
-            rb.linearVelocity = stopped;
-            return;
-        }
-
         moveDirection = CalcDirection();
 
         moveInputs = Move();
 
->>>>>>> Stashed changes
         Vector3 velocity = rb.linearVelocity;
 
         float maxSpeedChange = accel * Time.deltaTime;
@@ -90,20 +78,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-<<<<<<< Updated upstream
-        moveDirection = CalcDirection();
-=======
-        if (Minimap.IsOpen)
-        {
-            return;
-        }
->>>>>>> Stashed changes
 
-        moveInputs = Move();
-
-        if(sprint.WasPressedThisFrame() == true)
+        if (sprint.WasPressedThisFrame() == true)
         {
-            if(sprinting == false)
+            if (sprinting == false)
             {
                 sprinting = true;
             }

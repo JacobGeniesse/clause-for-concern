@@ -1,20 +1,57 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class TaskManager : MonoBehaviour
 {
-    [SerializeField] string taskName = "Unjam the Printer";
-    [SerializeField] Transform location;
+    [SerializeField] private string[] taskNames;
+    [SerializeField] private string[] taskLocation;
+    [SerializeField] private TaskInteractable[] taskObjects;
+    private int currentTask;
+    private Transform location;
+
+    private float timerPenalty = 0;
+    [SerializeField] float addedPenalty = 5f;
+
+    [HideInInspector] public float maxLimit;
     [SerializeField] float timeLimit = 60f;
+
 
     public Transform Location => location;
 
-    float timeRemaining;
-    bool overdue;
+    private int lastNum;
+
+    [HideInInspector] public float timeRemaining;
+    [HideInInspector] public bool overdue;
     float nextStatusLog;
+
+    [SerializeField] TaskUI taskUI;
+    private EnemyBehavior enemyBehavior;
 
     void Start()
     {
+        maxLimit = timeLimit;
+
+        currentTask = UnityEngine.Random.Range(0, taskNames.Length);
+
+        try
+        {
+            enemyBehavior = GameObject.Find("Enemy").GetComponent<EnemyBehavior>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to find EnemyBehavior.", nameof(TaskManager));
+        }
+
+        if (!HasTasks())
+        {
+            Debug.LogError("TaskManager has empty or mismatched task lists.");
+            enabled = false;
+            return;
+        }
+
+        lastNum = taskNames.Length + 1;
+
         BeginTask();
     }
 
@@ -22,50 +59,82 @@ public class TaskManager : MonoBehaviour
     {
         if (!overdue)
         {
+            enemyBehavior.aggressive = false;
             timeRemaining -= Time.deltaTime;
             if (timeRemaining <= 0f)
             {
                 timeRemaining = 0f;
                 overdue = true;
-                Debug.LogWarning($"Task overdue: {taskName}");
+                timerPenalty = 0;
+                //Debug.LogWarning($"Task overdue: {taskName}");
             }
         }
-
-        if (Time.time >= nextStatusLog)
+        else
         {
-            LogStatus();
-            nextStatusLog = Time.time + 10f;
+            enemyBehavior.aggressive = true;
         }
 
-        if (Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame)
-        {
-            CompleteTask();
-        }
+        //if (Time.time >= nextStatusLog)
+        //{
+        //    LogStatus();
+        //    nextStatusLog = Time.time + 10f;
+        //}
+
+        //if (Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame)
+        //{
+        //    CompleteTask();
+        //}
+    }
+
+    bool HasTasks()
+    {
+        int count = taskNames != null ? taskNames.Length : 0;
+        return count > 0
+            && taskLocation != null && taskLocation.Length == count
+            && taskObjects != null && taskObjects.Length == count;
     }
 
     void BeginTask()
     {
-        timeRemaining = timeLimit;
+        if (!HasTasks())
+        {
+            return;
+        }
+        IncrementTasks();
+        taskObjects[currentTask].currentTask = true;
+        timeRemaining = timeLimit - timerPenalty;
+        maxLimit = timeRemaining;
         overdue = false;
-        nextStatusLog = Time.time + 10f;
-        string where = location != null ? location.name : "nowhere";
-        Debug.Log($"Task started: {taskName} at {where}. {timeLimit:0}s. Press F to complete.");
+        //nextStatusLog = Time.time + 10f;
+        location = taskObjects[currentTask].transform;
+        //string where = location != null ? location.name : "nowhere";
+        taskUI.SetTask(taskNames[currentTask], taskLocation[currentTask]);
+        //Debug.Log($"Task started: {taskNames[currentTask]} at {taskLocation[currentTask]}. {maxLimit:0}s.");
     }
 
-    void CompleteTask()
+    public void CompleteTask()
     {
-        Debug.Log($"Task completed: {taskName}");
+        taskObjects[currentTask].currentTask = false;
+    //Debug.Log($"Task completed: {taskNames[currentTask]}");
+        if (maxLimit - timerPenalty > 30)
+        {
+            timerPenalty += addedPenalty;
+        }
         BeginTask();
     }
 
     void LogStatus()
     {
+        if (!HasTasks())
+        {
+            return;
+        }
+
         int seconds = Mathf.CeilToInt(timeRemaining);
         string where = location != null ? location.name : "nowhere";
         string status = overdue ? "OVERDUE" : "Active";
-        Debug.Log($"{taskName} | {where} | {seconds / 60:00}:{seconds % 60:00} | {status}");
+        Debug.Log($"{taskNames[currentTask]} | {taskLocation[currentTask]} | {seconds / 60:00}:{seconds % 60:00} | {status}");
     }
-
     void OnDrawGizmos()
     {
         if (location == null)
@@ -75,5 +144,17 @@ public class TaskManager : MonoBehaviour
 
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(location.position, 0.4f);
+    }
+
+    void IncrementTasks()
+    {
+        if(currentTask + 1 < taskNames.Length)
+        {
+            currentTask++;
+        }
+        else
+        {
+            currentTask = 0;
+        }
     }
 }

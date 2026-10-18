@@ -1,23 +1,18 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Minimap : MonoBehaviour
 {
-<<<<<<< Updated upstream
-    [SerializeField] Transform player;
-    [SerializeField] TaskManager taskManager;
-=======
     public static bool IsOpen { get; private set; }
 
     private Transform player;
+    private GameManager gameManager;
     private TaskManager taskManager;
->>>>>>> Stashed changes
     [SerializeField] RectTransform mapRect;
     [SerializeField] RectTransform playerMarker;
     [SerializeField] RectTransform taskMarker;
     [SerializeField] Transform worldMin;
     [SerializeField] Transform worldMax;
-<<<<<<< Updated upstream
-=======
     [SerializeField] GameObject mapRoot;
     [SerializeField] InputActionAsset masterList;
 
@@ -33,6 +28,11 @@ public class Minimap : MonoBehaviour
         if (taskManager == null)
         {
             taskManager = GameObject.Find("GameManager").GetComponent<TaskManager>();
+        }
+
+        if(gameManager == null)
+        {
+            gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         }
 
         if (masterList != null)
@@ -61,15 +61,29 @@ public class Minimap : MonoBehaviour
 
     void Update()
     {
+        //if (Time.timeScale == 0f)
+        //{
+        //    if (IsOpen)
+        //    {
+        //        SetOpen(false);
+        //    }
+
+        //    return;
+        //}
+
         if (WasMapPressed())
         {
             SetOpen(!IsOpen);
         }
     }
->>>>>>> Stashed changes
 
     void LateUpdate()
     {
+        if (!IsOpen)
+        {
+            return;
+        }
+
         if (player != null && playerMarker != null)
         {
             PlaceMarker(playerMarker, player.position);
@@ -94,8 +108,6 @@ public class Minimap : MonoBehaviour
         }
     }
 
-<<<<<<< Updated upstream
-=======
     bool WasMapPressed()
     {
         if (mapToggle != null)
@@ -114,10 +126,16 @@ public class Minimap : MonoBehaviour
             mapRoot.SetActive(open);
         }
 
-        Cursor.lockState = open ? CursorLockMode.None : CursorLockMode.Locked;
+        if (open == true)
+        {
+            gameManager.ModTime(0);
+        }
+        else
+        {
+            gameManager.ModTime(1);
+        }
     }
 
->>>>>>> Stashed changes
     void PlaceMarker(RectTransform marker, Vector3 worldPos)
     {
         Vector2 local = WorldToMap(worldPos);
@@ -131,7 +149,7 @@ public class Minimap : MonoBehaviour
             return Vector2.zero;
         }
 
-        float nx = Mathf.InverseLerp(worldMin.position.x, worldMax.position.x, worldPos.x);
+        float nx = Mathf.InverseLerp(worldMin.position.x, worldMax.position.x, worldPos.x); //these normalize the player coordinates according to the box made by MapWordMin/Max
         float ny = Mathf.InverseLerp(worldMin.position.z, worldMax.position.z, worldPos.z);
         Rect rect = mapRect.rect;
         return new Vector2(
