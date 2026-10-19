@@ -21,6 +21,11 @@ public class PlayerInteract : MonoBehaviour
 
     void Update()
     {
+        if (Minimap.IsOpen)
+        {
+            return;
+        }
+
         Interaction();
     }
 
