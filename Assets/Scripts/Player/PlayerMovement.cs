@@ -90,6 +90,16 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (Minimap.IsOpen)
+        {
+            Vector3 stopped = rb.linearVelocity;
+            stopped.x = 0f;
+            stopped.z = 0f;
+            rb.linearVelocity = stopped;
+            return;
+        }
+
+        moveDirection = CalcDirection();
 
         moveInputs = Move();
 
@@ -102,6 +112,26 @@ public class PlayerMovement : MonoBehaviour
         velocity.z = Mathf.MoveTowards(velocity.z, moveInputs.z, maxSpeedChange);
 
         rb.linearVelocity = velocity;
+    }
+
+    private void Update()
+    {
+        if (Minimap.IsOpen)
+        {
+            return;
+        }
+
+        if (sprint.WasPressedThisFrame() == true)
+        {
+            if (sprinting == false)
+            {
+                sprinting = true;
+            }
+            else
+            {
+                sprinting = false;
+            }
+        }
     }
 
     private Vector3 Move()

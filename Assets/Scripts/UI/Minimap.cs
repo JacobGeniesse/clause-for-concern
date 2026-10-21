@@ -6,7 +6,6 @@ public class Minimap : MonoBehaviour
     public static bool IsOpen { get; private set; }
 
     private Transform player;
-    private GameManager gameManager;
     private TaskManager taskManager;
     [SerializeField] RectTransform mapRect;
     [SerializeField] RectTransform playerMarker;
@@ -28,11 +27,6 @@ public class Minimap : MonoBehaviour
         if (taskManager == null)
         {
             taskManager = GameObject.Find("GameManager").GetComponent<TaskManager>();
-        }
-
-        if(gameManager == null)
-        {
-            gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         }
 
         if (masterList != null)
@@ -61,16 +55,6 @@ public class Minimap : MonoBehaviour
 
     void Update()
     {
-        //if (Time.timeScale == 0f)
-        //{
-        //    if (IsOpen)
-        //    {
-        //        SetOpen(false);
-        //    }
-
-        //    return;
-        //}
-
         if (WasMapPressed())
         {
             SetOpen(!IsOpen);
@@ -126,14 +110,7 @@ public class Minimap : MonoBehaviour
             mapRoot.SetActive(open);
         }
 
-        if (open == true)
-        {
-            gameManager.ModTime(0);
-        }
-        else
-        {
-            gameManager.ModTime(1);
-        }
+        Cursor.lockState = open ? CursorLockMode.None : CursorLockMode.Locked;
     }
 
     void PlaceMarker(RectTransform marker, Vector3 worldPos)
