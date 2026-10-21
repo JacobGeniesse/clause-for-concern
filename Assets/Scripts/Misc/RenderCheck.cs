@@ -14,12 +14,12 @@ public class RenderCheck : MonoBehaviour
     {
         if (cameraRenderer.isVisible)
         {
-            Debug.Log(true);
+            //Debug.Log(true);
             return(true);
         }
         else
         {
-            Debug.Log(false);
+            //Debug.Log(false);
             return(false);
         }
     }

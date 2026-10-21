@@ -6,14 +6,25 @@ public class Sight : MonoBehaviour
     [SerializeField] private float range;
 
     [Tooltip("How wide the enemy's FOV is.")]
-    [SerializeField, Range(0, 180)] private float fovRadius;
+    [SerializeField, Range(0, 180)] private float defaultFOVRadius;
+
+    private float fovRadius;
 
     [SerializeField, HideInInspector] private bool detection; //Bool for if the enemy has spotted the target
+
+    private int layerMask;
+
+    private void Start()
+    {
+        layerMask = 1 << 2;
+        ResetFOV();
+    }
+
 
     public bool SightCheck(Transform target)
     {
         //Do a line cast to see if the player is visible
-        if (Physics.Raycast(transform.position, target.position - transform.position, out RaycastHit hit, range))
+        if (Physics.Raycast(transform.position, target.position - transform.position, out RaycastHit hit, range, ~layerMask))
         {
             //First vector is the hit object's position
             Vector3 playerPos = hit.transform.position - transform.position;
@@ -25,7 +36,7 @@ public class Sight : MonoBehaviour
             float angleDif = Mathf.Abs(Vector3.SignedAngle(playerPos, forward, Vector3.up));
 
             //If the object hit is the player, and the angle is within the vision radius, and the hit is within a certain range
-            if (hit.collider.tag == "Player" && angleDif <= fovRadius)
+            if (hit.collider.tag == "Player" && angleDif <= defaultFOVRadius)
             {
                 //Return true for the player being seen
                 detection = true;
@@ -45,4 +56,19 @@ public class Sight : MonoBehaviour
         }
     }
 
+    public void ChangeFOV(float fovChange)
+    {
+        if (fovChange < 0 || fovChange > 180)
+        {
+            Debug.LogWarning("Invalid FOV entered! Change attempt ignored!");
+            return;
+        }
+
+        fovRadius = fovChange;
+    }
+
+    public void ResetFOV()
+    {
+        fovRadius = defaultFOVRadius;
+    }
 }

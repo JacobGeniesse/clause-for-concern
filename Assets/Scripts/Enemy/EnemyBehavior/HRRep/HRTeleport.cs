@@ -18,6 +18,8 @@ public class HRTeleport : MonoBehaviour
 
     private Vector3 chosenNode = Vector3.zero;
 
+    private RenderCheck renderCheck;
+
     private void Start()
     {
         //Assign the variables
@@ -41,6 +43,15 @@ public class HRTeleport : MonoBehaviour
         catch
         {
             throw new ArgumentException("Unable to find PlayerBody component!", nameof(HearingSequence));
+        }
+
+        try
+        {
+            renderCheck = GetComponent<RenderCheck>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to find RenderCheck component", nameof(HearingSequence));
         }
     }
 
@@ -111,7 +122,7 @@ public class HRTeleport : MonoBehaviour
     public Node.Status Teleport()
     {
         //If the chosen node is not zero, warp to that node
-        if(chosenNode != Vector3.zero)
+        if(chosenNode != Vector3.zero && renderCheck.SightCheck() != true)
         {
             agent.Warp(chosenNode); //Warp to the node
             chosenNode = Vector3.zero; //Reset the chosenNode to prevent infinite teleporting

@@ -69,7 +69,7 @@ public class HearingSequence : MonoBehaviour
         if (interestingSound != Vector3.zero)
         {
             //If successful proceed to the next node
-            Debug.Log("I can't see you, but I can hear you!");
+            //Debug.Log("I can't see you, but I can hear you!");
             return Node.Status.SUCCESS;
         }
         else

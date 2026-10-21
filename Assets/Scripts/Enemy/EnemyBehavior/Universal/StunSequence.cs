@@ -11,7 +11,8 @@ public class StunSequence : MonoBehaviour
 
     private IEnumerator stunCoroutine = null;
 
-    private float maxStunDuration = 5;
+    [Tooltip("Length of the HR Rep's stun upon dying.")]
+    [SerializeField]private float maxStunDuration = 5;
 
     private EnemyHealth enemyHealth;
 

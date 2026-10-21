@@ -14,7 +14,7 @@ public class SightEditor : Editor
     {
         //Assign references to Sight's variables
         range = serializedObject.FindProperty("range");
-        FOV = serializedObject.FindProperty("fovRadius");
+        FOV = serializedObject.FindProperty("defaultFOVRadius");
         detection = serializedObject.FindProperty("detection");
     }
 

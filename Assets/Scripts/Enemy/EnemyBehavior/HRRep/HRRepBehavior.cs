@@ -18,8 +18,6 @@ public class HRRepBehavior : MonoBehaviour
     [SerializeField] private bool aggressive = true; //Determines if the enemy is aggressive currently unused.
 
     #region hearing Vars
-    private Vector3 interestingSound; //Sound for the enemy to investigate
-
     private HearingSequence hearingNodes; //Ref to the hearing sequence script
 
     #endregion
@@ -35,12 +33,7 @@ public class HRRepBehavior : MonoBehaviour
     #region Stun Vars
     private bool stunned; //Is the enemy stunned
 
-    private IEnumerator stunCoroutine = null; //Holder var for the active stun coroutine
-
-    [Tooltip("Length of the HR Rep's stun upon dying.")]
-    [SerializeField] private float maxStunDuration = 5;
-
-    private EnemyHealth enemyHealth; //Reference to the enemy health variable
+    private StunSequence stunSequence;
 
     #endregion
 
@@ -166,71 +159,6 @@ public class HRRepBehavior : MonoBehaviour
         return Node.Status.SUCCESS; //End the Sequence
     }
     #endregion
-
-    #region Stun Check Leaves
-
-    //Node for checking if the enemy is stunned
-    private Node.Status StunCheck()
-    {
-        //If the HR is dead stun the enemy
-        if (enemyHealth.dead == true)
-        {
-            Debug.Log("Stunned"); //Debug message
-            if (agent.isStopped != true)
-            {
-                agent.isStopped = true; //Stop the agent from moving
-            }
-
-            return Node.Status.SUCCESS; //Continue to the next role
-        }
-        else
-        {
-            return Node.Status.FAILURE; //Otherwise fail the stun check
-        }
-    }
-
-    //Node for executing the enemy stun
-    private Node.Status ExecuteStun()
-    {
-        //If there is not a currently active stun routine, make one and begin the enemy's stun
-        if (stunCoroutine == null)
-        {
-            stunCoroutine = StunDelay();
-            StartCoroutine(stunCoroutine);
-        }
-
-        //Debug.Log(stunned);
-
-
-        //If the enemy is stunned continue running this node, if not end this node
-        if (stunned == true)
-        {
-            return Node.Status.RUNNING;
-        }
-        else
-        {
-            stunCoroutine = null;
-            return Node.Status.SUCCESS;
-        }
-    }
-
-    //Coroutine for the stun duration, prevented a big frame dip and I am not entirely sure why
-    private IEnumerator StunDelay()
-    {
-        stunned = true;
-        yield return new WaitForSeconds(maxStunDuration);
-        stunned = false;
-    }
-
-    //Node for ending the currently active stun
-    private Node.Status EndStun()
-    {
-        //Debug.Log("Returning to patrolling routine.");
-        agent.isStopped = false; //Let the agent move again
-        enemyHealth.ResetHealth(0); //Rest the enemy's health, parameter is the added health after each death
-        return Node.Status.SUCCESS; //End the node
-    }
-    #endregion 
 
     #region Patrol Sequence Leaves
 
@@ -441,16 +369,6 @@ public class HRRepBehavior : MonoBehaviour
             throw new ArgumentException("Unable to assign HearingSequence component", nameof(HRRepBehavior));
         }
 
-        //Add the enemyhealth component
-        try
-        {
-            enemyHealth = GetComponent<EnemyHealth>();
-        }
-        catch
-        {
-            throw new ArgumentException("Unable to assign EnemyHealth component", nameof(HRRepBehavior));
-        }
-
         //Add the HRSpeedController component
         try
         {
@@ -461,6 +379,14 @@ public class HRRepBehavior : MonoBehaviour
             throw new ArgumentException("Unable to assign HRSpeedController component", nameof(HRRepBehavior));
         }
 
+        try
+        {
+            stunSequence = GetComponent<StunSequence>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to assign StunSequence component", nameof(HRRepBehavior));
+        }
         //Get the player body component
         playerTrans = GameObject.Find("PlayerBody").GetComponent<Transform>();
 
@@ -477,9 +403,9 @@ public class HRRepBehavior : MonoBehaviour
 
         //Define the stunned sequence
         Sequence stun = new Sequence("Stunned-Cooldown"); //Sequence for the enemy stun
-        Leaf stunCheck = new Leaf("Check-For-Stun", StunCheck); //Leaf 1: check if the enemy is stunned
-        Leaf activeStun = new Leaf("Execute-Stun", ExecuteStun); //Leaf 2: the actual stun coroutine
-        Leaf stunEnd = new Leaf("End-Stun", EndStun); //Leaf 3: End the stun of the enemy
+        Leaf stunCheck = new Leaf("Check-For-Stun", stunSequence.StunCheck); //Leaf 1: check if the enemy is stunned
+        Leaf activeStun = new Leaf("Execute-Stun", stunSequence.ExecuteStun); //Leaf 2: the actual stun coroutine
+        Leaf stunEnd = new Leaf("End-Stun", stunSequence.EndStun); //Leaf 3: End the stun of the enemy
         //Add leaves to the sequence
         stun.AddChild(stunCheck);
         stun.AddChild(activeStun);
