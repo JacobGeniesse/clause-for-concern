@@ -12,29 +12,29 @@ public class PlayerInteract : MonoBehaviour
 
     private Camera playerCamera;
 
-    void Awake()
+    void Start()
     {
         interact = MasterList["Interact"];
+        interact.Enable();
         playerCamera = Camera.main;
     }
 
-    void OnEnable(){
-        interact.Enable(); // turns on the interact action so it can send inputs
-        interact.performed += OnInteract; // calls OnInteract when the interact input is performed
-    }
+    void Update()
+    {
+        if (Minimap.IsOpen)
+        {
+            return;
+        }
 
-    void OnDisable(){
-        interact.performed -= OnInteract; // stops OnInteract from being called on interact input performed
-        interact.Disable(); // turns off the interact action so it can't send inputs
+        Interaction();
     }
-
-    private void OnInteract(InputAction.CallbackContext context){ // called when the interact input is performed
-        Interaction(); // calls the Interaction method
-    }
-
 
     void Interaction()
     {
+        if (interact == null || !interact.WasPressedThisFrame())
+        {
+            return;
+        }
 
         if (playerCamera == null)
         {

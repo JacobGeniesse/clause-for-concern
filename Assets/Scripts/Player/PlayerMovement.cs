@@ -24,12 +24,11 @@ public class PlayerMovement : MonoBehaviour
     private bool sprinting = false;
 
     private Vector3 moveInputs;
-
-    private Vector2 currentMoveInput; // holds the current move input
+    private Vector3 moveDirection;
 
     private PlayerNoiseManager playerNoiseManager;
 
-    void Awake()// called when the script instance is being loaded, lookups happen before onEnable runs
+    void Start()
     {
         try
         {
@@ -58,34 +57,6 @@ public class PlayerMovement : MonoBehaviour
         {
             throw new ArgumentException("Unable to find player noise manager!", nameof(PlayerMovement));
         }
-    }
-
-    void OnEnable(){
-        movement.Enable(); // turns on the move action so it can send inputs
-        sprint.Enable(); // turns on the sprint action so it can send inputs
-
-        movement.performed += OnMove; // calls OnMove when the move input changes
-        movement.canceled += OnMove; // calls OnMove when the move input is released
-        sprint.performed += OnSprint; // calls OnSprint when sprint key is pressed
-        sprint.canceled += OnSprint; // calls OnSprint when sprint key is released
-    }
-
-    void OnDisable(){
-        movement.performed -= OnMove; //Stops OnMove from being called on move input change
-        movement.canceled -= OnMove; //Stops OnMove from being called on move input release
-        sprint.performed -= OnSprint; //Stops OnSprint from being called on sprint press
-        sprint.canceled -= OnSprint; //Stops OnSprint from being called on sprint release
-
-        movement.Disable(); //Turns off the move action so it can't send inputs
-        sprint.Disable(); //Turns off the sprint action so it can't send inputs
-    }
-
-    private void OnMove(InputAction.CallbackContext context){
-        currentMoveInput = context.ReadValue<Vector2>(); // gets the current move input (0,0) when released
-    }
-
-    private void OnSprint(InputAction.CallbackContext context){
-        sprinting = context.performed;
     }
 
     void FixedUpdate()
@@ -136,7 +107,7 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 Move()
     {
-        Vector2 move = currentMoveInput;
+        Vector2 move = movement.ReadValue<Vector2>();
 
         Vector3 moveDir = transform.right * move.x + transform.forward * move.y;
 
@@ -162,4 +133,10 @@ public class PlayerMovement : MonoBehaviour
         return moveDir;
     }
 
+    private Vector3 CalcDirection()
+    {
+        Vector2 move = movement.ReadValue<Vector2>();
+
+        return transform.right * move.x + transform.forward * move.y;
+    }
 }
