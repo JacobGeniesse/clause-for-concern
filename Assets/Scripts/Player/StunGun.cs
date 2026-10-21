@@ -16,7 +16,7 @@ public class StunGun : MonoBehaviour
     private float nextFireTime = 0f; // the earliest time we are allowed to shoot again
 
     void Awake(){
-        fire = masterList["Fire"]; // find the fire action before OnEnable runs
+        fire = masterList["UseItem"]; // find the fire action before OnEnable runs
     }
     void OnEnable(){
         fire.Enable(); // turns on the fire action so it can send inputs
