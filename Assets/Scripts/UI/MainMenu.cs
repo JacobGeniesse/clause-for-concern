@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
@@ -87,5 +88,17 @@ public class MainMenu : MonoBehaviour
     {
         controllerBindings.SetActive(true);
         keyboardBindings.SetActive(false);
+    }
+
+    public void StartNewGame()
+    {
+        // Eventually change this to also set all savable data to starting values
+        // Also change this to load the main game scene when that gets implemented
+        SceneManager.LoadScene("SampleScene");
+    }
+
+    public void LoadPreviousGame()
+    {
+
     }
 }

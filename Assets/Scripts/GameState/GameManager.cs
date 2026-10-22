@@ -18,6 +18,10 @@ public class GameManager : MonoBehaviour
         pause = masterList["Pause"];
 
         map = FindAnyObjectByType<Minimap>();
+
+        // Make it so the main pause menu is active when pause is hit
+        pauseMenu.GetComponent<PauseMenu>().ResetPauseMenu();
+        pauseMenu.SetActive(false);
     }
 
     private void Update()
@@ -42,6 +46,7 @@ public class GameManager : MonoBehaviour
         paused = true;
         Cursor.lockState = CursorLockMode.None;
         pauseMenu.SetActive(true);
+        pauseMenu.GetComponent<PauseMenu>().ResetPauseMenu();
     }
 
     public void ModTime(int scale)
