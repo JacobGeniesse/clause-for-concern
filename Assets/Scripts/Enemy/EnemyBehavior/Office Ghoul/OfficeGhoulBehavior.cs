@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,9 +12,15 @@ public class OfficeGhoulBehavior : MonoBehaviour
 
     [SerializeField] private Collider attackCol;
 
+    #region Attacking Scripts
+    private bool attacking = false;
+    private IEnumerator attackingCoroutine = null;
+    #endregion
+
     private NavMeshAgent agent;
     private MoveToPoint move;
     private Sight sight;
+    private PlayerMovement playerMove;
     private StunSequence stunSequence;
     private HearingSequence hearingSequence;
 
@@ -60,7 +67,6 @@ public class OfficeGhoulBehavior : MonoBehaviour
             {
                 return Node.Status.RUNNING; //If not, continue moving towards the player
             }
-
         }
         else
         {
@@ -68,10 +74,45 @@ public class OfficeGhoulBehavior : MonoBehaviour
         }
     }
 
-    private Node.Status Chase()
+    private Node.Status Attack()
     {
-        return Node.Status.SUCCESS;
-        //If the player is within a certain range, continue to the next node for the attack sequence
+        if (attackingCoroutine == null)
+        {
+            Debug.Log("Get a load of this!"); //Debug message showing that the attack worked
+            attackingCoroutine = AttackCoroutine(); //Set the active grab attack
+            StartCoroutine(attackingCoroutine); //Start the grab attack coroutine
+        }
+
+        //Check for if the attack sequence is still happening
+        if (attacking == false)
+        {
+            attackingCoroutine = null;
+            return Node.Status.SUCCESS; //After the attack is done, end the sequence
+        }
+        else
+        {
+            return Node.Status.RUNNING; //If the attack is still underway, keep running this node
+        }
+
+    }
+
+    private IEnumerator AttackCoroutine()
+    {
+        //Debug.Log("Violence");
+        agent.destination = transform.position;
+        attacking = true;
+
+        playerTrans.parent = attackCol.transform;
+        playerTrans.position = attackCol.transform.position;
+
+        playerMove.AlterMoveState(false);
+
+        yield return new WaitForSeconds(1.5f);
+        playerTrans.parent = null;
+        playerMove.AlterMoveState(true);
+
+        yield return new WaitForSeconds(1.5f);
+        attacking = false;
     }
 
     private void AssignReferences()
@@ -132,7 +173,14 @@ public class OfficeGhoulBehavior : MonoBehaviour
             Debug.LogError($"No NavMeshAgent attached to {this.gameObject}!");
         }
 
-
+        try
+        {
+            playerMove = playerTrans.gameObject.GetComponent<PlayerMovement>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to assign PlayerMovement component", nameof(OfficeGhoulBehavior));
+        }
     }
 
     private void CreateBehaviorTree()
@@ -142,12 +190,22 @@ public class OfficeGhoulBehavior : MonoBehaviour
 
         Selector choices = new Selector("Pick Behavior"); //Selector for determining enemy behavior
 
+        Sequence stun = new Sequence("Stunned-Cooldown"); //Sequence for the enemy stun
+        Leaf stunCheck = new Leaf("Check-For-Stun", stunSequence.StunCheck); //Leaf 1: check if the enemy is stunned
+        Leaf activeStun = new Leaf("Execute-Stun", stunSequence.ExecuteStun); //Leaf 2: the actual stun coroutine
+        Leaf stunEnd = new Leaf("End-Stun", stunSequence.EndStun); //Leaf 3: End the stun of the enemy
+        //Add leaves to the sequence
+        stun.AddChild(stunCheck);
+        stun.AddChild(activeStun);
+        stun.AddChild(stunEnd);
+
 
         Sequence chase = new Sequence("Chase");
         Leaf look = new Leaf("Scan-for-Player", Look);
-        Leaf pursue = new Leaf("Pursue-Player", Chase);
+        Leaf attack = new Leaf("Attack-Player", Attack);
+        //Add leaves to the sequence
         chase.AddChild(look);
-        chase.AddChild(pursue);
+        chase.AddChild(attack);
 
 
         //Define the hearing sequence
@@ -162,6 +220,7 @@ public class OfficeGhoulBehavior : MonoBehaviour
 
         Leaf idle = new Leaf("Idling-Behavior", Idle);
 
+        choices.AddChild(stun);
         choices.AddChild(chase);
         choices.AddChild(hear);
         //choices.AddChild(idle);

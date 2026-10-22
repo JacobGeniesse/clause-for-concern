@@ -56,7 +56,7 @@ public class HRRepBehavior : MonoBehaviour
     private Sight sightScript; //Helper script for vision checks
     private MoveToPoint move; //Helper script for moving to a point
 
-    private HRSpeedControl speedHandler;
+    private AgentSpeedChanger speedHandler;
     #endregion
 
 
@@ -369,14 +369,14 @@ public class HRRepBehavior : MonoBehaviour
             throw new ArgumentException("Unable to assign HearingSequence component", nameof(HRRepBehavior));
         }
 
-        //Add the HRSpeedController component
+        //Add the AgentSpeedChanger component
         try
         {
-            speedHandler = GetComponent<HRSpeedControl>();
+            speedHandler = GetComponent<AgentSpeedChanger>();
         }
         catch
         {
-            throw new ArgumentException("Unable to assign HRSpeedController component", nameof(HRRepBehavior));
+            throw new ArgumentException("Unable to assign AgentSpeedChanger component", nameof(HRRepBehavior));
         }
 
         try

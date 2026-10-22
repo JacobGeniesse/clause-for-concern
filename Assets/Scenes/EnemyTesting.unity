@@ -4300,7 +4300,7 @@ Transform:
   m_GameObject: {fileID: 1497551692}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.7}
+  m_LocalPosition: {x: 0, y: 0, z: 0.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4553,6 +4553,8 @@ GameObject:
   - component: {fileID: 1573321220}
   - component: {fileID: 1573321228}
   - component: {fileID: 1573321227}
+  - component: {fileID: 1573321233}
+  - component: {fileID: 1573321232}
   m_Layer: 0
   m_Name: OfficeGhoul
   m_TagString: Untagged
@@ -4733,6 +4735,39 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OfficeGhoulBehavior
   attackCol: {fileID: 1497551694}
+--- !u!114 &1573321232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1573321219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 010230b34c208d849b0f82cb6d420649, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AgentSpeedChanger
+  moveSpeeds:
+  - 1.5
+  - 5
+  accelerations:
+  - 120
+  - 240
+--- !u!114 &1573321233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1573321219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: badda54bc69e9ab48ac74f8e4edbf846, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OGGrab
+  range: 5
+  fovRadius: 40
+  detection: 0
 --- !u!43 &1702698772
 Mesh:
   m_ObjectHideFlags: 0

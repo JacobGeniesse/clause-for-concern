@@ -35,6 +35,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]private Vector3 pushForce;
     private float pushDuration;
 
+    public bool canGrab = true;
     private bool pushed = false;
     private IEnumerator pushCoroutine;
 
@@ -155,6 +156,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void AlterMoveState(bool movability)
     {
+        canGrab = movability;
         canMove = movability;
     }
 
@@ -175,10 +177,12 @@ public class PlayerMovement : MonoBehaviour
 
     private IEnumerator ExecutePush(float pushDuration)
     {
+        canGrab = false;
         pushed = true;
         yield return new WaitForSeconds(pushDuration);
         pushed = false;
         AlterMoveState(true);
         pushCoroutine = null;
+        canGrab = true;
     }
 }

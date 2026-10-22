@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System;
 
-public class HRSpeedControl : MonoBehaviour
+public class AgentSpeedChanger : MonoBehaviour
 {
     [Tooltip("Speed values for the different enemy speed states."), SerializeField] private float[] moveSpeeds = 
     {
@@ -43,7 +43,7 @@ public class HRSpeedControl : MonoBehaviour
         }
         catch
         {
-            throw new ArgumentException("Invalid Speed Type Entered!", nameof(HRSpeedControl));
+            throw new ArgumentException("Invalid Speed Type Entered!", nameof(AgentSpeedChanger));
         }
     }
 
