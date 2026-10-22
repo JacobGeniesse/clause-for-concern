@@ -10,19 +10,13 @@ public class OfficeGhoulBehavior : MonoBehaviour
 
     private Transform playerTrans;
 
-    [SerializeField] private Collider attackCol;
-
-    #region Attacking Scripts
-    private bool attacking = false;
-    private IEnumerator attackingCoroutine = null;
-    #endregion
-
     private NavMeshAgent agent;
     private MoveToPoint move;
-    private Sight sight;
-    private PlayerMovement playerMove;
     private StunSequence stunSequence;
     private HearingSequence hearingSequence;
+
+    private OGAttacks attackScript;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -54,66 +48,6 @@ public class OfficeGhoulBehavior : MonoBehaviour
         return Node.Status.SUCCESS;
     }
 
-    private Node.Status Look()
-    {
-        if (sight.SightCheck(playerTrans))
-        {
-            move.MoveToPOI(agent, playerTrans.position); //Start moving towards the player's position
-            if (attackCol.bounds.Contains(playerTrans.position))
-            {
-                return Node.Status.SUCCESS;
-            }
-            else
-            {
-                return Node.Status.RUNNING; //If not, continue moving towards the player
-            }
-        }
-        else
-        {
-            return Node.Status.FAILURE;
-        }
-    }
-
-    private Node.Status Attack()
-    {
-        if (attackingCoroutine == null)
-        {
-            Debug.Log("Get a load of this!"); //Debug message showing that the attack worked
-            attackingCoroutine = AttackCoroutine(); //Set the active grab attack
-            StartCoroutine(attackingCoroutine); //Start the grab attack coroutine
-        }
-
-        //Check for if the attack sequence is still happening
-        if (attacking == false)
-        {
-            attackingCoroutine = null;
-            return Node.Status.SUCCESS; //After the attack is done, end the sequence
-        }
-        else
-        {
-            return Node.Status.RUNNING; //If the attack is still underway, keep running this node
-        }
-
-    }
-
-    private IEnumerator AttackCoroutine()
-    {
-        //Debug.Log("Violence");
-        agent.destination = transform.position;
-        attacking = true;
-
-        playerTrans.parent = attackCol.transform;
-        playerTrans.position = attackCol.transform.position;
-
-        playerMove.AlterMoveState(false);
-
-        yield return new WaitForSeconds(1.5f);
-        playerTrans.parent = null;
-        playerMove.AlterMoveState(true);
-
-        yield return new WaitForSeconds(1.5f);
-        attacking = false;
-    }
 
     private void AssignReferences()
     {
@@ -133,15 +67,6 @@ public class OfficeGhoulBehavior : MonoBehaviour
         catch
         {
             throw new ArgumentException("Unable to assign HearingSequence component", nameof(OfficeGhoulBehavior));
-        }
-
-        try
-        {
-            sight = GetComponentInChildren<Sight>();
-        }
-        catch
-        {
-            throw new ArgumentException("Unable to assign Sight component", nameof(OfficeGhoulBehavior));
         }
 
         try
@@ -175,12 +100,13 @@ public class OfficeGhoulBehavior : MonoBehaviour
 
         try
         {
-            playerMove = playerTrans.gameObject.GetComponent<PlayerMovement>();
+            attackScript = GetComponentInChildren<OGAttacks>();
         }
         catch
         {
-            throw new ArgumentException("Unable to assign PlayerMovement component", nameof(OfficeGhoulBehavior));
+            throw new ArgumentException("Unable to assign OGAttacks component", nameof(OfficeGhoulBehavior));
         }
+
     }
 
     private void CreateBehaviorTree()
@@ -201,11 +127,26 @@ public class OfficeGhoulBehavior : MonoBehaviour
 
 
         Sequence chase = new Sequence("Chase");
-        Leaf look = new Leaf("Scan-for-Player", Look);
-        Leaf attack = new Leaf("Attack-Player", Attack);
+        Leaf look = new Leaf("Scan-for-Player", attackScript.Look);
+        Leaf lunge = new Leaf("Lunge-at-Player", attackScript.Lunge);
+        Selector lungeResult = new Selector("Grab-or-No");
+        Leaf attackConfirmation = new Leaf("Grab-Check", attackScript.GrabCheck);
+        Leaf attack = new Leaf("Attack-Player", attackScript.Attack);
+        Sequence successfulLunge = new Sequence("Player-Grab");
+        successfulLunge.AddChild(attackConfirmation);
+        successfulLunge.AddChild(attack);
+        Leaf failureConfirmation = new Leaf("Failed-Grab", attackScript.FailureConfirmation);
+        Leaf attackFail = new Leaf("Attack-Failed", attackScript.GrabFail);
+        Sequence failedLunge = new Sequence("Grab-Failure");
+        failedLunge.AddChild(failureConfirmation);
+        failedLunge.AddChild(attackFail);
+
+        lungeResult.AddChild(successfulLunge);
+        lungeResult.AddChild(failedLunge);
         //Add leaves to the sequence
         chase.AddChild(look);
-        chase.AddChild(attack);
+        chase.AddChild(lunge);
+        chase.AddChild(lungeResult);
 
 
         //Define the hearing sequence
