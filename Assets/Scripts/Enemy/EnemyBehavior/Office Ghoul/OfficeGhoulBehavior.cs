@@ -8,6 +8,10 @@ public class OfficeGhoulBehavior : MonoBehaviour
     private BehaviorTree actions;
     private Node.Status treeStatus = Node.Status.RUNNING;
 
+    [SerializeField] private bool wandering = false;
+
+    
+
     private Transform playerTrans;
 
     private NavMeshAgent agent;
@@ -158,6 +162,7 @@ public class OfficeGhoulBehavior : MonoBehaviour
         hear.AddChild(listen);
         hear.AddChild(investigateSound);
         hear.AddChild(clearSound);
+
 
         Leaf idle = new Leaf("Idling-Behavior", Idle);
 
