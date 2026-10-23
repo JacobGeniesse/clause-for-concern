@@ -10,6 +10,8 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject volumeMenuPanel;
     [SerializeField] private GameObject keyboardBindings;
     [SerializeField] private GameObject controllerBindings;
+    [SerializeField] private GameObject fileLoadPanel;
+    [SerializeField] private GameObject newGamePanel;
 
     private void Start()
     {
@@ -19,6 +21,7 @@ public class MainMenu : MonoBehaviour
         startMenuPanel.SetActive(false);
         controllerMenuPanel.SetActive(false);
         volumeMenuPanel.SetActive(false);
+        fileLoadPanel.SetActive(false);
 
         // Have the keyboard bindings be active first
         keyboardBindings.SetActive(true);
@@ -88,6 +91,26 @@ public class MainMenu : MonoBehaviour
     {
         controllerBindings.SetActive(true);
         keyboardBindings.SetActive(false);
+    }
+
+    public void OpenFileLoadPanel()
+    {
+        fileLoadPanel.SetActive(true);
+    }
+
+    public void CloseFileLoadPanel()
+    {
+        fileLoadPanel.SetActive(false);
+    }
+
+    public void OpenNewGamePanel()
+    {
+        newGamePanel.SetActive(true);
+    }
+
+    public void CloseNewGamePanel()
+    {
+        newGamePanel.SetActive(false);
     }
 
     public void StartNewGame()

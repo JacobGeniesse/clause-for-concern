@@ -12,6 +12,10 @@ public class GameManager : MonoBehaviour
 
     private bool paused = false;
 
+    [SerializeField] private int saveFileId;
+
+    private SaveDataManager saveDataManager;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -20,13 +24,26 @@ public class GameManager : MonoBehaviour
 
         map = FindAnyObjectByType<Minimap>();
 
-        // Load save data right at the start
-        LoadData();
+        saveDataManager = GameObject.Find("SaveDataManager").GetComponent<SaveDataManager>();
+
+        // Set the save file id from the save data manager singleton
+        if (saveDataManager == null )
+        {
+            saveFileId = saveDataManager.fileId;
+        }
+        else
+        {
+            // If no save data manager is present, default to id 0
+            saveFileId = 0;
+        }
+
+        if (!saveDataManager.newGame)
+        {
+            // Load save data right at the start if not a new game
+            LoadData();
+        }
 
         // Make it so the main pause menu is active when pause is hit
-        //pauseMenu.GetComponent<PauseMenu>().ResetPauseMenu();
-        //pauseMenu.SetActive(false);
-
         // Essentially reset the pause menu
         UnPause();
     }
@@ -74,13 +91,12 @@ public class GameManager : MonoBehaviour
     public void SaveData()
     {
         PlayerSaveData data = new PlayerSaveData(player.GetComponent<PlayerHealth>().currentHealth);
-        //SaveSystem.fileName = "saveFile1";  // Make it so this can by dynamically changed 
-        SaveSystem.SaveGame(data);
+        SaveSystem.SaveGame(data, saveFileId);
     }
 
     public void LoadData()
     {
-        PlayerSaveData loadedData = SaveSystem.LoadGame();
+        PlayerSaveData loadedData = SaveSystem.LoadGame(saveFileId);
 
         if (loadedData != null)
         {
