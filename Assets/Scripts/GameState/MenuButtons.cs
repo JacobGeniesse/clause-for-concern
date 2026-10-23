@@ -36,7 +36,10 @@ public class MenuButtons : MonoBehaviour
 
     public void Quit()
     {
-        Application.Quit();
-        Debug.Log("Quitting Game");
+        //Application.Quit();
+        //Debug.Log("Quitting Game");
+
+        // Make this the "quit to menu" button
+        SceneManager.LoadScene("MainMenu");
     }
 }
