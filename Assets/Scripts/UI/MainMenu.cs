@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using System.IO;
 
 public class MainMenu : MonoBehaviour
 {
@@ -13,6 +15,10 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject fileLoadPanel;
     [SerializeField] private GameObject newGamePanel;
 
+    [SerializeField] private Button loadFile1Button;
+    [SerializeField] private Button loadFile2Button;
+    [SerializeField] private Button loadFile3Button;
+
     private void Start()
     {
         // Make it so the main menu panel is the one that's active at the start
@@ -22,10 +28,16 @@ public class MainMenu : MonoBehaviour
         controllerMenuPanel.SetActive(false);
         volumeMenuPanel.SetActive(false);
         fileLoadPanel.SetActive(false);
+        newGamePanel.SetActive(false);
 
         // Have the keyboard bindings be active first
         keyboardBindings.SetActive(true);
         controllerBindings.SetActive(false);
+
+        // Enable the load file buttons only if a save file exists already for them
+        CheckFile1Button();
+        CheckFile2Button();
+        CheckFile3Button();
     }
 
     public void QuitGame()
@@ -113,15 +125,46 @@ public class MainMenu : MonoBehaviour
         newGamePanel.SetActive(false);
     }
 
-    public void StartNewGame()
+    public void StartGame()
     {
         // Eventually change this to also set all savable data to starting values
         // Also change this to load the main game scene when that gets implemented
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
     }
 
-    public void LoadPreviousGame()
+    private void CheckFile1Button()
     {
+        if (!File.Exists(SaveSystem.filePath1))
+        {
+            loadFile1Button.interactable = false;
+        }
+        else
+        {
+            loadFile1Button.interactable = true;
+        }
+    }
 
+    private void CheckFile2Button()
+    {
+        if (!File.Exists(SaveSystem.filePath2))
+        {
+            loadFile2Button.interactable = false;
+        }
+        else
+        {
+            loadFile2Button.interactable = true;
+        }
+    }
+
+    private void CheckFile3Button()
+    {
+        if (!File.Exists(SaveSystem.filePath3))
+        {
+            loadFile3Button.interactable = false;
+        }
+        else
+        {
+            loadFile3Button.interactable = true;
+        }
     }
 }

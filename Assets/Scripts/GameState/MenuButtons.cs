@@ -40,6 +40,6 @@ public class MenuButtons : MonoBehaviour
         //Debug.Log("Quitting Game");
 
         // Make this the "quit to menu" button
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
     }
 }

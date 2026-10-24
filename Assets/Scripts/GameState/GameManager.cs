@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
         saveDataManager = GameObject.Find("SaveDataManager").GetComponent<SaveDataManager>();
 
         // Set the save file id from the save data manager singleton
-        if (saveDataManager == null )
+        if (saveDataManager != null )
         {
             saveFileId = saveDataManager.fileId;
         }
