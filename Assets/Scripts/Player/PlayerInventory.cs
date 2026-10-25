@@ -20,6 +20,7 @@ public class PlayerInventory : MonoBehaviour
     }
     keyItems.Add(keyname); // add key to inventory
     Debug.Log("Picked up key item: " + keyname);
+
     return true;
    }
 
