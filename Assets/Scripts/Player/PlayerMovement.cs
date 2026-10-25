@@ -1,6 +1,8 @@
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
@@ -28,6 +30,16 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 currentMoveInput; // holds the current move input
 
     private PlayerNoiseManager playerNoiseManager;
+
+    private bool canMove = true;
+
+
+    [SerializeField] private Vector3 pushForce;
+    private float pushDuration;
+
+    public bool canGrab = true;
+    private bool pushed = false;
+    private IEnumerator pushCoroutine;
 
     void Awake()// called when the script instance is being loaded, lookups happen before onEnable runs
     {
@@ -92,26 +104,43 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Minimap.IsOpen)
         {
-            Vector3 stopped = rb.linearVelocity;
-            stopped.x = 0f;
-            stopped.z = 0f;
-            rb.linearVelocity = stopped;
+            canMove = false;
+            //stopped.x = 0f;
+            //stopped.z = 0f;
+            //rb.linearVelocity = stopped;
             return;
         }
 
-        //moveDirection = CalcDirection();
 
-        moveInputs = Move();
+        if(canMove && !pushed)
+        {
+            //moveDirection = CalcDirection();
 
-        Vector3 velocity = rb.linearVelocity;
+            moveInputs = Move();
 
-        float maxSpeedChange = accel * Time.deltaTime;
+            Vector3 velocity = rb.linearVelocity;
 
-        velocity.x = Mathf.MoveTowards(velocity.x, moveInputs.x, maxSpeedChange);
-        velocity.y = Mathf.MoveTowards(velocity.y, moveInputs.y, maxSpeedChange);
-        velocity.z = Mathf.MoveTowards(velocity.z, moveInputs.z, maxSpeedChange);
+            float maxSpeedChange = accel * Time.deltaTime;
 
-        rb.linearVelocity = velocity;
+            velocity.x = Mathf.MoveTowards(velocity.x, moveInputs.x, maxSpeedChange);
+            velocity.y = Mathf.MoveTowards(velocity.y, moveInputs.y, maxSpeedChange);
+            velocity.z = Mathf.MoveTowards(velocity.z, moveInputs.z, maxSpeedChange);
+
+            rb.linearVelocity = velocity;
+        }
+
+        if (pushed)
+        {
+            Vector3 velocity = rb.linearVelocity;
+
+            float maxSpeedChange = accel * Time.deltaTime;
+
+            velocity.x = Mathf.MoveTowards(velocity.x, pushForce.x, maxSpeedChange);
+            velocity.y = Mathf.MoveTowards(velocity.y, 0, maxSpeedChange);
+            velocity.z = Mathf.MoveTowards(velocity.z, pushForce.z, maxSpeedChange);
+
+            rb.linearVelocity = velocity;
+        }
     }
 
     private void Update()
@@ -121,7 +150,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        /*
+        
         if (sprint.WasPressedThisFrame() == true)
         {
             if (sprinting == false)
@@ -133,7 +162,6 @@ public class PlayerMovement : MonoBehaviour
                 sprinting = false;
             }
         }
-        */
     }
 
     private Vector3 Move()
@@ -162,6 +190,38 @@ public class PlayerMovement : MonoBehaviour
         }
 
         return moveDir;
+    }
+
+    public void AlterMoveState(bool movability)
+    {
+        canGrab = movability;
+        canMove = movability;
+    }
+
+    public void StopPlayer()
+    {
+        rb.linearVelocity = Vector3.zero;
+    }
+
+    public void Push(Vector3 pushDir, float pushDur)
+    {
+        pushForce = pushDir;
+        if (pushCoroutine == null)
+        {
+            pushCoroutine = ExecutePush(pushDur);
+            StartCoroutine(pushCoroutine);
+        }
+    }
+
+    private IEnumerator ExecutePush(float pushDuration)
+    {
+        canGrab = false;
+        pushed = true;
+        yield return new WaitForSeconds(pushDuration);
+        pushed = false;
+        AlterMoveState(true);
+        pushCoroutine = null;
+        canGrab = true;
     }
 
 }
