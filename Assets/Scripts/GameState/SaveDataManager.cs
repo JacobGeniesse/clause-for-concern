@@ -23,7 +23,7 @@ public class SaveDataManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
+    /*
     public void SetSaveFileId1()
     {
         fileId = 0;
@@ -48,4 +48,5 @@ public class SaveDataManager : MonoBehaviour
     {
         newGame = false;
     }
+    */
 }

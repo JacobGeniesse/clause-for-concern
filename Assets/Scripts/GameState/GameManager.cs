@@ -24,12 +24,22 @@ public class GameManager : MonoBehaviour
 
         map = FindAnyObjectByType<Minimap>();
 
-        saveDataManager = GameObject.Find("SaveDataManager").GetComponent<SaveDataManager>();
+        if (SaveDataManager.Instance != null)
+        {
+            saveDataManager = SaveDataManager.Instance;
+        }
+        
 
         // Set the save file id from the save data manager singleton
         if (saveDataManager != null )
         {
             saveFileId = saveDataManager.fileId;
+
+            if (!saveDataManager.newGame)
+            {
+                // Load save data right at the start if not a new game
+                LoadData();
+            }
         }
         else
         {
@@ -37,11 +47,13 @@ public class GameManager : MonoBehaviour
             saveFileId = 0;
         }
 
+        /*
         if (!saveDataManager.newGame)
         {
             // Load save data right at the start if not a new game
             LoadData();
         }
+        */
 
         // Make it so the main pause menu is active when pause is hit
         // Essentially reset the pause menu
