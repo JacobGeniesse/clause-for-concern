@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
 
     public void Pause()
     {
-        map.SetOpen(false);
+        map.SetOpen(false, true);
         ModTime(0);
         paused = true;
         Cursor.lockState = CursorLockMode.None;

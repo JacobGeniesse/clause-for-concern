@@ -28,6 +28,11 @@ public class StunGun : MonoBehaviour
     }
 
     private void OnFire(InputAction.CallbackContext context){
+        if (Minimap.IsOpen)
+        {
+            return;
+        }
+
         if (currentAmmo <= 0){
             return; // no ammo no shooting
         }

@@ -29,6 +29,11 @@ public class PlayerInteract : MonoBehaviour
     }
 
     private void OnInteract(InputAction.CallbackContext context){ // called when the interact input is performed
+        if (Minimap.IsOpen)
+        {
+            return;
+        }
+
         Interaction(); // calls the Interaction method
     }
 
