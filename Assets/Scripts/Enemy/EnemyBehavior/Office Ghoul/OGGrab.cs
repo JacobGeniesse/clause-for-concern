@@ -2,19 +2,19 @@ using UnityEngine;
 
 public class OGGrab : MonoBehaviour
 {
-    [Tooltip("How far away the enemy can see.")]
+    [Tooltip("How far away the player can be before the enemy starts a lunge.")]
     [SerializeField] private float range;
 
-    [Tooltip("How wide the enemy's FOV is.")]
+    [Tooltip("How wide the FOV is for starting a lunge.")]
     [SerializeField, Range(0, 180)] private float fovRadius;
 
-    [SerializeField, HideInInspector] private bool detection; //Bool for if the enemy has spotted the target
+    [SerializeField] private bool showGuides; //Bool for if the enemy has spotted the target
 
-    private int layerMask;
+    private int layerMask; //Layermask to ignore the attackbox's collider
 
     private void Start()
     {
-        layerMask = 1 << 2;
+        layerMask = 1 << 2; //Set up layermask
     }
 
     public bool GrabCheck(Transform target)
@@ -35,19 +35,16 @@ public class OGGrab : MonoBehaviour
             if (hit.collider.tag == "Player" && angleDif <= fovRadius)
             {
                 //Return true for the player being seen
-                detection = true;
-                return detection;
+                return true;
             }
             else
             {
                 //Otherwise return false
-                detection = false;
-                return detection;
+                return false;
             }
         }
         else
         {
-            detection = false;
             return false; //Return false if the linecast fails
         }
     }

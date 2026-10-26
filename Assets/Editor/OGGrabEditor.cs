@@ -4,39 +4,34 @@ using UnityEngine;
 [CustomEditor(typeof(OGGrab)), CanEditMultipleObjects]
 public class OGGrabEditor : Editor
 {
-    private SerializedProperty range; //Reference to the Sight script's range variable
+    private SerializedProperty range; //Reference to the range variable
 
-    private SerializedProperty FOV; //Reference to the Sight script's FOV variable
+    private SerializedProperty FOV; //Reference to the FOV variable
 
-    private SerializedProperty detection; //Reference to the Sight script's detection variable
+    private SerializedProperty detection; //Reference to the toggle for showing the Handle
     void OnEnable()
     {
-        //Assign references to Sight's variables
+        //Assign references to OGGrab's variables
         range = serializedObject.FindProperty("range");
         FOV = serializedObject.FindProperty("fovRadius");
-        detection = serializedObject.FindProperty("detection");
+        detection = serializedObject.FindProperty("showGuides");
     }
 
     public void OnSceneGUI()
     {
-        //Check if the player is detected by the enemy
-        if (detection.boolValue == true)
+        //If the dev wants to see the Handle
+        if(detection.boolValue == true)
         {
-            //Assign a green for if the target is spotted
-            Handles.color = new Color(0, 1, 0, 0.1f);
-        }
-        else
-        {
-            //Assign a red for if the target is not
+            //Assign color
             Handles.color = new Color(1, 0, 0, 0.1f);
+
+            //Assign reference to original object transform
+            var t = target as OGGrab;
+            var targetTrans = t.transform;
+
+            //Draw an arc representing the enemy's lunge range
+            DrawArc(targetTrans);
         }
-
-        //Assign reference to original object transform
-        var t = target as OGGrab;
-        var targetTrans = t.transform;
-
-        //Draw an arc representing the enemy's sight line
-        DrawArc(targetTrans);
     }
 
     //Helper func for drawing enemy sightlines

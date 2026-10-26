@@ -8,26 +8,22 @@ public class OGAttacks : MonoBehaviour
     #region Attacking Vars
     private bool attacking = false; //Is the enemy attacking?
     private IEnumerator attackingCoroutine = null; //slot for the active attacking coroutine
-    [SerializeField] private Collider attackCol;
+    [SerializeField] private Collider attackCol; //Reference to the enemy's grab range
     [SerializeField] private float damageAmount = 10; //Amount of damage dealt by the enemy
     #endregion
 
     #region Lunging Vars
     private IEnumerator lungeTimer = null; //slot for the active lunging routine
     private bool lunging = false; //Is the enemy lunging?
-    [SerializeField] private float lungeDuration; //Length of the enemy's lunge
+    [SerializeField] private float lungeDuration = 2; //Length of the enemy's lunge
     #endregion
 
     #region Lunge Cooldown Vars
     private bool lungeCooldown = false; //Is the enemy stuck in lunge cooldown?
     private IEnumerator cooldownCoroutine = null; //slot for the active lunging cooldown
 
-    [SerializeField] private float waitingPeriod;
+    [SerializeField] private float waitingPeriod = 2; //Time the ghoul needs to wait before moving after a lunge
     #endregion
-
-    private Vector3 originPoint;
-    private float movementExtents;
-    private Bounds moveRange;
 
     #region HelperScripts
     private Sight sight; //Sight script
@@ -121,15 +117,13 @@ public class OGAttacks : MonoBehaviour
         {
             throw new ArgumentException("Unable to assign NavMeshAgent script.", nameof(OfficeGhoulBehavior));
         }
-
-        moveRange = new Bounds(originPoint, new Vector3(movementExtents, movementExtents, movementExtents));
     }
 
 
     //Node for the sight check
     public Node.Status Look()
     {
-        //Check if the player is visible
+        //Check if the player is visible and if they can be grabbed currently
         if (sight.SightCheck(playerTrans) && playerMove.canGrab == true)
         {
             //If so
@@ -204,7 +198,7 @@ public class OGAttacks : MonoBehaviour
     {
         if (attackCol.bounds.Contains(playerTrans.position) && playerMove.canGrab == true)
         {
-            Debug.Log("true");
+            //Debug.Log("true");
             return Node.Status.SUCCESS; //Pass the check if the player is within that range
         }
         else
@@ -296,11 +290,5 @@ public class OGAttacks : MonoBehaviour
         agent.destination = transform.position; //Stop the agent from moving
         yield return new WaitForSeconds(waitingPeriod); //Wait the length of the cooldown
         lungeCooldown = false; //Cleared the cooldown anim
-    }
-
-    public void SetOrigin(Vector3 passedOrigin, float originBounds)
-    {
-        originPoint = passedOrigin;
-        movementExtents = originBounds;
     }
 }

@@ -3309,7 +3309,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &811007077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5689,7 +5689,7 @@ MonoBehaviour:
   attackCol: {fileID: 1497551694}
   damageAmount: 10
   lungeDuration: 2
-  waitingPeriod: 0
+  waitingPeriod: 3
 --- !u!1 &1541039668
 GameObject:
   m_ObjectHideFlags: 0
@@ -6100,6 +6100,7 @@ MonoBehaviour:
   wandering: 1
   originPoint: {x: 6.98, y: 1.5, z: 6.18}
   wanderExtents: 10
+  showHandles: 1
 --- !u!114 &1573321232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6132,7 +6133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OGGrab
   range: 4
   fovRadius: 50
-  detection: 0
+  showGuides: 0
 --- !u!114 &1573321234
 MonoBehaviour:
   m_ObjectHideFlags: 0
