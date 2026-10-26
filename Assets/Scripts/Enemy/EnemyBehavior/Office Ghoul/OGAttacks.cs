@@ -238,8 +238,7 @@ public class OGAttacks : MonoBehaviour
 
         playerMove.AlterMoveState(false); //Stop the player from moving
         playerMove.StopPlayer(); //Stop the player's movement
-        playerTrans.parent = attackCol.transform; //Tether the player to the enemy
-        playerTrans.position = attackCol.transform.position; //Lock the player to the animation hitbox
+        playerMove.TetherObject(attackCol.transform);
 
         playerHealth.TakeDamage(damageAmount); //Deal damage to the player
 

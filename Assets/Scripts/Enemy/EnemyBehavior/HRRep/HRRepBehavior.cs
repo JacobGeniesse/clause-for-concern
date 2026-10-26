@@ -110,7 +110,7 @@ public class HRRepBehavior : MonoBehaviour
 
             if (speedHandler.ShouldChangeSpeed(1))
             {
-                speedHandler.ChangeAgentSpeed(1); //Set the speed to the minimum
+                speedHandler.ChangeAgentSpeed(1); //Set the speed to the maximum
             }
 
             //If the player is within a certain range, continue to the next node for the attack sequence
