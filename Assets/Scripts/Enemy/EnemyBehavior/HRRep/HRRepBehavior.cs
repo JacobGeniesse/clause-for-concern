@@ -176,14 +176,7 @@ public class HRRepBehavior : MonoBehaviour
         }
     }
 
-    //Node for executing a warp to a jumpscare position
-    private Node.Status ExecuteWarp()
-    {
-        Debug.Log("Warping"); //Debug Message
-        return teleportScript.Teleport(); //Try to teleport
-    }
-
-    //Node for finishign a warp
+    //Node for finishing a warp
     private Node.Status FinishWarp()
     {
         patrolScript.PickClosestPatrol(); //Pick the closest patrol node to continue patroling from
@@ -219,12 +212,11 @@ public class HRRepBehavior : MonoBehaviour
     }
 
     //Func for making the enemy aggressive
-    public void MakeAggressive()
+    public void AlterAggression(bool modifier)
     {
-        aggressive = true;
+        aggressive = modifier;
         cheatCooldown = UnityEngine.Random.Range(minCheatCooldown, maxCheatCooldown);
     }
-
 
     #region Start Helpers
     //Function for adding the patrol points for the TraverseNodes script
@@ -416,7 +408,7 @@ public class HRRepBehavior : MonoBehaviour
         Selector patrolMethod = new Selector("Teleport-or-Walk"); //Selector for determining if the enemy should teleport to a jumpscare spot or patrol the map normally
         Sequence teleport = new Sequence("Teleport"); //Sequence for if the enemy teleports to a jumpscare spot
         Leaf warpCheck = new Leaf("Warp-Check", Teleport); //Leaf 1: Check if enemy can teleport
-        Leaf warpExecute = new Leaf("Warp-Execute", ExecuteWarp); //Leaf 2: Execute the teleport
+        Leaf warpExecute = new Leaf("Warp-Execute", teleportScript.Teleport); //Leaf 2: Execute the teleport
         Leaf warpFinish = new Leaf("Finish-Warp", FinishWarp); //Leaf 3: Finish the teleport
         Sequence patrol = new Sequence("Wander-Map"); //Create sequence for patrolling
         Leaf wander = new Leaf("Sensory-Input", Wander); //Leaf 1: Pick a node and travel to it

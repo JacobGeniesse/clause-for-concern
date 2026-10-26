@@ -8,9 +8,6 @@ public class HRAttacks : MonoBehaviour
 {
     private bool attacking; //bool for checking if the enemy is attacking
 
-    [Tooltip("Angle which the enemy can grab the player from.")]
-    [SerializeField] private float grabRadius = 50;
-
     [Tooltip("Damage dealt to the player by the grab.")]
     [SerializeField] private float damage = 20;
 
@@ -21,7 +18,8 @@ public class HRAttacks : MonoBehaviour
     [SerializeField] private float pushDuration = 0.5f;
 
     [Tooltip("Point the player should be attached to for the duration of the grab animation.")]
-    [SerializeField] private Transform armHitbox; //Arms position in space, used for the grab animation
+
+    [SerializeField] private Collider attackCol; //Reference to the enemy's grab range
     private Transform playerTrans; //Player's transform position
 
 
@@ -78,29 +76,13 @@ public class HRAttacks : MonoBehaviour
     public Node.Status GrabAttempt()
     {
         agent.destination = transform.position; //Stop the agent from moving
-        int layermask = 1 << 6; //Layer mask for the player's layer
-        agent.velocity = Vector3.zero;//Extra layer of stoppage
+        //agent.velocity = Vector3.zero;//Extra layer of stoppage
 
-        //If the player is hit by a line cast
-        if (Physics.Linecast(transform.position, playerTrans.position, layermask))
+        //If the player is within the grab hitbox
+        if (attackCol.bounds.Contains(playerTrans.position))
         {
-            //Calculate the angle between that and the forward position
-            Vector3 playerPos = playerTrans.position - transform.position;
-
-            float angleDif = Mathf.Abs(Vector3.SignedAngle(playerPos, transform.forward, Vector3.up));
-
-            //If the angle is less than or equal to the enemy's grab radius grab the player
-            if(angleDif <= grabRadius && playerMove.canGrab == true)
-            {
-                playerMove.StopPlayer();
-                return Node.Status.SUCCESS;
-            }
-            else
-            {
-                //Otherwise declare failure
-                return Node.Status.FAILURE;
-            }
-
+            playerMove.StopPlayer();
+            return Node.Status.SUCCESS;
         }
         else
         {
@@ -150,8 +132,8 @@ public class HRAttacks : MonoBehaviour
         attacking = true; //The enemy is attacking
 
         //Attach the player to the enemy's arm hitbox for the purposes of the grab
-        playerTrans.parent = armHitbox;
-        playerTrans.position = armHitbox.position;
+        playerTrans.parent = attackCol.transform;
+        playerTrans.position = attackCol.transform.position;
 
         playerMove.AlterMoveState(false); //prevent the player from moving
 

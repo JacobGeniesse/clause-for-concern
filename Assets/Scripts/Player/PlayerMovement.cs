@@ -13,14 +13,11 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody rb;
 
-    [SerializeField]
-    private float accel;
+    [SerializeField] private float accel;
 
-    [SerializeField]
-    private float maxWalkSpeed;
+    [SerializeField] private float maxWalkSpeed;
 
-    [SerializeField]
-    private float maxRunSpeed;
+    [SerializeField] private float maxRunSpeed;
     private bool sprinting = false;
 
     private Vector3 moveInputs;
@@ -32,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
     private bool canMove = true;
 
 
-    [SerializeField] private Vector3 pushForce;
+    [SerializeField] private Vector3 pushForce = Vector3.zero;
     private float pushDuration;
 
     public bool canGrab = true;
@@ -109,34 +106,26 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
+        Vector3 velocity = rb.linearVelocity;
+        float maxSpeedChange = accel * Time.deltaTime;
 
-        if(canMove && !pushed)
+        if (canMove && !pushed)
         {
             moveInputs = Move();
-
-            Vector3 velocity = rb.linearVelocity;
-
-            float maxSpeedChange = accel * Time.deltaTime;
 
             velocity.x = Mathf.MoveTowards(velocity.x, moveInputs.x, maxSpeedChange);
             velocity.y = Mathf.MoveTowards(velocity.y, moveInputs.y, maxSpeedChange);
             velocity.z = Mathf.MoveTowards(velocity.z, moveInputs.z, maxSpeedChange);
-
-            rb.linearVelocity = velocity;
         }
 
         if (pushed)
         {
-            Vector3 velocity = rb.linearVelocity;
-
-            float maxSpeedChange = accel * Time.deltaTime;
-
             velocity.x = Mathf.MoveTowards(velocity.x, pushForce.x, maxSpeedChange);
-            velocity.y = Mathf.MoveTowards(velocity.y, 0, maxSpeedChange);
+            velocity.y = Mathf.MoveTowards(velocity.y, pushForce.y, maxSpeedChange);
             velocity.z = Mathf.MoveTowards(velocity.z, pushForce.z, maxSpeedChange);
-
-            rb.linearVelocity = velocity;
         }
+
+        rb.linearVelocity = velocity;
     }
 
     private void Update()
