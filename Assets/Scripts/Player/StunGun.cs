@@ -38,8 +38,8 @@ public class StunGun : MonoBehaviour
     }
     private void Shoot(){
         StunProjectile shot = Instantiate(projectilePrefab, muzzle.position, muzzle.rotation); // spawns the bullets at the muzzle
-    shot.Fire(muzzle.forward * projectileSpeed, stunDuration); // fires it where the muzzle is facing
-
+        shot.Fire(muzzle.forward * projectileSpeed, stunDuration); // fires it where the muzzle is facing
+        //Debug.Log("Shoot");
         currentAmmo--; // uses one ammo
         nextFireTime = Time.time + fireCooldown; // sets when we can shoot next
     }
