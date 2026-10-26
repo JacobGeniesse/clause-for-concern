@@ -24,6 +24,7 @@ public class PlayerHealth : MonoBehaviour
     }
     private void Die(){
         // TODO: Implement the death logic
+        GameOverManager.instance.GameOver();
         Debug.Log("Player has died");
         
     }

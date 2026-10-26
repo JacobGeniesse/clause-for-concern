@@ -210,4 +210,10 @@ public class PlayerMovement : MonoBehaviour
         canGrab = true;
     }
 
+    public void TetherObject(Transform newParent)
+    {
+        transform.parent = newParent;
+        rb.position = newParent.position;
+    }
+
 }

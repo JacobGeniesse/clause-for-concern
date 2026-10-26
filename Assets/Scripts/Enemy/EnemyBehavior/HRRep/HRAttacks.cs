@@ -17,9 +17,14 @@ public class HRAttacks : MonoBehaviour
     [Tooltip("Duration the player is thrown for.")]
     [SerializeField] private float pushDuration = 0.5f;
 
-    [Tooltip("Point the player should be attached to for the duration of the grab animation.")]
-
+    [Tooltip("Object that represents the grab attack hitbox.")]
     [SerializeField] private Collider attackCol; //Reference to the enemy's grab range
+
+    [Tooltip("Period of time before the player is thrown.")]
+    [SerializeField] private float windupLength = 1.5f;
+
+    [Tooltip("Period of time after the player is thrown before the enemy can start moving again.")]
+    [SerializeField] private float cooldownLength = 2f;
     private Transform playerTrans; //Player's transform position
 
 
@@ -132,12 +137,11 @@ public class HRAttacks : MonoBehaviour
         attacking = true; //The enemy is attacking
 
         //Attach the player to the enemy's arm hitbox for the purposes of the grab
-        playerTrans.parent = attackCol.transform;
-        playerTrans.position = attackCol.transform.position;
+        playerMove.TetherObject(attackCol.transform);
 
         playerMove.AlterMoveState(false); //prevent the player from moving
 
-        yield return new WaitForSeconds(1.5f); //Windup Toss Animation Time
+        yield return new WaitForSeconds(windupLength); //Windup Toss Animation Time
 
         playerTrans.parent = null; //release the player from the arm hitbox
 
@@ -145,7 +149,7 @@ public class HRAttacks : MonoBehaviour
         
         playerHealth.TakeDamage(damage); //Have the player take damage as a result of the throw
         
-        yield return new WaitForSeconds(2); //Cooldown Animation Time
+        yield return new WaitForSeconds(cooldownLength); //Cooldown Animation Time
        
         attacking = false; //The enemy is no longer attacking
     }
