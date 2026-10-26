@@ -90,7 +90,7 @@ public class HRAttacks : MonoBehaviour
             float angleDif = Mathf.Abs(Vector3.SignedAngle(playerPos, transform.forward, Vector3.up));
 
             //If the angle is less than or equal to the enemy's grab radius grab the player
-            if(angleDif <= grabRadius)
+            if(angleDif <= grabRadius && playerMove.canGrab == true)
             {
                 playerMove.StopPlayer();
                 return Node.Status.SUCCESS;

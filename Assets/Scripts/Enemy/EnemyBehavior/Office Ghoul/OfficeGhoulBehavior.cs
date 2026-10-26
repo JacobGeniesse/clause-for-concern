@@ -2,15 +2,17 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class OfficeGhoulBehavior : MonoBehaviour
 {
-    private BehaviorTree actions;
+    private BehaviorTree actions; //Behavior Tree Reference
     private Node.Status treeStatus = Node.Status.RUNNING;
 
     [SerializeField] private bool wandering = false;
 
-    
+    [SerializeField] private Vector3 originPoint;
+    [SerializeField] private float wanderExtents = 10f;
 
     private Transform playerTrans;
 
@@ -21,10 +23,14 @@ public class OfficeGhoulBehavior : MonoBehaviour
 
     private OGAttacks attackScript;
 
+    private OfficeGhoulPatrol patrolScript;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        //originPoint = transform.position;
+
         AssignReferences();
 
         CreateBehaviorTree();
@@ -45,13 +51,6 @@ public class OfficeGhoulBehavior : MonoBehaviour
             treeStatus = Node.Status.RUNNING;
         }
     }
-
-    private Node.Status Idle()
-    {
-        //For having the Office Ghoul stand still in an area
-        return Node.Status.SUCCESS;
-    }
-
 
     private void AssignReferences()
     {
@@ -101,16 +100,26 @@ public class OfficeGhoulBehavior : MonoBehaviour
             //Give an error message if this fails and return false
             Debug.LogError($"No NavMeshAgent attached to {this.gameObject}!");
         }
-
+        
         try
         {
             attackScript = GetComponentInChildren<OGAttacks>();
+            attackScript.SetOrigin(originPoint, wanderExtents);
         }
         catch
         {
             throw new ArgumentException("Unable to assign OGAttacks component", nameof(OfficeGhoulBehavior));
         }
 
+        try
+        {
+            patrolScript = GetComponentInChildren<OfficeGhoulPatrol>();
+            patrolScript.InitializeVars(originPoint, wanderExtents, wandering);
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to assign OfficeGhoulPatrol component", nameof(OfficeGhoulBehavior));
+        }
     }
 
     private void CreateBehaviorTree()
@@ -164,12 +173,49 @@ public class OfficeGhoulBehavior : MonoBehaviour
         hear.AddChild(clearSound);
 
 
-        Leaf idle = new Leaf("Idling-Behavior", Idle);
+
+        //Check if the enemy should retreat
+        //If yes, execute the retreat sequence
+        //If no, check if the enemy can wander
+            //If yes, execute the wandering sequence
+            //If no, stand still
+
+        Sequence patrol = new Sequence("Patrol");
+        Selector retreatCheck = new Selector("Check-Retreat");
+        
+        Sequence retreat = new Sequence("Back-to-Origin");
+        Leaf verify = new Leaf("Should-this-Retreat", patrolScript.CheckPosition);
+        Leaf flee = new Leaf("Return to origin", patrolScript.ReturnToOrigin);
+        retreat.AddChild(verify);
+        retreat.AddChild(flee);
+
+        Sequence wander = new Sequence("Wander-Around");
+
+        Selector wanderCheck = new Selector("Should-this-Wander");
+        wander.AddChild(wanderCheck);
+
+        Sequence roam = new Sequence("Wandering-Sequence");
+        Leaf check = new Leaf("Check-To-Patrol", patrolScript.WanderCheck);
+        Leaf move = new Leaf("Wander-To-Node", patrolScript.Wander);
+        Leaf reset = new Leaf("ClearWander", patrolScript.ClearWander);
+        roam.AddChild(check);
+        roam.AddChild(move);
+        roam.AddChild(reset);
+
+        Sequence standStill = new Sequence("Idling");
+        Leaf idle = new Leaf("Stand-Still", patrolScript.Idle);
+        standStill.AddChild(idle);
+
+        wanderCheck.AddChild(roam);
+        wanderCheck.AddChild(idle);
+        retreatCheck.AddChild(retreat);
+        retreatCheck.AddChild(wanderCheck);
+        patrol.AddChild(retreatCheck);
 
         choices.AddChild(stun);
         choices.AddChild(chase);
         choices.AddChild(hear);
-        //choices.AddChild(idle);
+        choices.AddChild(patrol);
 
         actions.AddChild(choices);
     }

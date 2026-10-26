@@ -25,6 +25,10 @@ public class OGAttacks : MonoBehaviour
     [SerializeField] private float waitingPeriod;
     #endregion
 
+    private Vector3 originPoint;
+    private float movementExtents;
+    private Bounds moveRange;
+
     #region HelperScripts
     private Sight sight; //Sight script
     private MoveToPoint move; //movement script
@@ -117,6 +121,8 @@ public class OGAttacks : MonoBehaviour
         {
             throw new ArgumentException("Unable to assign NavMeshAgent script.", nameof(OfficeGhoulBehavior));
         }
+
+        moveRange = new Bounds(originPoint, new Vector3(movementExtents, movementExtents, movementExtents));
     }
 
 
@@ -124,7 +130,7 @@ public class OGAttacks : MonoBehaviour
     public Node.Status Look()
     {
         //Check if the player is visible
-        if (sight.SightCheck(playerTrans))
+        if (sight.SightCheck(playerTrans) && playerMove.canGrab == true)
         {
             //If so
             move.MoveToPOI(agent, playerTrans.position); //Start moving towards the player's position
@@ -198,6 +204,7 @@ public class OGAttacks : MonoBehaviour
     {
         if (attackCol.bounds.Contains(playerTrans.position) && playerMove.canGrab == true)
         {
+            Debug.Log("true");
             return Node.Status.SUCCESS; //Pass the check if the player is within that range
         }
         else
@@ -289,5 +296,11 @@ public class OGAttacks : MonoBehaviour
         agent.destination = transform.position; //Stop the agent from moving
         yield return new WaitForSeconds(waitingPeriod); //Wait the length of the cooldown
         lungeCooldown = false; //Cleared the cooldown anim
+    }
+
+    public void SetOrigin(Vector3 passedOrigin, float originBounds)
+    {
+        originPoint = passedOrigin;
+        movementExtents = originBounds;
     }
 }

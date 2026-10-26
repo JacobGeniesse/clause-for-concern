@@ -7,9 +7,7 @@ using System.Collections;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
 {
-
     public InputActionAsset masterList;
-
     private InputAction movement;
     private InputAction sprint;
 
@@ -114,8 +112,6 @@ public class PlayerMovement : MonoBehaviour
 
         if(canMove && !pushed)
         {
-            //moveDirection = CalcDirection();
-
             moveInputs = Move();
 
             Vector3 velocity = rb.linearVelocity;
@@ -150,7 +146,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        
+       /*
         if (sprint.WasPressedThisFrame() == true)
         {
             if (sprinting == false)
@@ -162,6 +158,7 @@ public class PlayerMovement : MonoBehaviour
                 sprinting = false;
             }
         }
+       */
     }
 
     private Vector3 Move()
