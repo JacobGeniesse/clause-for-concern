@@ -4,6 +4,19 @@ using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance;
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Debug.LogWarning("Duplicate GameManager instance found in scene!");
+            Destroy(this);
+        }
+    }
     [SerializeField] private GameObject pauseMenu;
     private Minimap map;
     [SerializeField] private InputActionAsset masterList;
@@ -77,12 +90,18 @@ public class GameManager : MonoBehaviour
 
     public void Pause()
     {
-        map.SetOpen(false);
+        if(map != null)
+        {
+            map.SetOpen(false);
+        }
         ModTime(0);
         paused = true;
         Cursor.lockState = CursorLockMode.None;
-        pauseMenu.SetActive(true);
-        pauseMenu.GetComponent<PauseMenu>().ResetPauseMenu();   // Make it so the main pause menu is active when you close and open the pause menu
+        if(pauseMenu != null)
+        {
+            pauseMenu.SetActive(true);
+            pauseMenu.GetComponent<PauseMenu>().ResetPauseMenu();   // Make it so the main pause menu is active when you close and open the pause menu
+        }
         masterList.FindAction("UseItem").Disable();             // Disable using items when the pause menu is active, so as to prevent inputs from accumilating
     }
 
@@ -95,7 +114,10 @@ public class GameManager : MonoBehaviour
     {
         paused = false;
         Cursor.lockState = CursorLockMode.Locked;
-        pauseMenu.SetActive(false);
+        if(pauseMenu != null)
+        {
+            pauseMenu.SetActive(false);
+        }
         ModTime(1);
         masterList.FindAction("UseItem").Enable();  // Reenable using items when the menu is closed
     }
