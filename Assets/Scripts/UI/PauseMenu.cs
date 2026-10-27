@@ -7,6 +7,8 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] private GameObject controlSettings;
     [SerializeField] private GameObject volumeSettings;
 
+    [SerializeField] private GameObject quitPanel;
+
     [SerializeField] private GameObject keyboardBindings;
     [SerializeField] private GameObject controllerBindings;
 
@@ -22,6 +24,8 @@ public class PauseMenu : MonoBehaviour
         settingsCanvas.SetActive(false);
         controlSettings.SetActive(false);
         volumeSettings.SetActive(false);
+
+        quitPanel.SetActive(false);
 
         // Make the keyboard bindings active first (can probably make this so whichever is first depends on what control option the player is using)
         keyboardBindings.SetActive(true);
@@ -74,5 +78,15 @@ public class PauseMenu : MonoBehaviour
     {
         controllerBindings.SetActive(false);
         keyboardBindings.SetActive(true);
+    }
+
+    public void ShowQuitPanel()
+    {
+        quitPanel.SetActive(true);
+    }
+
+    public void HideQuitPanel()
+    {
+        quitPanel.SetActive(false);
     }
 }
