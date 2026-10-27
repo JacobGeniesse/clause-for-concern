@@ -92,9 +92,8 @@ public class GameManager : MonoBehaviour
     {
         if(map != null)
         {
-            map.SetOpen(false);
+            map.SetOpen(false, true);
         }
-        map.SetOpen(false, true);
         ModTime(0);
         paused = true;
         Cursor.lockState = CursorLockMode.None;

@@ -109,6 +109,10 @@ public class PlayerMovement : MonoBehaviour
             rb.linearVelocity = stopped;
             return;
         }
+        else
+        {
+            canMove = true;
+        }
 
 
         Vector3 velocity = rb.linearVelocity;

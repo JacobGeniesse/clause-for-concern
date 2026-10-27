@@ -9,7 +9,7 @@ public enum ItemType{
 public class PlayerInventory : MonoBehaviour
 {
    [SerializeField] private List<string> keyItems = new List<string>();
-   [SerializeField] private int ammoCount = 0;
+   [SerializeField] public int ammoCount = 0;
    [SerializeField] private int maxAmmo = 5;
    [SerializeField] private int healthCount = 0;
    [SerializeField] private int maxHealth = 5;

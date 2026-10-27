@@ -34,9 +34,9 @@ public class StunGun : MonoBehaviour
             return;
         }
 
-        //if (currentAmmo <= 0){
-        //    return; // no ammo no shooting
-        //}
+        if (inventory.ammoCount <= 0){
+            return; // no ammo no shooting
+        }
         if(Time.time < nextFireTime){
             return; // still cooling down no shooting
         }

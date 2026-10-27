@@ -110789,6 +110789,10 @@ PrefabInstance:
       value: Ammo
       objectReference: {fileID: 0}
     - target: {fileID: 6996994294603851001, guid: 996cf0442c9dd3342ab014ae7704a64c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.03
+      objectReference: {fileID: 0}
+    - target: {fileID: 6996994294603851001, guid: 996cf0442c9dd3342ab014ae7704a64c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.272412
       objectReference: {fileID: 0}
