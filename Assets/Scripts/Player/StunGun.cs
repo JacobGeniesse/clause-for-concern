@@ -29,6 +29,12 @@ public class StunGun : MonoBehaviour
 
     private void OnFire(InputAction.CallbackContext context){
         if (inventory.GetCount(ItemType.Ammo) <= 0){
+        if (Minimap.IsOpen)
+        {
+            return;
+        }
+
+        if (currentAmmo <= 0){
             return; // no ammo no shooting
         }
         if(Time.time < nextFireTime){
