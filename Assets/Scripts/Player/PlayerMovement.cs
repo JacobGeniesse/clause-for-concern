@@ -99,7 +99,6 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        //moveDirection = CalcDirection();
 
         moveInputs = Move();
 
@@ -120,20 +119,6 @@ public class PlayerMovement : MonoBehaviour
         {
             return;
         }
-
-        /*
-        if (sprint.WasPressedThisFrame() == true)
-        {
-            if (sprinting == false)
-            {
-                sprinting = true;
-            }
-            else
-            {
-                sprinting = false;
-            }
-        }
-        */
     }
 
     private Vector3 Move()

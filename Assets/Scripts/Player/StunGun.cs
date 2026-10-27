@@ -10,13 +10,13 @@ public class StunGun : MonoBehaviour
     [SerializeField] private int projectileSpeed = 25; // how fast the bullet flies
     [SerializeField] private int stunDuration = 3; // how long enemies stay stunned
     [SerializeField] private int fireCooldown = 2; // seconds between shots (slow fire rate)
-    [SerializeField] private int maxAmmo = 5; // most ammo you can hold
-    [SerializeField] private int currentAmmo = 5; // ammo you start with
+    PlayerInventory inventory;
 
     private float nextFireTime = 0f; // the earliest time we are allowed to shoot again
 
     void Awake(){
-        fire = masterList["UseItem"]; // find the fire action before OnEnable runs
+        fire = masterList["Fire"]; // find the fire action before OnEnable runs
+        inventory = GetComponentInParent<PlayerInventory>();
     }
     void OnEnable(){
         fire.Enable(); // turns on the fire action so it can send inputs
@@ -28,7 +28,7 @@ public class StunGun : MonoBehaviour
     }
 
     private void OnFire(InputAction.CallbackContext context){
-        if (currentAmmo <= 0){
+        if (inventory.GetCount(ItemType.Ammo) <= 0){
             return; // no ammo no shooting
         }
         if(Time.time < nextFireTime){
@@ -40,12 +40,9 @@ public class StunGun : MonoBehaviour
         StunProjectile shot = Instantiate(projectilePrefab, muzzle.position, muzzle.rotation); // spawns the bullets at the muzzle
     shot.Fire(muzzle.forward * projectileSpeed, stunDuration); // fires it where the muzzle is facing
 
-        currentAmmo--; // uses one ammo
+        inventory.RemoveItem(ItemType.Ammo, 1); // uses one ammo
         nextFireTime = Time.time + fireCooldown; // sets when we can shoot next
     }
 
-    public void AddAmmo(int amount)
-    {
-        currentAmmo = Mathf.Min(currentAmmo + amount, maxAmmo); // adds ammo without going over max
-    }
+    
 }
