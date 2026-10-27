@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 4872203633351343879}
   - component: {fileID: 2876454004980331804}
   - component: {fileID: 4968435343629732865}
+  - component: {fileID: 8593921642612136468}
   m_Layer: 6
   m_Name: PlayerBody
   m_TagString: Player
@@ -146,7 +147,7 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 1
 --- !u!114 &6520156279303959492
@@ -165,6 +166,8 @@ MonoBehaviour:
   accel: 50
   maxWalkSpeed: 6
   maxRunSpeed: 10
+  pushForce: {x: 0, y: 0, z: 0}
+  canGrab: 1
 --- !u!114 &8170694284973343607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,6 +221,26 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2202902497252538709}
   m_Enabled: 1
+--- !u!114 &8593921642612136468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2202902497252538709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e89ebf4360e2bb4f9624c48de47d533, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StunGun
+  masterList: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  projectilePrefab: {fileID: 7596195721622199248, guid: 05817c068cfa79443a462bbcf1c64a9f, type: 3}
+  muzzle: {fileID: 0}
+  projectileSpeed: 25
+  stunDuration: 3
+  fireCooldown: 0
+  maxAmmo: 20
+  currentAmmo: 20
 --- !u!1 &8437550477736658902
 GameObject:
   m_ObjectHideFlags: 0
@@ -263,11 +286,11 @@ GameObject:
   - component: {fileID: 1648680792647683817}
   m_Layer: 6
   m_Name: AmbientGlow
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3285387359287676609
 Transform:
   m_ObjectHideFlags: 0
@@ -390,7 +413,7 @@ GameObject:
   - component: {fileID: 8699106522583429590}
   m_Layer: 6
   m_Name: PlayerCamera
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
