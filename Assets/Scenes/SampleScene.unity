@@ -69862,6 +69862,28 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &1337802996 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2202902497252538709, guid: 001434d79942b9f4b84806d7f3ccec9b, type: 3}
+  m_PrefabInstance: {fileID: 1789636225}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1337803008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1337802996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77749cb1caf3a284491eb603ff4e152d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
+  keyItems: []
+  ammoCount: 2
+  maxAmmo: 5
+  healthCount: 0
+  maxHealth: 5
 --- !u!1001 &1342372885
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -95018,10 +95040,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player (1)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 8593921642612136468, guid: 001434d79942b9f4b84806d7f3ccec9b, type: 3}
+      propertyPath: muzzle
+      value: 
+      objectReference: {fileID: 771745479}
+    m_RemovedComponents:
+    - {fileID: 7154759164390146546, guid: 001434d79942b9f4b84806d7f3ccec9b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2202902497252538709, guid: 001434d79942b9f4b84806d7f3ccec9b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1337803008}
   m_SourcePrefab: {fileID: 100100000, guid: 001434d79942b9f4b84806d7f3ccec9b, type: 3}
 --- !u!1 &1792442856
 GameObject:

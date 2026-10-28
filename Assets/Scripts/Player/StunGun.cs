@@ -28,7 +28,7 @@ public class StunGun : MonoBehaviour
     }
 
     private void OnFire(InputAction.CallbackContext context){
-        if (inventory.GetCount(ItemType.Ammo) <= 0){
+        if (inventory.GetCount(ItemType.Ammo) > 0){
         if (Minimap.IsOpen)
         {
             return;
@@ -41,6 +41,7 @@ public class StunGun : MonoBehaviour
             return; // still cooling down no shooting
         }
         Shoot();
+            Debug.Log("firing");
         }
     }
     private void Shoot()
