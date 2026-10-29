@@ -1,22 +1,23 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+// Tab toggle for the phone
 public class Minimap : MonoBehaviour
 {
-    public static bool IsOpen { get; private set; }
+    public static bool IsOpen { get; private set; } // true while the phone is on screen
 
     private Transform player;
-    private GameManager gameManager;
     private TaskManager taskManager;
-    [SerializeField] RectTransform mapRect;
+    [SerializeField] RectTransform mapRect; // floorplan image the markers sit on
     [SerializeField] RectTransform playerMarker;
     [SerializeField] RectTransform taskMarker;
-    [SerializeField] Transform worldMin;
+    [SerializeField] Transform worldMin; // world corner that maps to the image's min
     [SerializeField] Transform worldMax;
-    [SerializeField] GameObject mapRoot;
+    [SerializeField] GameObject mapRoot; // HeldPhone object
     [SerializeField] InputActionAsset masterList;
 
     InputAction mapToggle;
+    PhoneRig phoneRig;
 
     void Start()
     {
@@ -30,9 +31,18 @@ public class Minimap : MonoBehaviour
             taskManager = GameObject.Find("GameManager").GetComponent<TaskManager>();
         }
 
-        if(gameManager == null)
+        if (mapRoot != null)
         {
-            gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+            phoneRig = mapRoot.GetComponent<PhoneRig>();
+            if (phoneRig == null)
+            {
+                phoneRig = mapRoot.GetComponentInParent<PhoneRig>(true);
+            }
+
+            if (phoneRig != null)
+            {
+                phoneRig.Initialize();
+            }
         }
 
         if (masterList != null)
@@ -48,37 +58,34 @@ public class Minimap : MonoBehaviour
             }
         }
 
-        SetOpen(false);
+        SetOpen(false, true);
     }
 
     void OnDisable()
     {
         if (IsOpen)
         {
-            SetOpen(false);
+            SetOpen(false, true);
         }
     }
 
     void Update()
     {
-        //if (Time.timeScale == 0f)
-        //{
-        //    if (IsOpen)
-        //    {
-        //        SetOpen(false);
-        //    }
-
-        //    return;
-        //}
-
         if (WasMapPressed())
         {
-            SetOpen(!IsOpen);
+            bool raised = phoneRig != null ? phoneRig.IsRaised : IsOpen;
+            SetOpen(!raised);
         }
     }
 
     void LateUpdate()
     {
+        if (phoneRig != null)
+        {
+            phoneRig.Tick(Time.deltaTime);
+            IsOpen = phoneRig.IsVisible;
+        }
+
         if (!IsOpen)
         {
             return;
@@ -120,20 +127,36 @@ public class Minimap : MonoBehaviour
 
     public void SetOpen(bool open)
     {
-        IsOpen = open;
-        if (mapRoot != null)
-        {
-            mapRoot.SetActive(open);
-        }
+        SetOpen(open, false);
+    }
 
-        if (open == true)
+    // immediate = true skips the raise/lower animation.
+    public void SetOpen(bool open, bool immediate)
+    {
+        if (phoneRig != null)
         {
-            gameManager.ModTime(0);
+            if (immediate && !open)
+            {
+                phoneRig.SnapHidden();
+            }
+            else
+            {
+                phoneRig.SetRaised(open);
+            }
+
+            IsOpen = phoneRig.IsVisible;
         }
         else
         {
-            gameManager.ModTime(1);
+            IsOpen = open;
+            if (mapRoot != null)
+            {
+                mapRoot.SetActive(open);
+            }
         }
+
+        Cursor.lockState = open ? CursorLockMode.None : CursorLockMode.Locked;
+        Cursor.visible = open;
     }
 
     void PlaceMarker(RectTransform marker, Vector3 worldPos)
@@ -142,6 +165,7 @@ public class Minimap : MonoBehaviour
         marker.localPosition = new Vector3(local.x, local.y, 0f);
     }
 
+    // Maps world XZ into the floorplan rect. worldMin/Max should match the image corners.
     Vector2 WorldToMap(Vector3 worldPos)
     {
         if (mapRect == null || worldMin == null || worldMax == null)
@@ -149,7 +173,7 @@ public class Minimap : MonoBehaviour
             return Vector2.zero;
         }
 
-        float nx = Mathf.InverseLerp(worldMin.position.x, worldMax.position.x, worldPos.x); //these normalize the player coordinates according to the box made by MapWordMin/Max
+        float nx = Mathf.InverseLerp(worldMin.position.x, worldMax.position.x, worldPos.x);
         float ny = Mathf.InverseLerp(worldMin.position.z, worldMax.position.z, worldPos.z);
         Rect rect = mapRect.rect;
         return new Vector2(
