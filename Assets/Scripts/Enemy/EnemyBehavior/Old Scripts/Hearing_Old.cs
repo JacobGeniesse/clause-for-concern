@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class Hearing : MonoBehaviour
+public class Hearing_Old : MonoBehaviour
 {
     [Tooltip("How far away the enemy can hear loud sounds from.")]
     [SerializeField] private float lSoundRadius = 10f; //Radius that loud sounds can be heard from

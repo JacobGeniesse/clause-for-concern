@@ -59,7 +59,7 @@ public class EnemyBehavior : MonoBehaviour
 
     //Helper Functions
     private SightCheck sightCone;
-    private Hearing hearing;
+    private Hearing_Old hearing;
     [HideInInspector] public DevCheats devCheat;
     private EnemySound enemySound;
 
@@ -122,7 +122,7 @@ public class EnemyBehavior : MonoBehaviour
         //Find and assign the hearing variable
         try
         {
-            hearing = GetComponent<Hearing>();
+            hearing = GetComponent<Hearing_Old>();
         }
         catch
         {

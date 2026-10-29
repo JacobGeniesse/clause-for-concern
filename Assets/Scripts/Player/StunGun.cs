@@ -28,17 +28,26 @@ public class StunGun : MonoBehaviour
     }
 
     private void OnFire(InputAction.CallbackContext context){
-        if (inventory.GetCount(ItemType.Ammo) <= 0){
+        if (inventory.GetCount(ItemType.Ammo) > 0){
+        if (Minimap.IsOpen)
+        {
+            return;
+        }
+
+        if (inventory.ammoCount <= 0){
             return; // no ammo no shooting
         }
         if(Time.time < nextFireTime){
             return; // still cooling down no shooting
         }
         Shoot();
+            Debug.Log("firing");
+        }
     }
-    private void Shoot(){
+    private void Shoot()
+    {
         StunProjectile shot = Instantiate(projectilePrefab, muzzle.position, muzzle.rotation); // spawns the bullets at the muzzle
-    shot.Fire(muzzle.forward * projectileSpeed, stunDuration); // fires it where the muzzle is facing
+        shot.Fire(muzzle.forward * projectileSpeed, stunDuration); // fires it where the muzzle is facing
 
         inventory.RemoveItem(ItemType.Ammo, 1); // uses one ammo
         nextFireTime = Time.time + fireCooldown; // sets when we can shoot next

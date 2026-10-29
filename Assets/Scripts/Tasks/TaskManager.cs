@@ -27,6 +27,7 @@ public class TaskManager : MonoBehaviour
 
     [SerializeField] TaskUI taskUI;
     private EnemyBehavior enemyBehavior;
+    private HRRepBehavior hrBehavior;
 
     void Start()
     {
@@ -41,6 +42,15 @@ public class TaskManager : MonoBehaviour
         catch
         {
             throw new ArgumentException("Unable to find EnemyBehavior.", nameof(TaskManager));
+        }
+
+        try
+        {
+            hrBehavior = FindAnyObjectByType<HRRepBehavior>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to find HR Rep in scene.", nameof(TaskManager));
         }
 
         if (!HasTasks())
@@ -59,7 +69,16 @@ public class TaskManager : MonoBehaviour
     {
         if (!overdue)
         {
-            enemyBehavior.aggressive = false;
+            if(enemyBehavior != null)
+            {
+                enemyBehavior.aggressive = false;
+            }
+
+            if (hrBehavior != null)
+            {
+                hrBehavior.AlterAggression(false);
+            }
+
             timeRemaining -= Time.deltaTime;
             if (timeRemaining <= 0f)
             {
@@ -71,7 +90,15 @@ public class TaskManager : MonoBehaviour
         }
         else
         {
-            enemyBehavior.aggressive = true;
+            if (enemyBehavior != null)
+            {
+                enemyBehavior.aggressive = true;
+            }
+
+            if (hrBehavior != null)
+            {
+                hrBehavior.AlterAggression(true);
+            }
         }
 
         //if (Time.time >= nextStatusLog)

@@ -3,6 +3,8 @@ using UnityEngine;
 public class Sequence : Node
 {
     //Constructor declaration and overload
+    public Sequence() { }
+
     public Sequence(string n)
     {
         name = n;
