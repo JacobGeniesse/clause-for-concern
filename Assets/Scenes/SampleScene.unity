@@ -69880,6 +69880,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
   keyItems: []
+  standardItems: []
   ammoCount: 2
   maxAmmo: 5
   healthCount: 0
