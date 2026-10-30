@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 2876454004980331804}
   - component: {fileID: 4968435343629732865}
   - component: {fileID: 8593921642612136468}
+  - component: {fileID: 4634188580408802509}
   m_Layer: 6
   m_Name: PlayerBody
   m_TagString: Player
@@ -239,6 +240,24 @@ MonoBehaviour:
   projectileSpeed: 25
   stunDuration: 3
   fireCooldown: 0
+--- !u!114 &4634188580408802509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2202902497252538709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77749cb1caf3a284491eb603ff4e152d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
+  keyItems: []
+  standardItems: []
+  ammoCount: 0
+  maxAmmo: 5
+  healthCount: 0
+  maxHealth: 5
 --- !u!1 &8437550477736658902
 GameObject:
   m_ObjectHideFlags: 0
@@ -248,7 +267,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6611432329126956421}
-  - component: {fileID: 7154759164390146546}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -272,23 +290,6 @@ Transform:
   - {fileID: 586841166569131274}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7154759164390146546
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8437550477736658902}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77749cb1caf3a284491eb603ff4e152d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
-  keyItems: []
-  ammoCount: 2
-  maxAmmo: 5
-  healthCount: 0
-  maxHealth: 5
 --- !u!1 &8668086339266733533
 GameObject:
   m_ObjectHideFlags: 0

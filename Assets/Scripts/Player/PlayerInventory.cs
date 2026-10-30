@@ -12,16 +12,15 @@ public class PlayerInventory : MonoBehaviour
     public static PlayerInventory Instance { get; private set; }    // Singleton instance
 
 
-    //[SerializeField] private Dictionary<int, ItemPickup> standardItemInventory = new Dictionary<int, ItemPickup>();     // Standard item inventory dictionary
-    //[SerializeField] private Dictionary<int, KeyItemPickup> keyItemInventory = new Dictionary<int, KeyItemPickup>();    // Key item inventory dictionary
+    
 
 
-   [SerializeField] private List<KeyItemPickup> keyItems = new List<KeyItemPickup>();
-    [SerializeField] private List<ItemPickup> standardItems = new List<ItemPickup>();
-   [SerializeField] public int ammoCount = 0;
-   [SerializeField] private int maxAmmo = 5;
-   [SerializeField] private int healthCount = 0;
-   [SerializeField] private int maxHealth = 5;
+   [SerializeField] private List<KeyItemPickup> keyItems = new List<KeyItemPickup>();   // Inventory list of key items
+    [SerializeField] private List<ItemPickup> standardItems = new List<ItemPickup>();   // Inventory list of standard items
+
+    // Do we want to have the stun gun script handle the ammo management, and the inventory just adds ammo from ammo boxes?
+   [SerializeField] public int ammoCount = 0;   // Current ammo count of the stapler
+   [SerializeField] private int maxAmmo = 5;    // Maximum ammo count for the stapler
 
    public bool AddKeyItem(KeyItemPickup keyItem){
     if(keyItems.Contains(keyItem)){ // if keyitems has this key then return false
@@ -33,37 +32,26 @@ public class PlayerInventory : MonoBehaviour
     return true;
    }
 
+    // Check if the key item is needed to perform the specified action
    public bool HasKeyItem(KeyItemPickup keyItem)
     {
     return keyItems.Contains(keyItem);
    }
 
+    // If the key item is present, remove it from the inventory. Key items are revomed automatically when needed and the player cannot use them directly from the inventory
    public bool RemoveKeyItem(KeyItemPickup keyItem)
     {
     return keyItems.Remove(keyItem);
    }
 
+    // Add an item to the standard item inventory
    public bool AddItems(ItemPickup item){
-        /*
-    switch(type){ // determining which kind of item was picked up 
-        case ItemType.Ammo:
-            int ammoRoom = maxAmmo - ammoCount; // 
-            int ammoAdded = Mathf.Min(amount, ammoRoom);
-            ammoCount += ammoAdded;
-            return ammoAdded;
-        
-        case ItemType.Health:
-            int healthRoom = maxHealth - healthCount;
-            int healthAdded = Mathf.Min(amount, healthRoom);
-            healthCount += healthAdded;
-            return healthAdded; 
-    }
-        */
         standardItems.Add(item);
         Debug.Log("Added " + item.amount + " " + item.itemType);
     return true;
    }
 
+    // Call this function to use items from the item inventory
     public int UseItems(ItemPickup item)
     {
         switch (item.itemType)
@@ -75,27 +63,24 @@ public class PlayerInventory : MonoBehaviour
                 return ammoAdded;
 
             case ItemType.Health:
-                int healthRoom = maxHealth - healthCount;
-                int healthAdded = Mathf.Min(item.amount, healthRoom);
-                healthCount += healthAdded;
-                return healthAdded;
+                // Heal the player's health from the playerhealth script
+                gameObject.GetComponent<PlayerHealth>().Heal(item.amount);
+                return item.amount;
 
             case ItemType.Speed:
-                // Code for activating speedboost item here
+                // Code for activating speedboost item here, ideally reference the player movement script
                 return 0;
         }
         return 0;
     }
 
+    // These functions are only used by the stun gun script
    public int GetCount(ItemType type)
     {
         switch (type)
         {
             case ItemType.Ammo:
                 return ammoCount;
-
-            case ItemType.Health:
-                return healthCount;
         }
 
         return 0;
@@ -111,14 +96,6 @@ public class PlayerInventory : MonoBehaviour
                     return false;
                 }
                 ammoCount -= amount;
-                return true;
-
-            case ItemType.Health:
-                if (healthCount < amount)
-                {
-                    return false;
-                }
-                healthCount -= amount;
                 return true;
         }
 

@@ -22,7 +22,7 @@ public class ItemPickup : MonoBehaviour, IInteractable
     {
         if (inventory.AddItems(this.GetComponent<ItemPickup>()))
         {
-            //inventory.UseItems(this.GetComponent<ItemPickup>()); test function
+            //inventory.UseItems(this.GetComponent<ItemPickup>()); //test function
             gameObject.SetActive(false);
         }
     }
