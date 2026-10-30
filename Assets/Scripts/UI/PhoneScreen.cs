@@ -4,9 +4,10 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-// Switches the phone UI between map, tasks, and inventory pages
+// Switches the phone UI between map, tasks, and inventory pages.
 public class PhoneScreen : MonoBehaviour
 {
+    [SerializeField] InputActionAsset masterList;
     [SerializeField] GameObject mapPage;
     [SerializeField] GameObject tasksPage;
     [SerializeField] GameObject inventoryPage;
@@ -19,6 +20,9 @@ public class PhoneScreen : MonoBehaviour
 
     GraphicRaycaster raycaster;
     readonly List<RaycastResult> hits = new List<RaycastResult>();
+    InputAction previousTab;
+    InputAction nextTab;
+    int tabIndex;
 
     void Awake()
     {
@@ -27,11 +31,45 @@ public class PhoneScreen : MonoBehaviour
         {
             raycaster = canvas.GetComponent<GraphicRaycaster>();
         }
+
+        if (masterList != null)
+        {
+            previousTab = masterList["Previous"];
+            nextTab = masterList["Next"];
+        }
     }
 
     void OnEnable()
     {
-        ShowMap();
+        if (previousTab != null)
+        {
+            previousTab.Enable();
+            previousTab.performed += OnPrevious;
+        }
+
+        if (nextTab != null)
+        {
+            nextTab.Enable();
+            nextTab.performed += OnNext;
+        }
+
+        tabIndex = 0;
+        ShowCurrent();
+    }
+
+    void OnDisable()
+    {
+        if (previousTab != null)
+        {
+            previousTab.performed -= OnPrevious;
+            previousTab.Disable();
+        }
+
+        if (nextTab != null)
+        {
+            nextTab.performed -= OnNext;
+            nextTab.Disable();
+        }
     }
 
     void Update()
@@ -41,46 +79,68 @@ public class PhoneScreen : MonoBehaviour
             return;
         }
 
-        // 1/2/3 also switch pages
-        Keyboard keyboard = Keyboard.current;
-        if (keyboard != null)
-        {
-            if (keyboard.digit1Key.wasPressedThisFrame || keyboard.numpad1Key.wasPressedThisFrame)
-            {
-                ShowMap();
-            }
-            else if (keyboard.digit2Key.wasPressedThisFrame || keyboard.numpad2Key.wasPressedThisFrame)
-            {
-                ShowTasks();
-            }
-            else if (keyboard.digit3Key.wasPressedThisFrame || keyboard.numpad3Key.wasPressedThisFrame)
-            {
-                ShowInventory();
-            }
-        }
-
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
         {
             TryClickTab();
         }
     }
 
+    void OnPrevious(InputAction.CallbackContext context)
+    {
+        Cycle(-1);
+    }
+
+    void OnNext(InputAction.CallbackContext context)
+    {
+        Cycle(1);
+    }
+
     public void ShowMap()
     {
-        Show(mapPage, mapTab);
+        tabIndex = 0;
+        ShowCurrent();
     }
 
     public void ShowTasks()
     {
-        Show(tasksPage, tasksTab);
+        tabIndex = 1;
+        ShowCurrent();
     }
 
     public void ShowInventory()
     {
-        Show(inventoryPage, inventoryTab);
+        tabIndex = 2;
+        ShowCurrent();
     }
 
-    // clicks on the MAP / TASKS / INV buttons.
+    void Cycle(int direction)
+    {
+        if (!Minimap.IsOpen)
+        {
+            return;
+        }
+
+        tabIndex = (tabIndex + direction + 3) % 3;
+        ShowCurrent();
+    }
+
+    void ShowCurrent()
+    {
+        switch (tabIndex)
+        {
+            case 1:
+                Show(tasksPage, tasksTab);
+                break;
+            case 2:
+                Show(inventoryPage, inventoryTab);
+                break;
+            default:
+                Show(mapPage, mapTab);
+                break;
+        }
+    }
+
+    // World-space UI clicks on the MAP / TASKS / INV buttons.
     void TryClickTab()
     {
         if (raycaster == null || EventSystem.current == null)

@@ -104381,6 +104381,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1a9e4b2f8d46a0b3e5c6d7a8f90123, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhoneScreen
+  masterList: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   mapPage: {fileID: 1987654560}
   tasksPage: {fileID: 1987654570}
   inventoryPage: {fileID: 1987654580}
@@ -108069,7 +108070,7 @@ Transform:
   m_GameObject: {fileID: 1987654700}
   serializedVersion: 2
   m_LocalRotation: {x: 0.06975647, y: 0, z: 0, w: 0.9975641}
-  m_LocalPosition: {x: 0.16, y: -0.07, z: 0.42}
+  m_LocalPosition: {x: -0.16, y: -0.07, z: 0.42}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -108090,8 +108091,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhoneRig
   moveDuration: 0.45
-  hiddenPosition: {x: 0.14, y: -0.48, z: 0.32}
-  shownPosition: {x: 0.16, y: -0.07, z: 0.42}
+  hiddenPosition: {x: -0.14, y: -0.48, z: 0.32}
+  shownPosition: {x: -0.16, y: -0.07, z: 0.42}
   hiddenEuler: {x: 38, y: 0, z: 0}
   shownEuler: {x: 8, y: 0, z: 0}
 --- !u!1 &1987654710
