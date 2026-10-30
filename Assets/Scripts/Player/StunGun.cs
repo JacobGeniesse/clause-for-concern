@@ -5,12 +5,20 @@ public class StunGun : MonoBehaviour
 {
     public InputActionAsset masterList; // input list 
     private InputAction fire; // fire the gun
+
+    [Tooltip("Bullet Prefab")]
     [SerializeField] private StunProjectile projectilePrefab; // the bullet prefab
+
+    [Tooltip("Position Bullets Spawn From.")]
     [SerializeField] private Transform muzzle; // where bullets spawn from
+
+    [Tooltip("Speed the bullet will be launched at.")]
     [SerializeField] private int projectileSpeed = 25; // how fast the bullet flies
-    [SerializeField] private int stunDuration = 3; // how long enemies stay stunned
+    private int stunDuration = 3; // how long enemies stay stunned
+
+    [Tooltip("Length of time between firing.")]
     [SerializeField] private int fireCooldown = 2; // seconds between shots (slow fire rate)
-    PlayerInventory inventory;
+    PlayerInventory inventory; //Ref to the player inventory
 
     private float nextFireTime = 0f; // the earliest time we are allowed to shoot again
 
@@ -46,12 +54,20 @@ public class StunGun : MonoBehaviour
     }
     private void Shoot()
     {
-        StunProjectile shot = Instantiate(projectilePrefab, muzzle.position, muzzle.rotation); // spawns the bullets at the muzzle
+        StunProjectile shot = null;
+        if (ObjectPool.instance != null)
+        {
+            GameObject staple = ObjectPool.instance.Create(projectilePrefab.gameObject, muzzle.position, muzzle.rotation);
+            shot = staple.GetComponent<StunProjectile>();
+        }
+        else
+        {
+            Debug.LogWarning("No ObjectPool in scene! Add one to boost performance!");
+            shot = Instantiate(projectilePrefab, muzzle.position, muzzle.rotation); // spawns the bullets at the muzzle
+        }
         shot.Fire(muzzle.forward * projectileSpeed, stunDuration); // fires it where the muzzle is facing
 
         inventory.RemoveItem(ItemType.Ammo, 1); // uses one ammo
         nextFireTime = Time.time + fireCooldown; // sets when we can shoot next
     }
-
-    
 }

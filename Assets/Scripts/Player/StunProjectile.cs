@@ -15,8 +15,16 @@ public class StunProjectile : MonoBehaviour
 
     public void Fire(Vector3 velocity, int duration){
         //stunDuration = duration; // set the stun duration
-        rb.linearVelocity = velocity; // sends the bullet flying
-        Destroy(gameObject, lifetime); // destroy the bullet after it's lifetime
+        rb.linearVelocity = velocity;
+
+        if (ObjectPool.instance != null)
+        {
+            ObjectPool.instance.Destroy(gameObject, ObjectPool.instance.standardList, lifetime);
+        }
+        else
+        {
+            Destroy(gameObject, lifetime); // destroy the bullet after it's lifetime
+        }
     }
 
     void OnCollisionEnter(Collision collision){
@@ -28,6 +36,20 @@ public class StunProjectile : MonoBehaviour
         if(enemy != null && enemy.CompareTag("Enemy")){
             enemy.TakeDamage(damage); // stuns the enemy 
         }
-        Destroy(gameObject);
+
+        DestroyItem(gameObject);
+    }
+
+    void DestroyItem(GameObject item)
+    {
+        if (ObjectPool.instance != null)
+        {
+            ObjectPool.instance.Destroy(item);
+        }
+        else
+        {
+            Destroy(item);
+        }
+
     }
 }

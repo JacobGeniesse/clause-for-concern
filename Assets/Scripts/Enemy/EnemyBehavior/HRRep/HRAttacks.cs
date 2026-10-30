@@ -11,15 +11,17 @@ public class HRAttacks : MonoBehaviour
     [Tooltip("Damage dealt to the player by the grab.")]
     [SerializeField] private float damage = 20;
 
+    [Tooltip("Object that represents the grab attack hitbox.")]
+    [SerializeField] private Collider attackCol; //Reference to the enemy's grab range
+
+    [Header("Player Throw Variables")]
     [Tooltip("Force the player is thrown with.")]
     [SerializeField] private float pushForce = 50;
 
     [Tooltip("Duration the player is thrown for.")]
     [SerializeField] private float pushDuration = 0.5f;
 
-    [Tooltip("Object that represents the grab attack hitbox.")]
-    [SerializeField] private Collider attackCol; //Reference to the enemy's grab range
-
+    [Header("Attack Timing Variables")]
     [Tooltip("Period of time before the player is thrown.")]
     [SerializeField] private float windupLength = 1.5f;
 
@@ -27,6 +29,15 @@ public class HRAttacks : MonoBehaviour
     [SerializeField] private float cooldownLength = 2f;
     private Transform playerTrans; //Player's transform position
 
+    [Header("Sound Variables")]
+    [Tooltip("Sound the enemy makes when attempting to grab the player.")]
+    [SerializeField] private AudioClip grabAttemptGrunt;
+
+    [Tooltip("Sound the enemy makes when failing to grab the player.")]
+    [SerializeField] private AudioClip missedDisappointment;
+
+    [Tooltip("Sound the enemy makes when throwing the player.")]
+    [SerializeField] private AudioClip chuckGrunt;
 
     //Variable for holding the grabAttack coroutine
     private IEnumerator grabAttack;
@@ -83,6 +94,7 @@ public class HRAttacks : MonoBehaviour
         agent.destination = transform.position; //Stop the agent from moving
         //agent.velocity = Vector3.zero;//Extra layer of stoppage
 
+        AudioManager.Instance.Play3DSFX(grabAttemptGrunt, transform.position, 0.5f); //Play a sound using the audio manager
         //If the player is within the grab hitbox
         if (attackCol.bounds.Contains(playerTrans.position))
         {
@@ -128,7 +140,8 @@ public class HRAttacks : MonoBehaviour
     //Func for failing the grab if the player isn't in range once the actual grab happens
     public Node.Status FailGrab()
     {
-       // Debug.Log("I missed >:("); //Debug Message
+        // Debug.Log("I missed >:("); //Debug Message
+        AudioManager.Instance.Play3DSFX(missedDisappointment, transform.position, 0.5f); //Play a sound using the audio manager
         return Node.Status.SUCCESS;
     }
 
@@ -144,6 +157,8 @@ public class HRAttacks : MonoBehaviour
         yield return new WaitForSeconds(windupLength); //Windup Toss Animation Time
 
         playerTrans.parent = null; //release the player from the arm hitbox
+
+        AudioManager.Instance.Play3DSFX(chuckGrunt, transform.position, 0.5f); //Play a sound using the audio manager
 
         playerMove.Push(transform.forward * pushForce, pushDuration); //Push the player in the direction they were hit, adjust vars as needed for proper push
         
