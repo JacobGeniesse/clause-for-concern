@@ -20,6 +20,8 @@ public class PlayerCamera : MonoBehaviour
     private InputAction mouseInputX;
     private InputAction mouseInputY;
 
+    private Camera camera;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -28,7 +30,7 @@ public class PlayerCamera : MonoBehaviour
 
         LockCursor();
 
-
+        camera = Camera.main;
     }
 
     // Update is called once per frame
@@ -57,5 +59,15 @@ public class PlayerCamera : MonoBehaviour
     public void UnlockCursor()
     {
         Cursor.lockState = CursorLockMode.None;
+    }
+
+    public void SetCameraSensitivity(float value)
+    {
+        mouseSensitivity = value;
+    }
+
+    public void SetFOV(float value)
+    {
+        camera.fieldOfView = value;
     }
 }

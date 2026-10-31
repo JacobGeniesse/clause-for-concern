@@ -23,30 +23,4 @@ public class SaveDataManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    /*
-    public void SetSaveFileId1()
-    {
-        fileId = 0;
-    }
-
-    public void SetSaveFileId2()
-    {
-        fileId = 1;
-    }
-
-    public void SetSaveFileId3()
-    {
-        fileId = 2;
-    }
-
-    public void SetNewGame()
-    {
-        newGame = true;
-    }
-
-    public void ResetNewGame()
-    {
-        newGame = false;
-    }
-    */
 }
