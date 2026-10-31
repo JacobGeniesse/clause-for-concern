@@ -1,37 +1,63 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-// Switches the phone UI between map, tasks, and inventory pages
+// Switches the phone UI between map, tasks, and inventory pages.
 public class PhoneScreen : MonoBehaviour
 {
+    [SerializeField] InputActionAsset masterList;
     [SerializeField] GameObject mapPage;
     [SerializeField] GameObject tasksPage;
     [SerializeField] GameObject inventoryPage;
-    [SerializeField] Image mapTab;
-    [SerializeField] Image tasksTab;
-    [SerializeField] Image inventoryTab;
+    [SerializeField] Button mapTab;
+    [SerializeField] Button tasksTab;
+    [SerializeField] Button inventoryTab;
 
-    static readonly Color ActiveTab = new Color(0.34f, 0.42f, 0.52f, 1f);
-    static readonly Color IdleTab = new Color(0.16f, 0.18f, 0.22f, 1f);
-
-    GraphicRaycaster raycaster;
-    readonly List<RaycastResult> hits = new List<RaycastResult>();
+    InputAction previousTab;
+    InputAction nextTab;
+    int tabIndex;
 
     void Awake()
     {
-        Canvas canvas = GetComponentInParent<Canvas>();
-        if (canvas != null)
+        if (masterList != null)
         {
-            raycaster = canvas.GetComponent<GraphicRaycaster>();
+            previousTab = masterList.FindAction("Previous");
+            nextTab = masterList.FindAction("Next");
         }
     }
 
     void OnEnable()
     {
-        ShowMap();
+        if (previousTab != null)
+        {
+            previousTab.Enable();
+            previousTab.performed += OnPrevious;
+        }
+
+        if (nextTab != null)
+        {
+            nextTab.Enable();
+            nextTab.performed += OnNext;
+        }
+
+        tabIndex = 0;
+        ShowCurrent();
+    }
+
+    void OnDisable()
+    {
+        if (previousTab != null)
+        {
+            previousTab.performed -= OnPrevious;
+            previousTab.Disable();
+        }
+
+        if (nextTab != null)
+        {
+            nextTab.performed -= OnNext;
+            nextTab.Disable();
+        }
     }
 
     void Update()
@@ -41,71 +67,84 @@ public class PhoneScreen : MonoBehaviour
             return;
         }
 
-        // 1/2/3 also switch pages
-        Keyboard keyboard = Keyboard.current;
-        if (keyboard != null)
+        Button tab = CurrentTab();
+        if (tab != null && EventSystem.current != null
+            && EventSystem.current.currentSelectedGameObject != tab.gameObject)
         {
-            if (keyboard.digit1Key.wasPressedThisFrame || keyboard.numpad1Key.wasPressedThisFrame)
-            {
-                ShowMap();
-            }
-            else if (keyboard.digit2Key.wasPressedThisFrame || keyboard.numpad2Key.wasPressedThisFrame)
-            {
-                ShowTasks();
-            }
-            else if (keyboard.digit3Key.wasPressedThisFrame || keyboard.numpad3Key.wasPressedThisFrame)
-            {
-                ShowInventory();
-            }
+            EventSystem.current.SetSelectedGameObject(tab.gameObject);
         }
+    }
 
-        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+    Button CurrentTab()
+    {
+        switch (tabIndex)
         {
-            TryClickTab();
+            case 1:
+                return tasksTab;
+            case 2:
+                return inventoryTab;
+            default:
+                return mapTab;
         }
+    }
+
+    void OnPrevious(InputAction.CallbackContext context)
+    {
+        Cycle(-1);
+    }
+
+    void OnNext(InputAction.CallbackContext context)
+    {
+        Cycle(1);
     }
 
     public void ShowMap()
     {
-        Show(mapPage, mapTab);
+        tabIndex = 0;
+        ShowCurrent();
     }
 
     public void ShowTasks()
     {
-        Show(tasksPage, tasksTab);
+        tabIndex = 1;
+        ShowCurrent();
     }
 
     public void ShowInventory()
     {
-        Show(inventoryPage, inventoryTab);
+        tabIndex = 2;
+        ShowCurrent();
     }
 
-    // clicks on the MAP / TASKS / INV buttons.
-    void TryClickTab()
+    // Previous/Next wrap Map -> Tasks -> Inventory.
+    void Cycle(int direction)
     {
-        if (raycaster == null || EventSystem.current == null)
+        if (!Minimap.IsOpen)
         {
             return;
         }
 
-        PointerEventData pointer = new PointerEventData(EventSystem.current)
+        tabIndex = (tabIndex + direction + 3) % 3;
+        ShowCurrent();
+    }
+
+    void ShowCurrent()
+    {
+        switch (tabIndex)
         {
-            position = Mouse.current.position.ReadValue()
-        };
-        hits.Clear();
-        raycaster.Raycast(pointer, hits);
-        for (int i = 0; i < hits.Count; i++)
-        {
-            Button button = hits[i].gameObject.GetComponentInParent<Button>();
-            if (button != null && button.transform.IsChildOf(transform))
-            {
-                button.onClick.Invoke();
-                return;
-            }
+            case 1:
+                Show(tasksPage, tasksTab);
+                break;
+            case 2:
+                Show(inventoryPage, inventoryTab);
+                break;
+            default:
+                Show(mapPage, mapTab);
+                break;
         }
     }
 
-    void Show(GameObject page, Image tab)
+    void Show(GameObject page, Button tab)
     {
         if (mapPage != null)
         {
@@ -122,16 +161,9 @@ public class PhoneScreen : MonoBehaviour
             inventoryPage.SetActive(page == inventoryPage);
         }
 
-        SetTab(mapTab, tab == mapTab);
-        SetTab(tasksTab, tab == tasksTab);
-        SetTab(inventoryTab, tab == inventoryTab);
-    }
-
-    static void SetTab(Image tab, bool active)
-    {
-        if (tab != null)
+        if (tab != null && EventSystem.current != null)
         {
-            tab.color = active ? ActiveTab : IdleTab;
+            EventSystem.current.SetSelectedGameObject(tab.gameObject);
         }
     }
 }
