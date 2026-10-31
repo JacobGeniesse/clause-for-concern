@@ -5,16 +5,37 @@ using System.Collections;
 
 public class GameOverManager : MonoBehaviour
 {
+    public static GameOverManager instance;
+
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Debug.LogWarning("Duplicate GameManager instance found in scene!");
+            Destroy(this);
+        }
+    }
+
+
     [SerializeField] private AudioSource deathSound;
     [SerializeField] private AudioSource jumpscareSound;
     [SerializeField] private GameObject gameOverCanvas;
     private IEnumerator gameOverCoroutine;
-    [SerializeField]private GameManager gameManager;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void GameOver()
     {
-
+        if(gameOverCanvas != null)
+        {
+            StartCoroutine(GameOverProcess());
+        }
+        else
+        {
+            Debug.LogError("Unable to start gameover sequence!");
+        }
     }
 
     public void GameOver(GameObject jumpscareCam, GameObject playerCam, Animator anim)
@@ -22,6 +43,13 @@ public class GameOverManager : MonoBehaviour
         StartCoroutine(GameOverProcess(jumpscareCam, playerCam, anim));
     }
 
+    private IEnumerator GameOverProcess()
+    {
+        yield return new WaitForSeconds(0.2f);
+        Cursor.lockState = CursorLockMode.None;
+        gameOverCanvas.SetActive(true);
+        GameManager.instance.ModTime(0);
+    }
     private IEnumerator GameOverProcess(GameObject jumpscareCam, GameObject playerCam, Animator anim)
     {
         jumpscareSound.Play();
@@ -34,6 +62,6 @@ public class GameOverManager : MonoBehaviour
         jumpscareSound.Stop();
         Cursor.lockState = CursorLockMode.None;
         gameOverCanvas.SetActive(true);
-        gameManager.ModTime(0);
+        GameManager.instance.ModTime(0);
     }
 }
