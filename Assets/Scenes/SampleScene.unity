@@ -105607,6 +105607,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c1a9e4b2f8d46a0b3e5c6d7a8f90123, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhoneScreen
+  masterList: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   mapPage: {fileID: 1987654560}
   tasksPage: {fileID: 1987654570}
   inventoryPage: {fileID: 1987654580}

@@ -32,15 +32,13 @@ public class PhoneScreen : MonoBehaviour
             raycaster = canvas.GetComponent<GraphicRaycaster>();
         }
 
-        if (masterList != null)
-        {
-            previousTab = masterList["Previous"];
-            nextTab = masterList["Next"];
-        }
+        BindTabActions();
     }
 
     void OnEnable()
     {
+        BindTabActions();
+
         if (previousTab != null)
         {
             previousTab.Enable();
@@ -83,6 +81,31 @@ public class PhoneScreen : MonoBehaviour
         {
             TryClickTab();
         }
+    }
+
+    void BindTabActions()
+    {
+        if (previousTab != null && nextTab != null)
+        {
+            return;
+        }
+
+        if (masterList == null)
+        {
+            PlayerMovement movement = FindFirstObjectByType<PlayerMovement>();
+            if (movement != null)
+            {
+                masterList = movement.masterList;
+            }
+        }
+
+        if (masterList == null)
+        {
+            return;
+        }
+
+        previousTab = masterList.FindAction("Previous");
+        nextTab = masterList.FindAction("Next");
     }
 
     void OnPrevious(InputAction.CallbackContext context)
