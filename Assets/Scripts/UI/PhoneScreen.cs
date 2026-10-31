@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -11,34 +10,25 @@ public class PhoneScreen : MonoBehaviour
     [SerializeField] GameObject mapPage;
     [SerializeField] GameObject tasksPage;
     [SerializeField] GameObject inventoryPage;
-    [SerializeField] Image mapTab;
-    [SerializeField] Image tasksTab;
-    [SerializeField] Image inventoryTab;
+    [SerializeField] Button mapTab;
+    [SerializeField] Button tasksTab;
+    [SerializeField] Button inventoryTab;
 
-    static readonly Color ActiveTab = new Color(0.34f, 0.42f, 0.52f, 1f);
-    static readonly Color IdleTab = new Color(0.16f, 0.18f, 0.22f, 1f);
-
-    GraphicRaycaster raycaster;
-    readonly List<RaycastResult> hits = new List<RaycastResult>();
     InputAction previousTab;
     InputAction nextTab;
     int tabIndex;
 
     void Awake()
     {
-        Canvas canvas = GetComponentInParent<Canvas>();
-        if (canvas != null)
+        if (masterList != null)
         {
-            raycaster = canvas.GetComponent<GraphicRaycaster>();
+            previousTab = masterList.FindAction("Previous");
+            nextTab = masterList.FindAction("Next");
         }
-
-        BindTabActions();
     }
 
     void OnEnable()
     {
-        BindTabActions();
-
         if (previousTab != null)
         {
             previousTab.Enable();
@@ -77,35 +67,25 @@ public class PhoneScreen : MonoBehaviour
             return;
         }
 
-        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        Button tab = CurrentTab();
+        if (tab != null && EventSystem.current != null
+            && EventSystem.current.currentSelectedGameObject != tab.gameObject)
         {
-            TryClickTab();
+            EventSystem.current.SetSelectedGameObject(tab.gameObject);
         }
     }
 
-    void BindTabActions()
+    Button CurrentTab()
     {
-        if (previousTab != null && nextTab != null)
+        switch (tabIndex)
         {
-            return;
+            case 1:
+                return tasksTab;
+            case 2:
+                return inventoryTab;
+            default:
+                return mapTab;
         }
-
-        if (masterList == null)
-        {
-            PlayerMovement movement = FindFirstObjectByType<PlayerMovement>();
-            if (movement != null)
-            {
-                masterList = movement.masterList;
-            }
-        }
-
-        if (masterList == null)
-        {
-            return;
-        }
-
-        previousTab = masterList.FindAction("Previous");
-        nextTab = masterList.FindAction("Next");
     }
 
     void OnPrevious(InputAction.CallbackContext context)
@@ -136,6 +116,7 @@ public class PhoneScreen : MonoBehaviour
         ShowCurrent();
     }
 
+    // Previous/Next wrap Map -> Tasks -> Inventory.
     void Cycle(int direction)
     {
         if (!Minimap.IsOpen)
@@ -163,32 +144,7 @@ public class PhoneScreen : MonoBehaviour
         }
     }
 
-    // World-space UI clicks on the MAP / TASKS / INV buttons.
-    void TryClickTab()
-    {
-        if (raycaster == null || EventSystem.current == null)
-        {
-            return;
-        }
-
-        PointerEventData pointer = new PointerEventData(EventSystem.current)
-        {
-            position = Mouse.current.position.ReadValue()
-        };
-        hits.Clear();
-        raycaster.Raycast(pointer, hits);
-        for (int i = 0; i < hits.Count; i++)
-        {
-            Button button = hits[i].gameObject.GetComponentInParent<Button>();
-            if (button != null && button.transform.IsChildOf(transform))
-            {
-                button.onClick.Invoke();
-                return;
-            }
-        }
-    }
-
-    void Show(GameObject page, Image tab)
+    void Show(GameObject page, Button tab)
     {
         if (mapPage != null)
         {
@@ -205,16 +161,9 @@ public class PhoneScreen : MonoBehaviour
             inventoryPage.SetActive(page == inventoryPage);
         }
 
-        SetTab(mapTab, tab == mapTab);
-        SetTab(tasksTab, tab == tasksTab);
-        SetTab(inventoryTab, tab == inventoryTab);
-    }
-
-    static void SetTab(Image tab, bool active)
-    {
-        if (tab != null)
+        if (tab != null && EventSystem.current != null)
         {
-            tab.color = active ? ActiveTab : IdleTab;
+            EventSystem.current.SetSelectedGameObject(tab.gameObject);
         }
     }
 }
