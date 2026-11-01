@@ -78086,6 +78086,8 @@ MonoBehaviour:
   worldMax: {fileID: 716860501}
   mapRoot: {fileID: 1987654700}
   masterList: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  player: {fileID: 775931133}
+  taskManager: {fileID: 1512867453}
 --- !u!82 &1512867455
 AudioSource:
   m_ObjectHideFlags: 0

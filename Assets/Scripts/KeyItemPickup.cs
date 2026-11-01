@@ -1,8 +1,11 @@
-using UnityEngine; // lets us use Unity stuff like MonoBehaviour and Destroy
+using System;
+using UnityEngine;
 // Attach this script to key items and name them properly 
+[Serializable]
 public class KeyItemPickup : MonoBehaviour, IInteractable // a Unity script that PlayerInteract can interact with
 {
-    [SerializeField] string keyName; // the name of the key this pickup gives, typed in the Inspector
+    public string keyName; // the name of the key this pickup gives, typed in the Inspector
+    public string description;
     private PlayerInventory inventory; // saved reference to the player's inventory
 
     void Start()
@@ -12,9 +15,9 @@ public class KeyItemPickup : MonoBehaviour, IInteractable // a Unity script that
 
     public void Interact() // called by PlayerInteract when the player looks at this and presses interact
     {
-        if (inventory.AddKeyItem(keyName))// adds this key's name to the player's key item list
-        { 
-            Destroy(gameObject); // removes this pickup from the scene
+        if (inventory.AddKeyItem(new KeyItem(keyName, description)))// adds this key item to the player's key item list
+        {
+            gameObject.SetActive(false); // removes this pickup from the scene
         } 
     }
 
