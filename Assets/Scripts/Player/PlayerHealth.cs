@@ -2,18 +2,31 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
+    public static PlayerHealth Instance;
+
     public float maxHealth = 100; // max health of the player
     public float currentHealth; // current health of the player
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        currentHealth = maxHealth; // sets the current health to the max health
+        //currentHealth = maxHealth; // sets the current health to the max health
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void SetHealth(float ammount)
+    {
+        currentHealth = ammount;
     }
 
     public void TakeDamage(float damage){

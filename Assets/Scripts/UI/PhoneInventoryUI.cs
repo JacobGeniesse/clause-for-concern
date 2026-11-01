@@ -122,7 +122,7 @@ public class PhoneInventoryUI : MonoBehaviour
         }
     }
 
-    void CreateStandardRow(ItemPickup item)
+    void CreateStandardRow(StandardItem item)
     {
         if (item == null || standardRowPrefab == null || standardEmpty == null)
         {
@@ -132,7 +132,7 @@ public class PhoneInventoryUI : MonoBehaviour
         GameObject row = SpawnRow(standardRowPrefab, standardEmpty.transform);
         standardRows.Add(row);
 
-        string itemName = !string.IsNullOrEmpty(item.description) ? item.description : item.itemType.ToString();
+        string itemName = !string.IsNullOrEmpty(item.description) ? item.description : item.type.ToString();
         SetLabel(row, itemName + "  x" + item.amount + "   USE");
 
         Button button = row.GetComponent<Button>();
@@ -141,7 +141,7 @@ public class PhoneInventoryUI : MonoBehaviour
             return;
         }
 
-        ItemPickup captured = item;
+        StandardItem captured = item;
         button.onClick.AddListener(() =>
         {
             if (inventory != null)
@@ -152,7 +152,7 @@ public class PhoneInventoryUI : MonoBehaviour
     }
 
     // Key items are display-only.
-    void CreateKeyRow(KeyItemPickup key)
+    void CreateKeyRow(KeyItem key)
     {
         if (key == null || keyRowPrefab == null || keyEmpty == null)
         {
@@ -162,7 +162,7 @@ public class PhoneInventoryUI : MonoBehaviour
         GameObject row = SpawnRow(keyRowPrefab, keyEmpty.transform);
         keyRows.Add(row);
 
-        string name = !string.IsNullOrEmpty(key.keyName) ? key.keyName : "Key item";
+        string name = !string.IsNullOrEmpty(key.name) ? key.name : "Key item";
         string text = string.IsNullOrEmpty(key.description) ? name : name + "  —  " + key.description;
         SetLabel(row, text);
     }

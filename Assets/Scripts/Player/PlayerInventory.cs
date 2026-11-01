@@ -8,20 +8,21 @@ public enum ItemType{
     Speed
 }
 
+[Serializable]
 public class PlayerInventory : MonoBehaviour
 {
     public static PlayerInventory Instance { get; private set; }    // Singleton instance
 
     public event Action InventoryChanged; // phone inventory UI rebuilds on pickup/use
 
-   [SerializeField] private List<KeyItemPickup> keyItems = new List<KeyItemPickup>();   // Inventory list of key items
-    [SerializeField] private List<ItemPickup> standardItems = new List<ItemPickup>();   // Inventory list of standard items
+    private List<StandardItem> standardItemInventory = new List<StandardItem>();        // Inventory list of standard items
+    private List<KeyItem> keyItemInventory = new List<KeyItem>();                       // Inventory list of key items
 
-    public IReadOnlyList<KeyItemPickup> KeyItems => keyItems; // UI reads these; change only through Add/Remove/Use
-    public IReadOnlyList<ItemPickup> StandardItems => standardItems;
+    public IReadOnlyList<KeyItem> KeyItems => keyItemInventory; // UI reads these; change only through Add/Remove/Use
+    public IReadOnlyList<StandardItem> StandardItems => standardItemInventory;
 
     // Do we want to have the stun gun script handle the ammo management, and the inventory just adds ammo from ammo boxes?
-   [SerializeField] public int ammoCount = 0;   // Current ammo count of the stapler
+    [SerializeField] public int ammoCount = 0;   // Current ammo count of the stapler
    [SerializeField] public int maxAmmo = 5;    // Maximum ammo count for the stapler
 
     void Awake()
@@ -37,27 +38,26 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
-   public bool AddKeyItem(KeyItemPickup keyItem){
-    if(keyItems.Contains(keyItem)){ // if keyitems has this key then return false
+   public bool AddKeyItem(KeyItem keyItem){
+    if(keyItemInventory.Contains(keyItem)){ // if keyitems has this key then return false
         return false;
     }
-    keyItems.Add(keyItem); // add key to inventory
-    Debug.Log("Picked up key item: " + keyItem.keyName);
+    keyItemInventory.Add(keyItem); // add key to inventory
     InventoryChanged?.Invoke();
 
     return true;
    }
 
     // Check if the key item is needed to perform the specified action
-   public bool HasKeyItem(KeyItemPickup keyItem)
+   public bool HasKeyItem(KeyItem keyItem)
     {
-    return keyItems.Contains(keyItem);
+    return keyItemInventory.Contains(keyItem);
    }
 
     // If the key item is present, remove it from the inventory. Key items are revomed automatically when needed and the player cannot use them directly from the inventory
-   public bool RemoveKeyItem(KeyItemPickup keyItem)
+   public bool RemoveKeyItem(KeyItem keyItem)
     {
-    bool removed = keyItems.Remove(keyItem);
+    bool removed = keyItemInventory.Remove(keyItem);
     if (removed)
     {
         InventoryChanged?.Invoke();
@@ -66,23 +66,22 @@ public class PlayerInventory : MonoBehaviour
    }
 
     // Add an item to the standard item inventory
-   public bool AddItems(ItemPickup item){
-        standardItems.Add(item);
-        Debug.Log("Added " + item.amount + " " + item.itemType);
+   public bool AddItems(StandardItem item){
+        standardItemInventory.Add(item);
         InventoryChanged?.Invoke();
     return true;
    }
 
     // Call this function to use items from the item inventory
-    public void UseItems(ItemPickup item)
+    public void UseItems(StandardItem item)
     {
-        if (item == null || !standardItems.Contains(item))
+        if (item == null || !standardItemInventory.Contains(item))
         {
             return;
         }
 
         int used = 0; // how many of this stack were actually consumed
-        switch (item.itemType)
+        switch (item.type)
         {
             case ItemType.Ammo:
                 int ammoRoom = maxAmmo - ammoCount;
@@ -109,13 +108,33 @@ public class PlayerInventory : MonoBehaviour
 
         if (item.amount <= 0)
         {
-            standardItems.Remove(item);
+            standardItemInventory.Remove(item);
         }
 
         if (used > 0)
         {
             InventoryChanged?.Invoke();
         }
+    }
+
+    public List<StandardItem> GetStandardInventory()
+    {
+        return standardItemInventory;
+    }
+
+    public List<KeyItem> GetKeyItemInventory()
+    {
+        return keyItemInventory;
+    }
+
+    public void SetStandardInventory(List<StandardItem> savedList)
+    {
+        standardItemInventory = savedList;
+    }
+
+    public void SetKeyItemInventory(List<KeyItem> savedKeyList)
+    {
+        keyItemInventory = savedKeyList;
     }
 
     // These functions are only used by the stun gun script
