@@ -1,4 +1,5 @@
 using System.Threading;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -20,7 +21,8 @@ public class PlayerCamera : MonoBehaviour
     private InputAction mouseInputX;
     private InputAction mouseInputY;
 
-    private Camera camera;
+    //private Camera camera;
+    private CinemachineCamera camera;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -30,7 +32,27 @@ public class PlayerCamera : MonoBehaviour
 
         LockCursor();
 
-        camera = Camera.main;
+        camera = GetComponent<CinemachineCamera>();
+
+        if (PlayerPrefs.HasKey("SensitivityValue"))
+        {
+            SetCameraSensitivity(PlayerPrefs.GetFloat("SensitivityValue"));
+        }
+        else
+        {
+            // Default sensitivity to 100 if no sensitivity settings are saved
+            mouseSensitivity = 100;
+        }
+
+        if (PlayerPrefs.HasKey("FOVValue"))
+        {
+            SetFOV(PlayerPrefs.GetFloat("FOVValue"));
+        }
+        else
+        {
+            // Default FOV is no FOV settings are saved
+            camera.Lens.FieldOfView = 40f;
+        }
     }
 
     // Update is called once per frame
@@ -68,6 +90,6 @@ public class PlayerCamera : MonoBehaviour
 
     public void SetFOV(float value)
     {
-        camera.fieldOfView = value;
+        camera.Lens.FieldOfView = value;
     }
 }

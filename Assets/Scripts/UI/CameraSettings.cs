@@ -10,6 +10,8 @@ public class CameraSettings : MonoBehaviour
     [SerializeField] private Slider sensSlider;
     [SerializeField] private Slider FOVSlider;
 
+    [SerializeField] private PlayerCamera playerCamera;
+
     private void Start()
     {
         if (PlayerPrefs.HasKey("SensitivityValue"))
@@ -27,12 +29,20 @@ public class CameraSettings : MonoBehaviour
     {
         cameraSensitivity = value;
         PlayerPrefs.SetFloat("SensitivityValue", value);
+        if (playerCamera != null)
+        {
+            playerCamera.SetCameraSensitivity(cameraSensitivity);
+        }
     }
 
     public void SetFOV(float value)
     {
         cameraFOV = value;
         PlayerPrefs.SetFloat("FOVValue", value);
+        if (playerCamera != null)
+        {
+            playerCamera.SetFOV(cameraFOV);
+        }
     }
 
     private void LoadSenseSettings()
