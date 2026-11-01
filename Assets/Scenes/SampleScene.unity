@@ -107774,8 +107774,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.06975647, y: 0, z: 0, w: 0.9975641}
   m_LocalPosition: {x: -0.16, y: -0.07, z: 0.42}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2.3, y: 2.3, z: 2.3}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1987654711}
   - {fileID: 2040685894}
@@ -107795,7 +107795,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PhoneRig
   moveDuration: 0.45
   hiddenPosition: {x: -0.14, y: -0.48, z: 0.32}
-  shownPosition: {x: -0.16, y: -0.07, z: 0.42}
+  shownPosition: {x: -0.08, y: 0.02, z: 0.42}
   hiddenEuler: {x: 38, y: 0, z: 0}
   shownEuler: {x: 8, y: 0, z: 0}
 --- !u!1 &1987654710
