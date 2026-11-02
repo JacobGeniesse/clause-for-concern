@@ -183,7 +183,7 @@ public class MainMenu : MonoBehaviour
     {
         // Eventually change this to also set all savable data to starting values
         // Also change this to load the main game scene when that gets implemented
-        SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+        SceneManager.LoadScene(1, LoadSceneMode.Single);
     }
 
     private void CheckFile1Button()
