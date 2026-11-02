@@ -135,6 +135,8 @@ public class GameManager : MonoBehaviour
         {
             pauseMenu.SetActive(false);
         }
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         ModTime(1);
         masterList.FindAction("Fire").Enable();  // Reenable using items when the menu is closed
         masterList.FindAction("Look").Enable();
