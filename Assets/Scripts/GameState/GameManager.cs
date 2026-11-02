@@ -99,6 +99,7 @@ public class GameManager : MonoBehaviour
                 Pause();
             }
         }
+
     }
 
     public void Pause()
@@ -107,15 +108,19 @@ public class GameManager : MonoBehaviour
         {
             map.SetOpen(false, true);
         }
-        ModTime(0);
         paused = true;
+
+        masterList.FindAction("Fire").Disable();             // Disable using items when the pause menu is active, so as to prevent inputs from accumilating
+        masterList.FindAction("Look").Disable();
+        
         Cursor.lockState = CursorLockMode.None;
-        if(pauseMenu != null)
+        Cursor.visible = true;
+        ModTime(0);
+        if (pauseMenu != null)
         {
             pauseMenu.SetActive(true);
             pauseMenu.GetComponent<PauseMenu>().ResetPauseMenu();   // Make it so the main pause menu is active when you close and open the pause menu
         }
-        masterList.FindAction("Fire").Disable();             // Disable using items when the pause menu is active, so as to prevent inputs from accumilating
     }
 
     public void ModTime(int scale)
@@ -126,13 +131,13 @@ public class GameManager : MonoBehaviour
     public void UnPause()
     {
         paused = false;
-        Cursor.lockState = CursorLockMode.Locked;
-        if(pauseMenu != null)
+        if (pauseMenu != null)
         {
             pauseMenu.SetActive(false);
         }
         ModTime(1);
         masterList.FindAction("Fire").Enable();  // Reenable using items when the menu is closed
+        masterList.FindAction("Look").Enable();
     }
 
     public void SaveData()
