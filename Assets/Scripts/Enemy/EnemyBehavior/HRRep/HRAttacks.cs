@@ -91,10 +91,11 @@ public class HRAttacks : MonoBehaviour
     //Function for the enemy trying to grab the player
     public Node.Status GrabAttempt()
     {
+        Debug.Log("Trying to attack");
         agent.destination = transform.position; //Stop the agent from moving
         //agent.velocity = Vector3.zero;//Extra layer of stoppage
 
-        AudioManager.Instance.Play3DSFX(grabAttemptGrunt, transform.position, 0.5f); //Play a sound using the audio manager
+        //AudioManager.Instance.Play3DSFX(grabAttemptGrunt, transform.position, 0.5f); //Play a sound using the audio manager
         //If the player is within the grab hitbox
         if (attackCol.bounds.Contains(playerTrans.position))
         {
@@ -141,7 +142,7 @@ public class HRAttacks : MonoBehaviour
     public Node.Status FailGrab()
     {
         // Debug.Log("I missed >:("); //Debug Message
-        AudioManager.Instance.Play3DSFX(missedDisappointment, transform.position, 0.5f); //Play a sound using the audio manager
+        //AudioManager.Instance.Play3DSFX(missedDisappointment, transform.position, 0.5f); //Play a sound using the audio manager
         return Node.Status.SUCCESS;
     }
 
@@ -158,7 +159,7 @@ public class HRAttacks : MonoBehaviour
 
         playerTrans.parent = null; //release the player from the arm hitbox
 
-        AudioManager.Instance.Play3DSFX(chuckGrunt, transform.position, 0.5f); //Play a sound using the audio manager
+        //AudioManager.Instance.Play3DSFX(chuckGrunt, transform.position, 0.5f); //Play a sound using the audio manager
 
         playerMove.Push(transform.forward * pushForce, pushDuration); //Push the player in the direction they were hit, adjust vars as needed for proper push
         

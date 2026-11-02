@@ -10,25 +10,25 @@ public class SoundObject : MonoBehaviour
     private IEnumerator clipCoroutine = null; //Coroutine for playing an audio clip
 
     //Func for playing a clip
-    public void PlayClip(AudioClip clip)
+    public void PlayClip(AudioClip clip, float clipLength)
     {
         //Assign audio clip
         chosenClip = clip;
         //Play audio clip
         if (clipCoroutine == null)
         {
-            clipCoroutine = playClip();
+            clipCoroutine = playClip(clipLength);
             StartCoroutine(clipCoroutine);
         }
     }
 
     //Func for helping to play an audio clip
-    IEnumerator playClip()
+    IEnumerator playClip(float clipLength)
     {
         //Play audio clip
         soundPlayer.clip = chosenClip;
         soundPlayer.Play();
-        yield return new WaitForSeconds(chosenClip.length);
+        yield return new WaitForSeconds(clipLength);
         
         //Delete self upon audio clip ending
         if (ObjectPool.instance != null && AudioManager.Instance != null)

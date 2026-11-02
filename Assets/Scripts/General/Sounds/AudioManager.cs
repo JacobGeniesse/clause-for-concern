@@ -24,10 +24,10 @@ public class AudioManager : MonoBehaviour
     [Tooltip("Reference to the master volume slider.")]
     [SerializeField] private Slider masterSlider;
 
-    [Tooltip("Reference to the music volume slider")]
+    [Tooltip("Reference to the music volume slider.")]
     [SerializeField] private Slider musicSlider;
 
-    [Tooltip("Reference to the sound effects volume slider")]
+    [Tooltip("Reference to the sound effects volume slider.")]
     [SerializeField] private Slider sfxSlider;
 
     // Add audioclips here
@@ -107,7 +107,7 @@ public class AudioManager : MonoBehaviour
     }
 
     //Function for playing a sound effect with 3D sound
-    public void Play3DSFX(AudioClip clip, Vector3 position, float volume = 1f)
+    public void Play3DSFX(AudioClip clip, float clipLength, Vector3 position, float volume = 1f)
     {
         //Check that the audio clip supplied exists
         if (clip != null)
@@ -121,7 +121,7 @@ public class AudioManager : MonoBehaviour
 
             if (soundObject.TryGetComponent<SoundObject>(out SoundObject soundObj))
             {
-                soundObj.PlayClip(clip); //If the new sound object has the sound object component created, trigger its behavior to play its audio clip
+                soundObj.PlayClip(clip, clipLength); //If the new sound object has the sound object component created, trigger its behavior to play its audio clip
             }
             else
             {
