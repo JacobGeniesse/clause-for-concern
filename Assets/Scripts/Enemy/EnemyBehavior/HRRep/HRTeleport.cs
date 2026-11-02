@@ -100,7 +100,7 @@ public class HRTeleport : MonoBehaviour
             }
         }
 
-        Debug.Log(currentNode);
+        //Debug.Log(currentNode);
         return currentNode; //Return the current node
     }
 

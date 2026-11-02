@@ -211,7 +211,7 @@ public class HRRepBehavior : MonoBehaviour
         //If the enemy is aggressive and the cheatCooldown is less than 0, do a warp check
         if (aggressive == true && coolingDown != true && chasing == false)
         {
-            Debug.Log("Aggressive");
+            //Debug.Log("Aggressive");
             return teleportScript.WarpCheck();
         }
         else

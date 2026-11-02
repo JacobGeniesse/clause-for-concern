@@ -3,32 +3,48 @@ using UnityEngine.AI;
 
 public class BreakableWall : MonoBehaviour
 {
-    private NavMeshObstacle wallHitBox;
+    [Tooltip("Game Object that holders the unbroken wall model.")]
+    [SerializeField] private GameObject fixedWall;
 
+    [Tooltip("Game Object that holders the broken wall model.")]
+    [SerializeField] private GameObject brokenWall;
 
-    //private MeshRenderer mat;
+    [Tooltip("Particle effect that shows wall chunks breaking off of the wall.")]
+    [SerializeField] private GameObject chunkParticles;
 
+    private bool broken = false;
 
-    //Vars for model swap
-    private MeshFilter wallModel;
-    private Mesh fixedWall;
-    private Mesh brokenWall;
-
-
-    public void BreakWall()
+    private void Start()
     {
-        //Testing implementation
-        this.gameObject.SetActive(false);
-        
-        
-        //Actual Implementation
-        //wallHitBox.enabled = false;
-        //wallModel.mesh = brokenWall;
+        FixWall(); //Fix the wall when the scene loads in
     }
 
+    //Trigger check for breaking the wall
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.collider.tag == "Enemy") //If it is an enemy which is colliding with the wall
+        {
+            if (broken == false) //If the wall isn't already broken
+            {
+                BreakWall(); //Break the wall
+            }
+        }
+    }
+
+    //Func for breaking the wall
+    public void BreakWall()
+    {
+        fixedWall.SetActive(false); //Set the fixed wall model to be inactive
+        brokenWall.SetActive(true); //Set the broken wall model to be active
+        chunkParticles.SetActive(true); //Activate the chunk particles
+        broken = true; //Set broken to true
+    }
+
+    //Func for fixing the wall
     public void FixWall()
     {
-        //Testing implementation
-        this.gameObject.SetActive(true);
+        fixedWall.SetActive(true); //Set the fixed wall model to be active
+        brokenWall.SetActive(false); //Set the broken wall model to be inactive
+        broken = false; //Set broken to true
     }
 }
