@@ -12,6 +12,17 @@ public class BreakableWall : MonoBehaviour
     [Tooltip("Particle effect that shows wall chunks breaking off of the wall.")]
     [SerializeField] private GameObject chunkParticles;
 
+    /*
+     * 
+     * [Header(Sound Variables)]
+     * [Tooltip("Sound of the wall being broken)]
+     * [SerializeField] private AudioClip wallBreak;
+     * 
+     * [Tooltip("Length of the Audio Clip")]
+     * [SerializeField] private float clipLength;
+     */
+
+
     private bool broken = false;
 
     private void Start()
@@ -37,6 +48,7 @@ public class BreakableWall : MonoBehaviour
         fixedWall.SetActive(false); //Set the fixed wall model to be inactive
         brokenWall.SetActive(true); //Set the broken wall model to be active
         chunkParticles.SetActive(true); //Activate the chunk particles
+        //AudioManager.Instance.Play3DSFX(wallBreak, clipLength, transform.position, 1f); //Play a sound using the audio manager
         broken = true; //Set broken to true
     }
 
