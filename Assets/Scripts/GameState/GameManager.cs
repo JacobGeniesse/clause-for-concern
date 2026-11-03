@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -29,6 +31,10 @@ public class GameManager : MonoBehaviour
 
     private SaveDataManager saveDataManager;
 
+    private PlayerInventory playerInventory;
+
+    private PlayerHealth playerHealth;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -41,7 +47,17 @@ public class GameManager : MonoBehaviour
         {
             saveDataManager = SaveDataManager.Instance;
         }
-        
+
+        if (PlayerInventory.Instance != null)
+        {
+            playerInventory = PlayerInventory.Instance;
+        }
+
+        if (PlayerHealth.Instance != null)
+        {
+            playerHealth = PlayerHealth.Instance;
+            
+        }
 
         // Set the save file id from the save data manager singleton
         if (saveDataManager != null )
@@ -53,20 +69,17 @@ public class GameManager : MonoBehaviour
                 // Load save data right at the start if not a new game
                 LoadData();
             }
+            else
+            {
+                // Set the player's health to 100 on a new game
+                playerHealth.SetHealth(100);
+            }
         }
         else
         {
             // If no save data manager is present, default to id 0
             saveFileId = 0;
         }
-
-        /*
-        if (!saveDataManager.newGame)
-        {
-            // Load save data right at the start if not a new game
-            LoadData();
-        }
-        */
 
         // Make it so the main pause menu is active when pause is hit
         // Essentially reset the pause menu
@@ -86,6 +99,7 @@ public class GameManager : MonoBehaviour
                 Pause();
             }
         }
+
     }
 
     public void Pause()
@@ -94,15 +108,19 @@ public class GameManager : MonoBehaviour
         {
             map.SetOpen(false, true);
         }
-        ModTime(0);
         paused = true;
+
+        masterList.FindAction("Fire").Disable();             // Disable using items when the pause menu is active, so as to prevent inputs from accumilating
+        masterList.FindAction("Look").Disable();
+        
         Cursor.lockState = CursorLockMode.None;
-        if(pauseMenu != null)
+        Cursor.visible = true;
+        ModTime(0);
+        if (pauseMenu != null)
         {
             pauseMenu.SetActive(true);
             pauseMenu.GetComponent<PauseMenu>().ResetPauseMenu();   // Make it so the main pause menu is active when you close and open the pause menu
         }
-        masterList.FindAction("UseItem").Disable();             // Disable using items when the pause menu is active, so as to prevent inputs from accumilating
     }
 
     public void ModTime(int scale)
@@ -113,18 +131,20 @@ public class GameManager : MonoBehaviour
     public void UnPause()
     {
         paused = false;
-        Cursor.lockState = CursorLockMode.Locked;
-        if(pauseMenu != null)
+        if (pauseMenu != null)
         {
             pauseMenu.SetActive(false);
         }
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         ModTime(1);
-        masterList.FindAction("UseItem").Enable();  // Reenable using items when the menu is closed
+        masterList.FindAction("Fire").Enable();  // Reenable using items when the menu is closed
+        masterList.FindAction("Look").Enable();
     }
 
     public void SaveData()
     {
-        PlayerSaveData data = new PlayerSaveData(player.GetComponent<PlayerHealth>().currentHealth);
+        PlayerSaveData data = new PlayerSaveData(playerHealth.currentHealth, playerInventory.ammoCount, playerInventory.GetStandardInventory(), playerInventory.GetKeyItemInventory());
         SaveSystem.SaveGame(data, saveFileId);
     }
 
@@ -134,8 +154,10 @@ public class GameManager : MonoBehaviour
 
         if (loadedData != null)
         {
-            player.GetComponent<PlayerHealth>().currentHealth = loadedData.health;
-
+            playerHealth.currentHealth = loadedData.health;
+            playerInventory.ammoCount = loadedData.ammo;
+            playerInventory.SetStandardInventory(loadedData.standardInventory);
+            playerInventory.SetKeyItemInventory(loadedData.keyItemInventory);
             Debug.Log("Data loaded successfully");
         }
     }

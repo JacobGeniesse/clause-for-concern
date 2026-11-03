@@ -6,6 +6,7 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] private GameObject settingsCanvas;
     [SerializeField] private GameObject controlSettings;
     [SerializeField] private GameObject volumeSettings;
+    [SerializeField] private GameObject cameraSettings;
 
     [SerializeField] private GameObject quitPanel;
 
@@ -24,6 +25,7 @@ public class PauseMenu : MonoBehaviour
         settingsCanvas.SetActive(false);
         controlSettings.SetActive(false);
         volumeSettings.SetActive(false);
+        cameraSettings.SetActive(false);
 
         quitPanel.SetActive(false);
 
@@ -78,6 +80,18 @@ public class PauseMenu : MonoBehaviour
     {
         controllerBindings.SetActive(false);
         keyboardBindings.SetActive(true);
+    }
+
+    public void SwitchToCameraSettings()
+    {
+        settingsCanvas.SetActive(false);
+        cameraSettings.SetActive(true);
+    }
+
+    public void SwitchFromCameraSettings()
+    {
+        cameraSettings.SetActive(false);
+        settingsCanvas.SetActive(true);
     }
 
     public void ShowQuitPanel()

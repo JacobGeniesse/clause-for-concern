@@ -7,7 +7,7 @@ public class RenderCheck : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        cameraRenderer = GetComponent<Renderer>();
+        cameraRenderer = GetComponentInChildren<Renderer>();
     }
 
     public bool SightCheck()
