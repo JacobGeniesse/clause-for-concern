@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEditor.Rendering.CameraUI;
+//using static UnityEditor.Rendering.CameraUI;
 
 public class OfficeGhoulPatrol : MonoBehaviour
 {

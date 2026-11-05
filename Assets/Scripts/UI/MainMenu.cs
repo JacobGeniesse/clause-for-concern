@@ -11,6 +11,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject startMenuPanel;
     [SerializeField] private GameObject controllerMenuPanel;
     [SerializeField] private GameObject volumeMenuPanel;
+    [SerializeField] private GameObject cameraMenuPanel;
     [SerializeField] private GameObject keyboardBindings;
     [SerializeField] private GameObject controllerBindings;
     [SerializeField] private GameObject fileLoadPanel;
@@ -21,6 +22,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject confirmFile1Deletion;
     [SerializeField] private GameObject confirmFile2Deletion;
     [SerializeField] private GameObject confirmFile3Deletion;
+    
 
     [SerializeField] private Button loadFile1Button;
     [SerializeField] private Button loadFile2Button;
@@ -46,6 +48,7 @@ public class MainMenu : MonoBehaviour
         startMenuPanel.SetActive(false);
         controllerMenuPanel.SetActive(false);
         volumeMenuPanel.SetActive(false);
+        cameraMenuPanel.SetActive(false);
         fileLoadPanel.SetActive(false);
         newGamePanel.SetActive(false);
         deleteFilePanel.SetActive(false);
@@ -118,6 +121,18 @@ public class MainMenu : MonoBehaviour
         settingsMenuPanel.SetActive(true);
     }
 
+    public void SwitchToCamera()
+    {
+        settingsMenuPanel.SetActive(false);
+        cameraMenuPanel.SetActive(true);
+    }
+
+    public void SwitchFromCamera()
+    {
+        cameraMenuPanel.SetActive(false);
+        settingsMenuPanel.SetActive(true);
+    }
+
     public void SwitchToKeyboardBindings()
     {
         keyboardBindings.SetActive(true);
@@ -168,7 +183,7 @@ public class MainMenu : MonoBehaviour
     {
         // Eventually change this to also set all savable data to starting values
         // Also change this to load the main game scene when that gets implemented
-        SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
+        SceneManager.LoadScene(1, LoadSceneMode.Single);
     }
 
     private void CheckFile1Button()

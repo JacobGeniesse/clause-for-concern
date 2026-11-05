@@ -6,8 +6,6 @@ public class Minimap : MonoBehaviour
 {
     public static bool IsOpen { get; private set; } // true while the phone is on screen
 
-    private Transform player;
-    private TaskManager taskManager;
     [SerializeField] RectTransform mapRect; // floorplan image the markers sit on
     [SerializeField] RectTransform playerMarker;
     [SerializeField] RectTransform taskMarker;
@@ -15,30 +13,17 @@ public class Minimap : MonoBehaviour
     [SerializeField] Transform worldMax;
     [SerializeField] GameObject mapRoot; // HeldPhone object
     [SerializeField] InputActionAsset masterList;
+    [SerializeField] Transform player;
+    [SerializeField] TaskManager taskManager;
 
     InputAction mapToggle;
     PhoneRig phoneRig;
 
     void Start()
     {
-        if (player == null)
-        {
-            player = GameObject.Find("PlayerBody").GetComponent<Transform>();
-        }
-
-        if (taskManager == null)
-        {
-            taskManager = GameObject.Find("GameManager").GetComponent<TaskManager>();
-        }
-
         if (mapRoot != null)
         {
             phoneRig = mapRoot.GetComponent<PhoneRig>();
-            if (phoneRig == null)
-            {
-                phoneRig = mapRoot.GetComponentInParent<PhoneRig>(true);
-            }
-
             if (phoneRig != null)
             {
                 phoneRig.Initialize();
@@ -47,14 +32,10 @@ public class Minimap : MonoBehaviour
 
         if (masterList != null)
         {
-            try
+            mapToggle = masterList.FindAction("Map");
+            if (mapToggle != null)
             {
-                mapToggle = masterList["Map"];
                 mapToggle.Enable();
-            }
-            catch
-            {
-                mapToggle = null;
             }
         }
 
@@ -71,10 +52,9 @@ public class Minimap : MonoBehaviour
 
     void Update()
     {
-        if (WasMapPressed())
+        if (WasMapPressed() && phoneRig != null)
         {
-            bool raised = phoneRig != null ? phoneRig.IsRaised : IsOpen;
-            SetOpen(!raised);
+            SetOpen(!phoneRig.IsRaised);
         }
     }
 
@@ -117,12 +97,7 @@ public class Minimap : MonoBehaviour
 
     bool WasMapPressed()
     {
-        if (mapToggle != null)
-        {
-            return mapToggle.WasPressedThisFrame();
-        }
-
-        return Keyboard.current != null && Keyboard.current.tabKey.wasPressedThisFrame;
+        return mapToggle != null && mapToggle.WasPressedThisFrame();
     }
 
     public void SetOpen(bool open)
@@ -133,27 +108,21 @@ public class Minimap : MonoBehaviour
     // immediate = true skips the raise/lower animation.
     public void SetOpen(bool open, bool immediate)
     {
-        if (phoneRig != null)
+        if (phoneRig == null)
         {
-            if (immediate && !open)
-            {
-                phoneRig.SnapHidden();
-            }
-            else
-            {
-                phoneRig.SetRaised(open);
-            }
+            return;
+        }
 
-            IsOpen = phoneRig.IsVisible;
+        if (immediate && !open)
+        {
+            phoneRig.SnapHidden();
         }
         else
         {
-            IsOpen = open;
-            if (mapRoot != null)
-            {
-                mapRoot.SetActive(open);
-            }
+            phoneRig.SetRaised(open);
         }
+
+        IsOpen = phoneRig.IsVisible;
 
         Cursor.lockState = open ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = open;

@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 public class ItemPickup : MonoBehaviour, IInteractable
 {
-    [SerializeField] ItemType itemType;
-    [SerializeField] int amount;
+    public ItemType itemType;
+    public int amount;
+    public string description;
     private PlayerInventory inventory; // saved reference to the player's inventory
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -13,9 +16,9 @@ public class ItemPickup : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        if (inventory.AddItems(itemType, amount) > 0)
+        if (inventory.AddItems(new StandardItem(itemType, amount, description)))
         {
-           Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
     public void IncrementTask() // required by IInteractable

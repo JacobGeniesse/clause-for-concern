@@ -15,7 +15,7 @@ public class HRRepBehavior : MonoBehaviour
     private NavMeshAgent agent; //Ref to the nav mesh agent
 
     [Tooltip("Is the enemy aggressive?")]
-    [SerializeField] private bool aggressive = true; //Determines if the enemy is aggressive currently unused.
+    public bool aggressive = false; //Determines if the enemy is aggressive currently unused.
 
     #region hearing Vars
     private HearingSequence hearingNodes; //Ref to the hearing sequence script
@@ -35,16 +35,21 @@ public class HRRepBehavior : MonoBehaviour
 
     private StunSequence stunSequence;
 
+    [HideInInspector] public bool chasing = false;
+
     #endregion
 
 
-    #region cheat Vars
+    #region teleport Vars
 
     private HRTeleport teleportScript; //Ref  to the teleportation script
 
     private float minCheatCooldown = 10; //Lowest time limit before the enemy can warp
     private float maxCheatCooldown = 25f; //Highest time limit before the enemy can warp
-    private float cheatCooldown = 0; //Current warp cooldown
+    [SerializeField] private float cheatCooldown = 0; //Current warp cooldown
+
+    IEnumerator teleportCooldown = null;
+    [SerializeField] private bool coolingDown = false;
 
     #endregion
 
@@ -77,6 +82,12 @@ public class HRRepBehavior : MonoBehaviour
 
     private void Update()
     {
+        ////If the enemy's cheat cooldown is greater than 0 reduce it
+        //if (cheatCooldown > 0 && aggressive == true && chasing == false)
+        //{
+        //    cheatCooldown -= Time.deltaTime;
+        //}
+
         //If the treeStatus is not successful then set it equal to the process active under actions
         if (treeStatus != Node.Status.SUCCESS)
         {
@@ -88,21 +99,31 @@ public class HRRepBehavior : MonoBehaviour
         {
             treeStatus = Node.Status.RUNNING;
         }
+    }
 
-        //If the enemy's cheat cooldown is greater than 0 reduce it
-        if (cheatCooldown > 0)
+    #region Hearing Leaves
+    private Node.Status Hear()
+    {
+        if (aggressive == true)
         {
-            cheatCooldown -= Time.deltaTime;
+            return hearingNodes.Hear();
+        }
+        else
+        {
+            return Node.Status.FAILURE;
         }
     }
 
+
+    #endregion
+
+
     #region Chase Sequence Leaves
-    
     //Node for the HR Vision check
     private Node.Status Look()
     {
         //Do a sight check, if the player is spotted, move towards them
-        if (aggressive && sightScript.SightCheck(playerTrans))
+        if (aggressive == true && sightScript.SightCheck(playerTrans))
         {
             lastKnownLocation = playerTrans.position; //Update the last known location
             //Debug.Log("I see you!"); //Debug Message
@@ -116,6 +137,7 @@ public class HRRepBehavior : MonoBehaviour
             //If the player is within a certain range, continue to the next node for the attack sequence
             if (DistanceCheck(playerTrans) <= attackDistance)
             {
+                chasing = true;
                 return Node.Status.SUCCESS;
             }
             else
@@ -139,7 +161,7 @@ public class HRRepBehavior : MonoBehaviour
     private Node.Status LosePlayer()
     {
         //If there is a last known location, move towards it
-        if (aggressive && lastKnownLocation != Vector3.zero)
+        if (aggressive == true && lastKnownLocation != Vector3.zero)
         {
             //Debug.Log("I can't see or hear you. I will investigate where I saw you last");
             return move.MoveToPOI(agent, lastKnownLocation);
@@ -155,23 +177,51 @@ public class HRRepBehavior : MonoBehaviour
     private Node.Status ResetChase()
     {
         //Reset the lastKnownLocation
+        chasing = false;
         lastKnownLocation = Vector3.zero; //Clear the lastKnownLocation
+
+        if(teleportCooldown != null)
+        {
+            StopCoroutine(teleportCooldown);
+            teleportCooldown = null;
+        }
+
+        if(teleportCooldown == null)
+        {
+            teleportCooldown = TeleportCooldown();
+            StartCoroutine(teleportCooldown);
+        }
+
         return Node.Status.SUCCESS; //End the Sequence
     }
     #endregion
 
     #region Patrol Sequence Leaves
 
+    IEnumerator TeleportCooldown()
+    {
+        coolingDown = true;
+        yield return new WaitForSeconds(UnityEngine.Random.Range(minCheatCooldown, maxCheatCooldown));
+        coolingDown = false;
+    }
+
     //Node for teleporting to a jumpscare location, currently not being called for some reason
     private Node.Status Teleport()
     {
         //If the enemy is aggressive and the cheatCooldown is less than 0, do a warp check
-        if (aggressive && cheatCooldown <= 0)
+        if (aggressive == true && coolingDown != true && chasing == false)
         {
+            Debug.Log("Aggressive");
             return teleportScript.WarpCheck();
         }
         else
         {
+
+            if(aggressive == true && teleportCooldown == null)
+            {
+                teleportCooldown = TeleportCooldown();
+                StartCoroutine(teleportCooldown);
+            }
             return Node.Status.FAILURE; //Otherwise skip this
         }
     }
@@ -215,7 +265,12 @@ public class HRRepBehavior : MonoBehaviour
     public void AlterAggression(bool modifier)
     {
         aggressive = modifier;
-        cheatCooldown = UnityEngine.Random.Range(minCheatCooldown, maxCheatCooldown);
+
+        if(teleportCooldown == null)
+        {
+            teleportCooldown = TeleportCooldown();
+            StartCoroutine(teleportCooldown);
+        }
     }
 
     #region Start Helpers
@@ -271,7 +326,7 @@ public class HRRepBehavior : MonoBehaviour
         }
         else
         {
-            Debug.LogError("No patrol nodes found!");
+            Debug.LogError($"No objects with tag {tag} found!");
             return conversionList;
         }
     }
@@ -458,7 +513,7 @@ public class HRRepBehavior : MonoBehaviour
 
         //Define the hearing sequence
         Sequence hear = new Sequence("Listen"); //Make the sequence
-        Leaf listen = new Leaf("Audio-Input", hearingNodes.Hear); //Leaf 1: Conduct hearing check
+        Leaf listen = new Leaf("Audio-Input", Hear); //Leaf 1: Conduct hearing check
         Leaf investigateSound = new Leaf("Investigate-Sound", hearingNodes.InvestigateSound); //Leaf 2: Investigate the origin point of the sound
         Leaf clearSound = new Leaf("Clear-Sound-Location", hearingNodes.DismissSound); //Leaf 3: After reaching the sound, clear the point of origin.
         //Add the leaves to the hear sequence.
