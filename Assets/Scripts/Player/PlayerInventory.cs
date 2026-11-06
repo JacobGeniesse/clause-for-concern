@@ -22,8 +22,10 @@ public class PlayerInventory : MonoBehaviour
     public IReadOnlyList<StandardItem> StandardItems => standardItemInventory;
 
     // Do we want to have the stun gun script handle the ammo management, and the inventory just adds ammo from ammo boxes?
-    [SerializeField] public int ammoCount = 0;   // Current ammo count of the stapler
+   [SerializeField] public int ammoCount = 0;   // Current ammo count of the stapler
    [SerializeField] public int maxAmmo = 5;    // Maximum ammo count for the stapler
+
+    public event Action<int> OnAmmoChanged;
 
     void Awake()
     {
@@ -87,6 +89,7 @@ public class PlayerInventory : MonoBehaviour
                 int ammoRoom = maxAmmo - ammoCount;
                 used = Mathf.Min(item.amount, ammoRoom); // partial fill if the stapler is almost full
                 ammoCount += used;
+                OnAmmoChanged?.Invoke(ammoCount);
                 item.amount -= used;
                 break;
 
@@ -159,6 +162,7 @@ public class PlayerInventory : MonoBehaviour
                     return false;
                 }
                 ammoCount -= amount;
+                OnAmmoChanged?.Invoke(ammoCount); // onAmmoChanged is event for ui, ?. checking if the event has a subscriber, Invoke runs the event ammocount the passed value
                 return true;
         }
 
