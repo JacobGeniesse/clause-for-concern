@@ -62,6 +62,9 @@ public class HRRepBehavior : MonoBehaviour
     private MoveToPoint move; //Helper script for moving to a point
 
     private AgentSpeedChanger speedHandler;
+
+    [Tooltip("Storage for enemy Voice Lines")]
+    [SerializeField] private Voicelines hrVoiceLines;
     #endregion
 
 
@@ -82,11 +85,6 @@ public class HRRepBehavior : MonoBehaviour
 
     private void Update()
     {
-        ////If the enemy's cheat cooldown is greater than 0 reduce it
-        //if (cheatCooldown > 0 && aggressive == true && chasing == false)
-        //{
-        //    cheatCooldown -= Time.deltaTime;
-        //}
 
         //If the treeStatus is not successful then set it equal to the process active under actions
         if (treeStatus != Node.Status.SUCCESS)

@@ -123,7 +123,7 @@ public class AudioManager : MonoBehaviour
             {
                 Vector3 playerOffest = position - playerTrans.position;
                 float distanceToPlayer = Vector3.SqrMagnitude(playerOffest);
-                Debug.Log(distanceToPlayer);
+                //Debug.Log(distanceToPlayer);
 
                 if (distanceToPlayer <= audioRange)
                 {

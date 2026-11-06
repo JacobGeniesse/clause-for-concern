@@ -47,7 +47,7 @@ public class HRAttacks : MonoBehaviour
     private PlayerHealth playerHealth;
     private PlayerMovement playerMove;
     private NavMeshAgent agent;
-
+    private Minimap map;
 
     private void Start()
     {
@@ -84,6 +84,15 @@ public class HRAttacks : MonoBehaviour
         catch
         {
             throw new ArgumentException("Unable to assign Nav Mesh Agent var", nameof(HRAttacks));
+        }
+
+        try
+        {
+            map = FindAnyObjectByType<Minimap>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to find Minimap reference.", nameof(HRAttacks));
         }
     }
 
@@ -149,6 +158,8 @@ public class HRAttacks : MonoBehaviour
     private IEnumerator GrabAttack()
     {
         attacking = true; //The enemy is attacking
+
+        map.SetOpen(false);
 
         //Attach the player to the enemy's arm hitbox for the purposes of the grab
         playerMove.TetherObject(attackCol.transform);

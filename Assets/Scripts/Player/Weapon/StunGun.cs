@@ -20,6 +20,8 @@ public class StunGun : MonoBehaviour
     [SerializeField] private int fireCooldown = 2; // seconds between shots (slow fire rate)
     PlayerInventory inventory; //Ref to the player inventory
 
+    [HideInInspector] public bool canShoot = true; 
+
     private float nextFireTime = 0f; // the earliest time we are allowed to shoot again
 
     void Awake(){
@@ -36,19 +38,27 @@ public class StunGun : MonoBehaviour
     }
 
     private void OnFire(InputAction.CallbackContext context){
-        if (inventory.GetCount(ItemType.Ammo) > 0){
-        if (Minimap.IsOpen)
+        if (inventory.GetCount(ItemType.Ammo) > 0)
         {
-            return;
-        }
+            if (Minimap.IsOpen)
+            {
+                return;
+            }
 
-        if (inventory.ammoCount <= 0){
-            return; // no ammo no shooting
-        }
-        if(Time.time < nextFireTime){
-            return; // still cooling down no shooting
-        }
-        Shoot();
+            if (inventory.ammoCount <= 0){
+                return; // no ammo no shooting
+            }
+
+            if(Time.time < nextFireTime){
+                return; // still cooling down no shooting
+            }
+
+            if(canShoot != true)
+            {
+                return; //If the player can't shoot then no shooting
+            }
+
+            Shoot();
             Debug.Log("firing");
         }
     }

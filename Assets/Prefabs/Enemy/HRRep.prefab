@@ -189,6 +189,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HRRepBehavior
   aggressive: 1
+  chasing: 0
+  cheatCooldown: 0
+  coolingDown: 0
+  hrVoiceLines: {fileID: 11400000, guid: 6f6636d88f370f944a2f8557d8a8265d, type: 2}
 --- !u!114 &3939496191004870335
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -7,37 +7,37 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
 {
-
+    [Tooltip("Input Map for Movement Controls")]
     public InputActionAsset masterList;
+    private InputAction movement; //Input for movement
+    private InputAction sprint; //Input for sprinting
 
-    private InputAction movement;
-    private InputAction sprint;
+    private Rigidbody rb; //Player's rigidbody
 
-    private Rigidbody rb;
+    [Tooltip("Rate at which the player accelerates.")]
+    [SerializeField] private float accel;
 
-    [SerializeField]
-    private float accel;
+    [Tooltip("Maximum speed at which the player can walk.")]
+    [SerializeField] private float maxWalkSpeed;
 
-    [SerializeField]
-    private float maxWalkSpeed;
-
-    [SerializeField]
-    private float maxRunSpeed;
-    private bool sprinting = false;
-
-    private Vector3 moveInputs;
-
+    [Tooltip("Maximum speed at which the player can run.")]
+    [SerializeField] private float maxRunSpeed;
+    private bool sprinting = false; //Is the player sprinting currently?
+    private Vector3 moveInputs; //Movement input
     private Vector2 currentMoveInput; // holds the current move input
 
     private PlayerNoiseManager playerNoiseManager;
     private bool canMove = true;
 
-    [SerializeField] private Vector3 pushForce = Vector3.zero;
+    [SerializeField, HideInInspector] private Vector3 pushForce = Vector3.zero;
     private float pushDuration;
 
+    [Tooltip("Can the player be grabbed currently?")]
     public bool canGrab = true;
     private bool pushed = false;
     private IEnumerator pushCoroutine;
+
+    private StunGun stunGun;
 
     void Awake()// called when the script instance is being loaded, lookups happen before onEnable runs
     {
@@ -67,6 +67,15 @@ public class PlayerMovement : MonoBehaviour
         catch
         {
             throw new ArgumentException("Unable to find player noise manager!", nameof(PlayerMovement));
+        }
+
+        try
+        {
+            stunGun = GetComponent<StunGun>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to find reference to the StunGun.", nameof(PlayerMovement));
         }
     }
 
@@ -123,14 +132,14 @@ public class PlayerMovement : MonoBehaviour
             moveInputs = Move();
 
             velocity.x = Mathf.MoveTowards(velocity.x, moveInputs.x, maxSpeedChange);
-            velocity.y = Mathf.MoveTowards(velocity.y, moveInputs.y, maxSpeedChange);
+            velocity.y = Mathf.MoveTowards(velocity.y, velocity.y, maxSpeedChange);
             velocity.z = Mathf.MoveTowards(velocity.z, moveInputs.z, maxSpeedChange);
         }
 
         if (pushed)
         {
             velocity.x = Mathf.MoveTowards(velocity.x, pushForce.x, maxSpeedChange);
-            velocity.y = Mathf.MoveTowards(velocity.y, pushForce.y, maxSpeedChange);
+            velocity.y = Mathf.MoveTowards(velocity.y, velocity.y, maxSpeedChange);
             velocity.z = Mathf.MoveTowards(velocity.z, pushForce.z, maxSpeedChange);
         }
 
@@ -176,6 +185,7 @@ public class PlayerMovement : MonoBehaviour
     {
         canGrab = movability;
         canMove = movability;
+        rb.useGravity = movability;
     }
 
     public void StopPlayer()
@@ -196,9 +206,12 @@ public class PlayerMovement : MonoBehaviour
     private IEnumerator ExecutePush(float pushDuration)
     {
         canGrab = false;
+        canMove = false;
+        stunGun.canShoot = false;
         pushed = true;
         yield return new WaitForSeconds(pushDuration);
         pushed = false;
+        stunGun.canShoot = true;
         AlterMoveState(true);
         pushCoroutine = null;
         canGrab = true;
@@ -207,6 +220,7 @@ public class PlayerMovement : MonoBehaviour
     public void TetherObject(Transform newParent)
     {
         transform.parent = newParent;
+        transform.position = newParent.position;
         rb.position = newParent.position;
     }
 }
