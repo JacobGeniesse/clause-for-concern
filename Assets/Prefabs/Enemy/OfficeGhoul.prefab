@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 503026869001963174}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.1, z: 1.2}
+  m_LocalPosition: {x: 0, y: -0.1, z: 1.577}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -69,6 +69,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OGAttacks
   attackCol: {fileID: 3773629806145708939}
   damageAmount: 10
+  grabLength: 2
   lungeDuration: 2
   waitingPeriod: 3
 --- !u!1 &1410978948527311846
@@ -246,6 +247,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MoveToPoint
   clearDistance: 2
+  walkingSound: {fileID: 8300000, guid: 2abfb1867f21e5e4f94103e1703baeb5, type: 3}
 --- !u!114 &8828839929467725926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -408,7 +410,7 @@ Transform:
   m_GameObject: {fileID: 6455221182426891700}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.49999997, z: -0.8}
+  m_LocalPosition: {x: 0, y: 0.49999997, z: -1.174}
   m_LocalScale: {x: 0.5, y: 0.2, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -12,7 +12,7 @@ public class HRAttacks : MonoBehaviour
     [SerializeField] private float damage = 20;
 
     [Tooltip("Object that represents the grab attack hitbox.")]
-    [SerializeField] private Collider attackCol; //Reference to the enemy's grab range
+    [SerializeField] private Collider attackCol;
 
     [Header("Player Throw Variables")]
     [Tooltip("Force the player is thrown with.")]
@@ -30,14 +30,8 @@ public class HRAttacks : MonoBehaviour
     private Transform playerTrans; //Player's transform position
 
     [Header("Sound Variables")]
-    [Tooltip("Sound the enemy makes when attempting to grab the player.")]
-    [SerializeField] private AudioClip grabAttemptGrunt;
-
-    [Tooltip("Sound the enemy makes when failing to grab the player.")]
-    [SerializeField] private AudioClip missedDisappointment;
-
-    [Tooltip("Sound the enemy makes when throwing the player.")]
-    [SerializeField] private AudioClip chuckGrunt;
+    [Tooltip("Storage for enemy Voice Lines")]
+    [SerializeField] private Voicelines hrVoiceLines;
 
     //Variable for holding the grabAttack coroutine
     private IEnumerator grabAttack;
@@ -86,6 +80,7 @@ public class HRAttacks : MonoBehaviour
             throw new ArgumentException("Unable to assign Nav Mesh Agent var", nameof(HRAttacks));
         }
 
+        //Assign reference to the player's Minimap for deactivating when they get grabbed
         try
         {
             map = FindAnyObjectByType<Minimap>();
@@ -108,12 +103,12 @@ public class HRAttacks : MonoBehaviour
         //If the player is within the grab hitbox
         if (attackCol.bounds.Contains(playerTrans.position))
         {
-            playerMove.StopPlayer();
-            return Node.Status.SUCCESS;
+            playerMove.StopPlayer(); //Stop the player
+            return Node.Status.SUCCESS; //Pass success
         }
         else
         {
-            return Node.Status.FAILURE;
+            return Node.Status.FAILURE; //Otherwise pass failure and move on to the next func
         }
 
     }
@@ -141,6 +136,7 @@ public class HRAttacks : MonoBehaviour
 
     }
 
+    //Func for ending a grab sequence
     public Node.Status EndGrab()
     {
         //Debug.Log("I hit you!"); //Debug Message
@@ -155,6 +151,7 @@ public class HRAttacks : MonoBehaviour
         return Node.Status.SUCCESS;
     }
 
+    //Coroutine for executing a grab attack against the player
     private IEnumerator GrabAttack()
     {
         attacking = true; //The enemy is attacking
@@ -166,7 +163,15 @@ public class HRAttacks : MonoBehaviour
 
         playerMove.AlterMoveState(false); //prevent the player from moving
 
-        yield return new WaitForSeconds(windupLength); //Windup Toss Animation Time
+        if(windupLength > 0)
+        {
+            yield return new WaitForSeconds(windupLength); //Windup Toss Animation Time
+        }
+        else
+        {
+            Debug.LogWarning("windupLength has an invalid time! Using backup value!");
+            yield return new WaitForSeconds(1.5f); //Backup in case an invalid time is entered
+        }
 
         playerTrans.parent = null; //release the player from the arm hitbox
 
@@ -176,8 +181,16 @@ public class HRAttacks : MonoBehaviour
         
         playerHealth.TakeDamage(damage); //Have the player take damage as a result of the throw
         
-        yield return new WaitForSeconds(cooldownLength); //Cooldown Animation Time
-       
+        if(cooldownLength > 0)
+        {
+            yield return new WaitForSeconds(cooldownLength); //Cooldown Animation Time
+        }
+        else
+        {
+            Debug.LogWarning("cooldownLength has an invalid time! Using backup value!");
+            yield return new WaitForSeconds(2); //Backup in case an invalid time is entered
+        }
+
         attacking = false; //The enemy is no longer attacking
     }
 }

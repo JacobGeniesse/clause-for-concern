@@ -9,7 +9,17 @@ public class OGAttacks : MonoBehaviour
     private bool attacking = false; //Is the enemy attacking?
     private IEnumerator attackingCoroutine = null; //slot for the active attacking coroutine
     [SerializeField] private Collider attackCol; //Reference to the enemy's grab range
+
+    [Tooltip("Amount of damage to deal to the player.")]
     [SerializeField] private float damageAmount = 10; //Amount of damage dealt by the enemy
+
+    [Header("Grab Timing Variables")]
+    [Tooltip("Length of time the player is grabbed for.")]
+    [SerializeField] private float grabLength = 2f;
+
+    [Tooltip("Length of time before the enemy can move again after the player is freed from the grab.")]
+    [SerializeField] private float graceLength = 1.5f;
+
     #endregion
 
     #region Lunging Vars
@@ -30,6 +40,7 @@ public class OGAttacks : MonoBehaviour
     private MoveToPoint move; //movement script
     private PlayerHealth playerHealth; //player health script
     private PlayerMovement playerMove; //player movementscript
+    private Minimap map;
     private Transform playerTrans; //player transform
     private NavMeshAgent agent; //This object's nav mesh agent
     private AgentSpeedChanger speedControl; //speed adjustment script
@@ -116,6 +127,16 @@ public class OGAttacks : MonoBehaviour
         catch
         {
             throw new ArgumentException("Unable to assign NavMeshAgent script.", nameof(OfficeGhoulBehavior));
+        }
+
+        //Assign the Minimap component for deactivating the map upon being grabbed
+        try
+        {
+            map = FindAnyObjectByType<Minimap>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to find Minimap reference.", nameof(HRAttacks));
         }
     }
 
@@ -236,17 +257,35 @@ public class OGAttacks : MonoBehaviour
         attacking = true; //Set attacking to true
         agent.destination = transform.position; //Stop the agent's movement
 
+        map.SetOpen(false);
         playerMove.AlterMoveState(false); //Stop the player from moving
         playerMove.StopPlayer(); //Stop the player's movement
         playerMove.TetherObject(attackCol.transform);
 
         playerHealth.TakeDamage(damageAmount); //Deal damage to the player
 
-        yield return new WaitForSeconds(1.5f); //Wait for the breakout anim to finish
+        if(grabLength > 0)
+        {
+            yield return new WaitForSeconds(grabLength); //Wait for the breakout anim to finish
+        }
+        else
+        {
+            Debug.LogWarning("grabLength has an invalid time! Using backup value!");
+            yield return new WaitForSeconds(1.5f); //Backup in case an invalid time was entered
+        }
         playerTrans.parent = null; //Let the player go
         playerMove.AlterMoveState(true); //Let the player move again
 
-        yield return new WaitForSeconds(1.5f); //Wait for the grace period anim to finish
+        if(graceLength > 0)
+        {
+            yield return new WaitForSeconds(graceLength); //Wait for the grace period anim to finish
+        }
+        else
+        {
+            Debug.LogWarning("graceLength has an invalid time! Using backup value!");
+            yield return new WaitForSeconds(1.5f); //Backup in case an invalid time was entered
+        }
+
         attacking = false; //Enemy is no longer attacking
     }
 

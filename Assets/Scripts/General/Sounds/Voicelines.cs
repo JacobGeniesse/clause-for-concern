@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/*
+ * Scriptable object for handling different versions of enemy voiceline sets
+ * Built this way for ease of testing and showcasing different versions of character voicelines.
+*/
 [CreateAssetMenu(fileName = "Voiceline", menuName = "Scriptable Objects/Voiceline")]
 public class Voicelines : ScriptableObject
 {

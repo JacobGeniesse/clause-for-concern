@@ -115,7 +115,6 @@ public class HRRepBehavior : MonoBehaviour
 
     #endregion
 
-
     #region Chase Sequence Leaves
     //Node for the HR Vision check
     private Node.Status Look()
@@ -251,7 +250,7 @@ public class HRRepBehavior : MonoBehaviour
     }
     #endregion
 
-    //Helper Func for calculating a distance check
+    //Helper Func for calculating a distance check. Calculate using SqrMagnitude to save on FPS
     private float DistanceCheck(Transform playerTrans)
     {
         Vector3 playerOffest = playerTrans.position - transform.position;
@@ -317,19 +316,18 @@ public class HRRepBehavior : MonoBehaviour
 
             foreach (GameObject GM in fillerList)
             {
-                conversionList.Add(GM.transform.position);
+                conversionList.Add(GM.transform.position); //Add the transform of the game object to the converted list
             }
 
-            return conversionList;
+            return conversionList; //Return the new converted list
         }
         else
         {
+            //Backup in case no objects are found
             Debug.LogError($"No objects with tag {tag} found!");
             return conversionList;
         }
     }
-
-
 
     //Func run at start to assign the references for the script
     private bool AssignReference()
@@ -456,7 +454,6 @@ public class HRRepBehavior : MonoBehaviour
         stun.AddChild(activeStun);
         stun.AddChild(stunEnd);
 
-
         //Define the patrol sequence
         Selector patrolMethod = new Selector("Teleport-or-Walk"); //Selector for determining if the enemy should teleport to a jumpscare spot or patrol the map normally
         Sequence teleport = new Sequence("Teleport"); //Sequence for if the enemy teleports to a jumpscare spot
@@ -474,7 +471,6 @@ public class HRRepBehavior : MonoBehaviour
         patrol.AddChild(wander);
         patrol.AddChild(clearPatrol);
         patrolMethod.AddChild(patrol);
-
 
         //Define the chase sequence
         Sequence chase = new Sequence("Chase-Player"); //Make the sequence
@@ -499,8 +495,6 @@ public class HRRepBehavior : MonoBehaviour
         violence.AddChild(grabFail);
         grabFail.AddChild(failGrab);
 
-
-
         //Define the losePlayer sequence
         Sequence losePlayer = new Sequence("Lose-Player"); //Make the sequence
         Leaf lose = new Leaf("Investigate-Last-Known-Location", LosePlayer); //Leaf 1: Investigate the last known location if it isn't 0
@@ -519,14 +513,12 @@ public class HRRepBehavior : MonoBehaviour
         hear.AddChild(investigateSound);
         hear.AddChild(clearSound);
 
-
         //Add the different behavior routes to the selector
         sensoryInput.AddChild(stun);
         sensoryInput.AddChild(chase);
         sensoryInput.AddChild(hear);
         sensoryInput.AddChild(losePlayer);
         sensoryInput.AddChild(patrolMethod);
-
 
         actions.AddChild(sensoryInput); //Add sensory input to the master behavior tree
     }
