@@ -63,6 +63,8 @@ public class AudioManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        audioRange = Mathf.Pow(soundObjectPrefab.GetComponent<AudioSource>().maxDistance, 2);
+
         playerTrans = GameObject.Find("PlayerBody").GetComponent<Transform>();
 
         // Play the initial background music on start
@@ -128,6 +130,7 @@ public class AudioManager : MonoBehaviour
                 if (distanceToPlayer <= audioRange)
                 {
                     soundObject = ObjectPool.instance.Create(soundObjectPrefab, position, Quaternion.identity, soundObjectPool); //Pull a sound object from the object pool and place it where the call describes
+                    soundObject.GetComponent<AudioSource>().volume = volume;
                 }
             }
             else

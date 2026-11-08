@@ -8843,6 +8843,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1871829118}
   m_CullTransparentMesh: 1
+--- !u!1 &1876786295 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4906420726696469859, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
+  m_PrefabInstance: {fileID: 958432383248088599}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1876786308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1876786295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb57ead5b4f2afb4c852c870fb3437e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyVLManager
+  hrVoiceLines: {fileID: 11400000, guid: 6f6636d88f370f944a2f8557d8a8265d, type: 2}
 --- !u!1 &1922925808
 GameObject:
   m_ObjectHideFlags: 0
@@ -10082,18 +10100,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4709008619657478678, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
+      propertyPath: cooldownLength
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4906420726696469859, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
       propertyPath: m_Name
       value: HRRep
       objectReference: {fileID: 0}
     - target: {fileID: 4906420726696469859, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4906420726696469859, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1876786308}
   m_SourcePrefab: {fileID: 100100000, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
 --- !u!1001 &1560633086433348611
 PrefabInstance:

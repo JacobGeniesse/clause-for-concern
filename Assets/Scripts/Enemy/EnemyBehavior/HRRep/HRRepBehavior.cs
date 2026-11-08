@@ -28,6 +28,11 @@ public class HRRepBehavior : MonoBehaviour
     private Vector3 lastKnownLocation; //Last spot the enemy spotted the player at
     private float attackDistance = 5f; //Max distance the enemy can attack from
 
+    private IEnumerator attackCooldown = null;
+    private float cooldownLength = 2f;
+
+    [HideInInspector] public bool canAttack = true;
+
     #endregion
 
     #region Stun Vars
@@ -55,6 +60,8 @@ public class HRRepBehavior : MonoBehaviour
 
 
     private Transform playerTrans; //Point representing the player's position
+    private PlayerMovement playerMove;
+
 
     #region Helper Scripts
     private TraverseNodes patrolScript; //Helper script for patrolling between points
@@ -63,8 +70,8 @@ public class HRRepBehavior : MonoBehaviour
 
     private AgentSpeedChanger speedHandler;
 
-    [Tooltip("Storage for enemy Voice Lines")]
-    [SerializeField] private Voicelines hrVoiceLines;
+    private EnemyVLManager voiceLines;
+
     #endregion
 
 
@@ -119,9 +126,17 @@ public class HRRepBehavior : MonoBehaviour
     //Node for the HR Vision check
     private Node.Status Look()
     {
+        Debug.Log(sightScript.SightCheck(playerTrans));
         //Do a sight check, if the player is spotted, move towards them
         if (aggressive == true && sightScript.SightCheck(playerTrans))
         {
+            if (chasing != true)
+            {
+                chasing = true;
+                //Debug.Log("Sound");
+                voiceLines.PlayVoiceLine("startChase");
+            }
+
             lastKnownLocation = playerTrans.position; //Update the last known location
             //Debug.Log("I see you!"); //Debug Message
             move.MoveToPOI(agent, playerTrans.position); //Start moving towards the player's position
@@ -132,9 +147,8 @@ public class HRRepBehavior : MonoBehaviour
             }
 
             //If the player is within a certain range, continue to the next node for the attack sequence
-            if (DistanceCheck(playerTrans) <= attackDistance)
+            if (DistanceCheck(playerTrans) <= attackDistance && canAttack == true)
             {
-                chasing = true;
                 return Node.Status.SUCCESS;
             }
             else
@@ -146,6 +160,28 @@ public class HRRepBehavior : MonoBehaviour
         {
             return Node.Status.FAILURE; //Otherwise, return failure
         }
+    }
+
+    public Node.Status EndAttackSequence()
+    {
+        StartAttackCoroutine();
+        return Node.Status.SUCCESS;
+    }
+
+    public void StartAttackCoroutine()
+    {
+        if(attackCooldown == null)
+        {
+            attackCooldown = waitCooldown();
+            StartCoroutine(attackCooldown);
+        }
+    }
+
+    IEnumerator waitCooldown()
+    {
+        yield return new WaitForSeconds(cooldownLength);
+        attackCooldown = null;
+        canAttack = true;
     }
 
     //!!! Other Leaves Contained in the "HRATTACKS" Script!!!
@@ -173,6 +209,8 @@ public class HRRepBehavior : MonoBehaviour
     //Node for resetting the chase and returning to patrolling behavior
     private Node.Status ResetChase()
     {
+        Debug.Log("Lost Player");
+        voiceLines.PlayVoiceLine("loseChase");
         //Reset the lastKnownLocation
         chasing = false;
         lastKnownLocation = Vector3.zero; //Clear the lastKnownLocation
@@ -430,9 +468,28 @@ public class HRRepBehavior : MonoBehaviour
         {
             throw new ArgumentException("Unable to assign StunSequence component", nameof(HRRepBehavior));
         }
+
+        try
+        {
+            voiceLines = GetComponent<EnemyVLManager>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to assign EnemyVoiceline component", nameof(HRRepBehavior));
+        }
+
         //Get the player body component
         playerTrans = GameObject.Find("PlayerBody").GetComponent<Transform>();
 
+        //Assign playermovement variable
+        try
+        {
+            playerMove = playerTrans.GetComponent<PlayerMovement>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to assign player movement var", nameof(HRAttacks));
+        }
         return true; //If everything works properly return true
     }
 
@@ -486,6 +543,8 @@ public class HRRepBehavior : MonoBehaviour
         Leaf endGrab = new Leaf("End-of-Grab", attackScript.EndGrab); //Leaf 3: End the grab and resume the chase
         Sequence grabFail = new Sequence("Failed-Grab"); //Backup if the enemy fails to grab the player
         Leaf failGrab = new Leaf("Fail-to-Grab", attackScript.FailGrab); //Leaf 1: Reset and try to resume the chase
+
+        Leaf endSequence = new Leaf("Add-Cooldown", EndAttackSequence);
         //Add leaves to the sequence
         chase.AddChild(violence);
         violence.AddChild(grabSuccess);
@@ -494,6 +553,7 @@ public class HRRepBehavior : MonoBehaviour
         grabSuccess.AddChild(endGrab);
         violence.AddChild(grabFail);
         grabFail.AddChild(failGrab);
+        chase.AddChild(endSequence);
 
         //Define the losePlayer sequence
         Sequence losePlayer = new Sequence("Lose-Player"); //Make the sequence

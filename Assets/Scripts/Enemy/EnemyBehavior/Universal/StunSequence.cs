@@ -15,6 +15,7 @@ public class StunSequence : MonoBehaviour
     private EnemyHealth enemyHealth; //Ref to the enemy health
     private NavMeshAgent agent; //Ref to the nav mesh agent
 
+    private EnemyVLManager voiceLines;
 
     private void Start()
     {
@@ -38,6 +39,15 @@ public class StunSequence : MonoBehaviour
             //Give an error message if this fails and return false
             Debug.LogError($"No NavMeshAgent attached to {this.gameObject}!");
         }
+
+        try
+        {
+            voiceLines = GetComponent<EnemyVLManager>();
+        }
+        catch
+        {
+            throw new ArgumentException("No EnemyVLManager component found!");
+        }
     }
 
     //Stun Check Node
@@ -50,6 +60,7 @@ public class StunSequence : MonoBehaviour
             Debug.Log("Stunned");
             if (agent.isStopped != true)
             {
+                voiceLines.PlayVoiceLine("stunStart");
                 agent.isStopped = true;
             }
             return Node.Status.SUCCESS;
@@ -67,6 +78,7 @@ public class StunSequence : MonoBehaviour
         //Start coroutine if it doesn't already exist
         if (stunCoroutine == null)
         {
+            voiceLines.PlayVoiceLine("stunIdle");
             stunCoroutine = StunDelay();
             StartCoroutine(stunCoroutine);
         }
@@ -98,6 +110,7 @@ public class StunSequence : MonoBehaviour
     public Node.Status EndStun()
     {
         Debug.Log("Returning to patrolling routine."); //Debug Message
+        voiceLines.PlayVoiceLine("stunRecover");
         agent.isStopped = false; //Free the agent
         enemyHealth.ResetHealth(0); //Reset enemy health
         return Node.Status.SUCCESS; //pass success

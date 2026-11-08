@@ -33,6 +33,7 @@ public class SoundObject : MonoBehaviour
         //Delete self upon audio clip ending
         if (ObjectPool.instance != null && AudioManager.Instance != null)
         {
+            clipCoroutine = null;
             //If there is an ObjectPool then return this object to the object pool
             ObjectPool.instance.Destroy(this.gameObject, AudioManager.Instance.soundObjectPool);
         }

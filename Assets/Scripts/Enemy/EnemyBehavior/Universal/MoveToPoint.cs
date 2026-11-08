@@ -55,7 +55,7 @@ public class MoveToPoint : MonoBehaviour
     //Coroutine for playing a step sound effect on an interval
     private IEnumerator step(float stepInterval)
     {
-        AudioManager.Instance.Play3DSFX(walkingSound, clipLength, transform.position, 1f); //Play a sound using the audio manager
+        AudioManager.Instance.Play3DSFX(walkingSound, clipLength, transform.position, 0.5f); //Play a sound using the audio manager
         yield return new WaitForSeconds(stepInterval); //Wait
         sfxCoroutine = null; //Free up the coroutine to play the sound again
     }

@@ -220,7 +220,6 @@ public class PlayerMovement : MonoBehaviour
         pushed = false; //Mark the player as no longer being pushed
         AlterMoveState(true); //Free the player's movement and shooting capability
         pushCoroutine = null; //Set the push coroutine equal to null for future use
-        canGrab = true; //Allow the player to be grabbed
     }
 
     //Function for tethering the player to another object (Used in grab attacks)

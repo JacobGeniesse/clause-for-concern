@@ -29,19 +29,21 @@ public class HRAttacks : MonoBehaviour
     [SerializeField] private float cooldownLength = 2f;
     private Transform playerTrans; //Player's transform position
 
-    [Header("Sound Variables")]
-    [Tooltip("Storage for enemy Voice Lines")]
-    [SerializeField] private Voicelines hrVoiceLines;
-
     //Variable for holding the grabAttack coroutine
     private IEnumerator grabAttack;
 
 
+    private bool triedAttacking = true;
+
     //Helper Scripts and other helper components
+    private NavMeshAgent agent;
+    private EnemyVLManager voiceLines;
+
     private PlayerHealth playerHealth;
     private PlayerMovement playerMove;
-    private NavMeshAgent agent;
     private Minimap map;
+
+    private HRRepBehavior behaviorTree;
 
     private void Start()
     {
@@ -89,28 +91,47 @@ public class HRAttacks : MonoBehaviour
         {
             throw new ArgumentException("Unable to find Minimap reference.", nameof(HRAttacks));
         }
+
+        try
+        {
+            voiceLines = GetComponent<EnemyVLManager>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to find EnemyVLManager component!", nameof(HRAttacks));
+        }
+
+        try
+        {
+            behaviorTree = GetComponent<HRRepBehavior>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to find HRRepBehavior component", nameof(HRAttacks));
+        }
     }
 
 
     //Function for the enemy trying to grab the player
     public Node.Status GrabAttempt()
     {
-        Debug.Log("Trying to attack");
-        agent.destination = transform.position; //Stop the agent from moving
-        //agent.velocity = Vector3.zero;//Extra layer of stoppage
+        behaviorTree.canAttack = false;
+            Debug.Log("Trying to attack");
+            agent.destination = transform.position; //Stop the agent from moving
 
-        //AudioManager.Instance.Play3DSFX(grabAttemptGrunt, transform.position, 0.5f); //Play a sound using the audio manager
-        //If the player is within the grab hitbox
-        if (attackCol.bounds.Contains(playerTrans.position))
-        {
-            playerMove.StopPlayer(); //Stop the player
-            return Node.Status.SUCCESS; //Pass success
-        }
-        else
-        {
-            return Node.Status.FAILURE; //Otherwise pass failure and move on to the next func
-        }
-
+            triedAttacking = true;
+            voiceLines.PlayVoiceLine("attackAttempt");
+            //If the player is within the grab hitbox
+            if (attackCol.bounds.Contains(playerTrans.position))
+            {
+                behaviorTree.canAttack = false;
+                playerMove.StopPlayer(); //Stop the player
+                return Node.Status.SUCCESS; //Pass success
+            }
+            else
+            {
+                return Node.Status.FAILURE; //Otherwise pass failure and move on to the next func
+            }
     }
 
     //Node for grabbing and throwing the player
@@ -139,16 +160,18 @@ public class HRAttacks : MonoBehaviour
     //Func for ending a grab sequence
     public Node.Status EndGrab()
     {
-        //Debug.Log("I hit you!"); //Debug Message
+        Debug.Log("I hit you!"); //Debug Message
         return Node.Status.SUCCESS;
     }
 
     //Func for failing the grab if the player isn't in range once the actual grab happens
     public Node.Status FailGrab()
     {
-        // Debug.Log("I missed >:("); //Debug Message
-        //AudioManager.Instance.Play3DSFX(missedDisappointment, transform.position, 0.5f); //Play a sound using the audio manager
-        return Node.Status.SUCCESS;
+            behaviorTree.canAttack = false;
+            Debug.Log("I missed >:("); //Debug Message
+
+            voiceLines.PlayVoiceLine("attackFailure");
+            return Node.Status.SUCCESS;
     }
 
     //Coroutine for executing a grab attack against the player
@@ -163,7 +186,8 @@ public class HRAttacks : MonoBehaviour
 
         playerMove.AlterMoveState(false); //prevent the player from moving
 
-        if(windupLength > 0)
+
+        if (windupLength > 0)
         {
             yield return new WaitForSeconds(windupLength); //Windup Toss Animation Time
         }
@@ -172,6 +196,7 @@ public class HRAttacks : MonoBehaviour
             Debug.LogWarning("windupLength has an invalid time! Using backup value!");
             yield return new WaitForSeconds(1.5f); //Backup in case an invalid time is entered
         }
+        voiceLines.PlayVoiceLine("attackSuccess");
 
         playerTrans.parent = null; //release the player from the arm hitbox
 
@@ -191,6 +216,7 @@ public class HRAttacks : MonoBehaviour
             yield return new WaitForSeconds(2); //Backup in case an invalid time is entered
         }
 
+        triedAttacking = false;
         attacking = false; //The enemy is no longer attacking
     }
 }
