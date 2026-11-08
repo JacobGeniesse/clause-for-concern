@@ -40,7 +40,7 @@ public class OfficeGhoulBehaviorEditor : Editor
             };
 
             //Draw the range the enemy wanders in
-            Handles.DrawSolidRectangleWithOutline(rectangleVerts, new Color(1, 1, 1, 1f), new Color(0, 0, 0, 0.1f));
+            Handles.DrawSolidRectangleWithOutline(rectangleVerts, new Color(1, 1, 1, 1f), new Color(1, 0, 0, 0.1f));
         }
     }
 }

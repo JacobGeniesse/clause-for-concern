@@ -41,7 +41,8 @@ public class TaskManager : MonoBehaviour
         }
         catch
         {
-            throw new ArgumentException("Unable to find EnemyBehavior.", nameof(TaskManager));
+            Debug.LogWarning("Standard enemy not in this scene! Ensure the new HR Rep enemy is present!");
+            //throw new ArgumentException("Unable to find EnemyBehavior.", nameof(TaskManager));
         }
 
         try
@@ -74,7 +75,7 @@ public class TaskManager : MonoBehaviour
                 enemyBehavior.aggressive = false;
             }
 
-            if (hrBehavior != null)
+            if (hrBehavior != null && hrBehavior.aggressive == true)
             {
                 hrBehavior.AlterAggression(false);
             }
@@ -85,6 +86,7 @@ public class TaskManager : MonoBehaviour
                 timeRemaining = 0f;
                 overdue = true;
                 timerPenalty = 0;
+                
                 //Debug.LogWarning($"Task overdue: {taskName}");
             }
         }
@@ -95,7 +97,7 @@ public class TaskManager : MonoBehaviour
                 enemyBehavior.aggressive = true;
             }
 
-            if (hrBehavior != null)
+            if (hrBehavior != null && hrBehavior.aggressive == false)
             {
                 hrBehavior.AlterAggression(true);
             }

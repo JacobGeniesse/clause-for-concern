@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 public class ItemPickup : MonoBehaviour, IInteractable
 {
     public ItemType itemType;
@@ -10,19 +12,12 @@ public class ItemPickup : MonoBehaviour, IInteractable
     void Start()
     {
         inventory = FindAnyObjectByType<PlayerInventory>(); // finds the PlayerInventory in the scene and saves it
-        /*
-        if (PlayerInventory.Instance != null)
-        {
-            inventory = PlayerInventory.Instance;
-        }
-        */
     }
 
     public void Interact()
     {
-        if (inventory.AddItems(this.GetComponent<ItemPickup>()))
+        if (inventory.AddItems(new StandardItem(itemType, amount, description)))
         {
-            //inventory.UseItems(this.GetComponent<ItemPickup>()); //test function
             gameObject.SetActive(false);
         }
     }
