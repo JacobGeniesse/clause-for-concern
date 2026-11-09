@@ -133,7 +133,7 @@ public class HRRepBehavior : MonoBehaviour
             {
                 chasing = true;
                 //Debug.Log("Sound");
-                //voiceLines.PlayVoiceLine("startChase");
+                voiceLines.PlayVoiceLine("startChase");
             }
 
             lastKnownLocation = playerTrans.position; //Update the last known location

@@ -10,49 +10,15 @@ public class Voicelines : ScriptableObject
 {
     [HideInInspector] public List<string> categories = new List<string>();
 
-
-
-    //[Tooltip("Voice lines for when the enemy takes damage.")]
-    //public AudioClip[] takeDamage;
-    ////private int damagePriority = 0;
-
-
-    //[Tooltip("Voice lines for when the enemy gets stunned.")]
-    //public AudioClip[] stunStart;
-    ////private int stunSPiority = 0;
-
-
-    //[Tooltip("Voice lines for when the enemy is actively stunned.")]
-    //public AudioClip[] stunIdle;
-    ////private int stunIPriority = 0;
-
-    //[Tooltip("Voice lines for when the enemy recovers from being stunned.")]
-    //public AudioClip[] stunRecover;
-
-    //[Tooltip("Voice lines for when the enemy begins chasing the player.")]
-    //public AudioClip[] startChase;
-
-    //[Tooltip("Voices lines intermittenly said while actively in chase.")]
-    //public AudioClip[] activeChase;
-
-    //[Tooltip("Voice lines for when the enemy loses the player while in case.")]
-    //public AudioClip[] loseChase;
-
-    //[Tooltip("Voice lines for the enemy attempting to attack the player.")]
-    //public AudioClip[] attackAttempt;
-
-    //[Tooltip("Voice lines for the enemy successfully attacking and throwing the player.")]
-    //public AudioClip[] attackSuccess;
-
-    //[Tooltip("Voice lines for the enemy failing their attack.")]
-    //public AudioClip[] attackFailure;
-
+    [Tooltip("The different voicelines this enemy can have.")]
     public VoiceList[] soundCollections;
 
     public void Assemble()
     {
+        categories.Clear();
         foreach(VoiceList category in soundCollections)
         {
+            //Debug.Log(category.categoryName);
             categories.Add(category.categoryName);
         }
     }
@@ -64,6 +30,8 @@ public class Voicelines : ScriptableObject
 public class VoiceList
 {
     public string categoryName; //Category of voiceline
+
+    public int priority = 0;
 
     public List<AudioClip> voiceLineList; //List of audio clips belonging to that category.
 

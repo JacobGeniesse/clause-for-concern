@@ -3929,6 +3929,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 744683894}
   m_CullTransparentMesh: 1
+--- !u!65 &750417687 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 6227727170849794357, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
+  m_PrefabInstance: {fileID: 958432383248088599}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &757470108 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8032219425687360066, guid: 80e7930f986ea7240a3279b05a6985e4, type: 3}
@@ -8860,7 +8865,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb57ead5b4f2afb4c852c870fb3437e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyVLManager
-  hrVoiceLines: {fileID: 11400000, guid: 6f6636d88f370f944a2f8557d8a8265d, type: 2}
+  voiceLines: {fileID: 11400000, guid: 6f6636d88f370f944a2f8557d8a8265d, type: 2}
 --- !u!1 &1922925808
 GameObject:
   m_ObjectHideFlags: 0
@@ -10060,6 +10065,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 118733015436479667, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
+      propertyPath: maxHealth
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3475110462979066267, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.55
@@ -10112,6 +10121,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9214226617290925603, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
+      propertyPath: attackCol
+      value: 
+      objectReference: {fileID: 750417687}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

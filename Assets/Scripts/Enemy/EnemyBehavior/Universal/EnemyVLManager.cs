@@ -3,31 +3,45 @@ using System;
 using UnityEngine;
 using NUnit.Framework;
 
-public class EnemyVLManager : MonoBehaviour
+public class EnemyVLManager : MonoBehaviour, IObserver
 {
     [Tooltip("Storage for enemy Voice Lines")]
-    [SerializeField] private Voicelines hrVoiceLines;
+    [SerializeField] private Voicelines voiceLines;
 
-    private AudioClip activeSound;
+    private SoundObject activeSound;
     private int activePriority;
 
     public void Start()
     {
+        voiceLines.Assemble();
     }
 
 
     public void PlayVoiceLine(string vlName)
     {
-        if (hrVoiceLines.categories.Contains(vlName))
+        if (voiceLines.categories.Contains(vlName))
         {
-            int chosenCategory = hrVoiceLines.categories.FindIndex(x => x == vlName);
+            int chosenCategory = voiceLines.categories.FindIndex(x => x == vlName);
 
-            if(hrVoiceLines.soundCollections[chosenCategory].voiceLineList.Count > 0)
+
+            if(voiceLines.soundCollections[chosenCategory].voiceLineList.Count > 0)
             {
-                int randomClip = UnityEngine.Random.Range(0, hrVoiceLines.soundCollections[chosenCategory].voiceLineList.Count);
+                int randomClip = UnityEngine.Random.Range(0, voiceLines.soundCollections[chosenCategory].voiceLineList.Count);
 
-                AudioManager.Instance.Play3DSFX(hrVoiceLines.soundCollections[chosenCategory].voiceLineList[randomClip], hrVoiceLines.soundCollections[chosenCategory].voiceLineList[randomClip].length + 0.2f, transform.position);
-                //Debug.Log(hrVoiceLines.soundCollections[chosenCategory][randomClip].name);
+                if (voiceLines.soundCollections[chosenCategory].priority >= activePriority)
+                {
+                    if(activeSound != null)
+                    {
+                        activeSound.StopListening(this);
+                    }
+
+                    activeSound = AudioManager.Instance.Play3DSFX(voiceLines.soundCollections[chosenCategory].voiceLineList[randomClip], voiceLines.soundCollections[chosenCategory].voiceLineList[randomClip].length + 0.2f, transform.position);
+                    if (activeSound != null)
+                    {
+                        activeSound.StartListening(this);
+                        activePriority = voiceLines.soundCollections[chosenCategory].priority;
+                    }
+                }
             }
         }
         else
@@ -35,5 +49,12 @@ public class EnemyVLManager : MonoBehaviour
             Debug.LogWarning($"No category for voicelines called {vlName} found!");
         }
         
+    }
+
+    public void Trigger(ISource source)
+    {
+        source.StopListening(this);
+        activeSound = null;
+        activePriority = 0;
     }
 }

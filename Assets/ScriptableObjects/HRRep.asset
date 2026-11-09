@@ -23,37 +23,58 @@ MonoBehaviour:
   - attackAttempt
   - attackSuccess
   - attackFailure
-  takeDamage:
-  - {fileID: 8300000, guid: dfbcee260e1de3e4d8f0a07be527ac71, type: 3}
-  - {fileID: 8300000, guid: ac3440e8f315aee45bcd42cb054275c7, type: 3}
-  - {fileID: 8300000, guid: 2cd01925aa212da4186ee9b489525800, type: 3}
-  stunStart:
-  - {fileID: 8300000, guid: b946f48126f06104791b40196b59493a, type: 3}
-  - {fileID: 8300000, guid: 84c960aa93c161a4bae753b280b1d8b5, type: 3}
-  - {fileID: 8300000, guid: 0db969ce2d76d8241b5f16e54f548177, type: 3}
-  stunIdle:
-  - {fileID: 8300000, guid: 82253f34f60c5104eb88c6f864b04199, type: 3}
-  stunRecover:
-  - {fileID: 8300000, guid: ea61b775e238b86429ecc6e46775c956, type: 3}
-  - {fileID: 8300000, guid: 7e8b92c4e976efc4a92ad21236f27e73, type: 3}
-  - {fileID: 8300000, guid: 742d5bed63afd4942b3f0d4552494e66, type: 3}
-  startChase:
-  - {fileID: 8300000, guid: 0b2f8632ecebc8846aa06b969ae448e9, type: 3}
-  - {fileID: 8300000, guid: 8e76e36ac5c674c408c9e635c2f5dc88, type: 3}
-  - {fileID: 8300000, guid: eed5af8845ac7d849b250d91f6f09f80, type: 3}
-  activeChase: []
-  loseChase:
-  - {fileID: 8300000, guid: 9e9ea1b850da00b40bc766876b775248, type: 3}
-  - {fileID: 8300000, guid: a0c748b8c445e59449c11f17cb4e1e30, type: 3}
-  - {fileID: 8300000, guid: 643ea1a78e75ee5458b14bde63eb778e, type: 3}
-  attackAttempt:
-  - {fileID: 8300000, guid: 9063042853935544884bfff2e39be854, type: 3}
-  - {fileID: 8300000, guid: bb4a304c7007d8646b3e730e2f8014da, type: 3}
-  attackSuccess:
-  - {fileID: 8300000, guid: dd5d22cc3df456d46981f7d7b2631b79, type: 3}
-  - {fileID: 8300000, guid: 21a8a903dafa5c244970e7cdaa88eddc, type: 3}
-  - {fileID: 8300000, guid: 9d9053d544a5e5e448679f269990a655, type: 3}
-  attackFailure:
-  - {fileID: 8300000, guid: ed5b990ae56d0664abeb82c9082758d8, type: 3}
-  - {fileID: 8300000, guid: ee1bd314a91778c4ab09b52339a25cbb, type: 3}
-  - {fileID: 8300000, guid: 08939c3a8ead8c244bb83df6923d29b2, type: 3}
+  soundCollections:
+  - categoryName: takeDamage
+    priority: 1
+    voiceLineList:
+    - {fileID: 8300000, guid: dfbcee260e1de3e4d8f0a07be527ac71, type: 3}
+    - {fileID: 8300000, guid: ac3440e8f315aee45bcd42cb054275c7, type: 3}
+    - {fileID: 8300000, guid: 2cd01925aa212da4186ee9b489525800, type: 3}
+  - categoryName: stunStart
+    priority: 0
+    voiceLineList:
+    - {fileID: 8300000, guid: b946f48126f06104791b40196b59493a, type: 3}
+    - {fileID: 8300000, guid: 84c960aa93c161a4bae753b280b1d8b5, type: 3}
+    - {fileID: 8300000, guid: 0db969ce2d76d8241b5f16e54f548177, type: 3}
+  - categoryName: stunIdle
+    priority: 0
+    voiceLineList:
+    - {fileID: 8300000, guid: 82253f34f60c5104eb88c6f864b04199, type: 3}
+  - categoryName: stunRecover
+    priority: 0
+    voiceLineList:
+    - {fileID: 8300000, guid: ea61b775e238b86429ecc6e46775c956, type: 3}
+    - {fileID: 8300000, guid: 7e8b92c4e976efc4a92ad21236f27e73, type: 3}
+    - {fileID: 8300000, guid: 742d5bed63afd4942b3f0d4552494e66, type: 3}
+  - categoryName: startChase
+    priority: 0
+    voiceLineList:
+    - {fileID: 8300000, guid: 0b2f8632ecebc8846aa06b969ae448e9, type: 3}
+    - {fileID: 8300000, guid: 8e76e36ac5c674c408c9e635c2f5dc88, type: 3}
+    - {fileID: 8300000, guid: eed5af8845ac7d849b250d91f6f09f80, type: 3}
+  - categoryName: activeChase
+    priority: 0
+    voiceLineList: []
+  - categoryName: loseChase
+    priority: 0
+    voiceLineList:
+    - {fileID: 8300000, guid: 9e9ea1b850da00b40bc766876b775248, type: 3}
+    - {fileID: 8300000, guid: a0c748b8c445e59449c11f17cb4e1e30, type: 3}
+    - {fileID: 8300000, guid: 643ea1a78e75ee5458b14bde63eb778e, type: 3}
+  - categoryName: attackAttempt
+    priority: 0
+    voiceLineList:
+    - {fileID: 8300000, guid: 9063042853935544884bfff2e39be854, type: 3}
+    - {fileID: 8300000, guid: bb4a304c7007d8646b3e730e2f8014da, type: 3}
+  - categoryName: attackSuccess
+    priority: 0
+    voiceLineList:
+    - {fileID: 8300000, guid: dd5d22cc3df456d46981f7d7b2631b79, type: 3}
+    - {fileID: 8300000, guid: 21a8a903dafa5c244970e7cdaa88eddc, type: 3}
+    - {fileID: 8300000, guid: 9d9053d544a5e5e448679f269990a655, type: 3}
+  - categoryName: attackFailure
+    priority: 0
+    voiceLineList:
+    - {fileID: 8300000, guid: ed5b990ae56d0664abeb82c9082758d8, type: 3}
+    - {fileID: 8300000, guid: ee1bd314a91778c4ab09b52339a25cbb, type: 3}
+    - {fileID: 8300000, guid: 08939c3a8ead8c244bb83df6923d29b2, type: 3}

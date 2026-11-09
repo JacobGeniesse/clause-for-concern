@@ -114,7 +114,7 @@ public class AudioManager : MonoBehaviour
     }
 
     //Function for playing a sound effect with 3D sound
-    public void Play3DSFX(AudioClip clip, float clipLength, Vector3 position, float volume = 1f)
+    public SoundObject Play3DSFX(AudioClip clip, float clipLength, Vector3 position, float volume = 1f)
     {
         //Check that the audio clip supplied exists
         if (clip != null)
@@ -147,12 +147,17 @@ public class AudioManager : MonoBehaviour
             if (soundObject != null && soundObject.TryGetComponent<SoundObject>(out SoundObject soundObj))
             {
                 soundObj.PlayClip(clip, clipLength); //If the new sound object has the sound object component created, trigger its behavior to play its audio clip
+
+                return soundObj;
             }
             else
             {
                 //Debug.LogWarning("Supplied soundObjectPrefab prefab has no SoundObject script attached to it! Cannot play sound!");
             }
+
         }
+
+        return null;
     }
 
     //Function for loading the saved information partaining to volume settings
