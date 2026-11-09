@@ -3929,11 +3929,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 744683894}
   m_CullTransparentMesh: 1
---- !u!65 &750417687 stripped
-BoxCollider:
-  m_CorrespondingSourceObject: {fileID: 6227727170849794357, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
-  m_PrefabInstance: {fileID: 958432383248088599}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &757470108 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8032219425687360066, guid: 80e7930f986ea7240a3279b05a6985e4, type: 3}
@@ -8848,24 +8843,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1871829118}
   m_CullTransparentMesh: 1
---- !u!1 &1876786295 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4906420726696469859, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
-  m_PrefabInstance: {fileID: 958432383248088599}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1876786308
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1876786295}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb57ead5b4f2afb4c852c870fb3437e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyVLManager
-  voiceLines: {fileID: 11400000, guid: 6f6636d88f370f944a2f8557d8a8265d, type: 2}
 --- !u!1 &1922925808
 GameObject:
   m_ObjectHideFlags: 0
@@ -10012,6 +9989,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: OfficeGhoul
       objectReference: {fileID: 0}
+    - target: {fileID: 2459284034259341152, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
+      propertyPath: walkingSound.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2459284034259341152, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
+      propertyPath: speedIntervals.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2459284034259341152, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
+      propertyPath: 'walkingSound.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 5812ad4268dc13446b035914eb7ee84b, type: 3}
+    - target: {fileID: 2459284034259341152, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
+      propertyPath: 'walkingSound.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 64e4f2a1903f6ca45bc8674202098634, type: 3}
+    - target: {fileID: 2459284034259341152, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
+      propertyPath: 'speedIntervals.Array.data[0]'
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2459284034259341152, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
+      propertyPath: 'speedIntervals.Array.data[1]'
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: 6402515349885983208, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.98
@@ -10065,10 +10066,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 118733015436479667, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
-      propertyPath: maxHealth
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 3475110462979066267, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.55
@@ -10109,9 +10106,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4709008619657478678, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
-      propertyPath: cooldownLength
+    - target: {fileID: 3939496191004870335, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
+      propertyPath: walkingSound.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3939496191004870335, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
+      propertyPath: speedIntervals.Array.size
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3939496191004870335, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
+      propertyPath: 'walkingSound.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 2abfb1867f21e5e4f94103e1703baeb5, type: 3}
+    - target: {fileID: 3939496191004870335, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
+      propertyPath: 'speedIntervals.Array.data[0]'
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3939496191004870335, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
+      propertyPath: 'speedIntervals.Array.data[1]'
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 4906420726696469859, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
       propertyPath: m_Name
@@ -10119,19 +10132,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4906420726696469859, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 9214226617290925603, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
-      propertyPath: attackCol
-      value: 
-      objectReference: {fileID: 750417687}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4906420726696469859, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1876786308}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
 --- !u!1001 &1560633086433348611
 PrefabInstance:

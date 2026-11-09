@@ -31,17 +31,17 @@ MonoBehaviour:
     - {fileID: 8300000, guid: ac3440e8f315aee45bcd42cb054275c7, type: 3}
     - {fileID: 8300000, guid: 2cd01925aa212da4186ee9b489525800, type: 3}
   - categoryName: stunStart
-    priority: 0
+    priority: 1
     voiceLineList:
     - {fileID: 8300000, guid: b946f48126f06104791b40196b59493a, type: 3}
     - {fileID: 8300000, guid: 84c960aa93c161a4bae753b280b1d8b5, type: 3}
     - {fileID: 8300000, guid: 0db969ce2d76d8241b5f16e54f548177, type: 3}
   - categoryName: stunIdle
-    priority: 0
+    priority: 2
     voiceLineList:
     - {fileID: 8300000, guid: 82253f34f60c5104eb88c6f864b04199, type: 3}
   - categoryName: stunRecover
-    priority: 0
+    priority: 3
     voiceLineList:
     - {fileID: 8300000, guid: ea61b775e238b86429ecc6e46775c956, type: 3}
     - {fileID: 8300000, guid: 7e8b92c4e976efc4a92ad21236f27e73, type: 3}

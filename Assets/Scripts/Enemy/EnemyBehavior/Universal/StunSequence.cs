@@ -60,7 +60,10 @@ public class StunSequence : MonoBehaviour
             Debug.Log("Stunned");
             if (agent.isStopped != true)
             {
-                voiceLines.PlayVoiceLine("stunStart");
+                if(voiceLines != null)
+                {
+                    voiceLines.PlayVoiceLine("stunStart");
+                }
                 agent.isStopped = true;
             }
             return Node.Status.SUCCESS;
