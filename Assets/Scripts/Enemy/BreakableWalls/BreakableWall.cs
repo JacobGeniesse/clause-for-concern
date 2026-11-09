@@ -9,16 +9,8 @@ public class BreakableWall : MonoBehaviour
     [Tooltip("Game Object that holders the broken wall model.")]
     [SerializeField] private GameObject brokenWall;
 
-    /*
-     * 
-     * [Header(Sound Variables)]
-     * [Tooltip("Sound of the wall being broken)]
-     * [SerializeField] private AudioClip wallBreak;
-     * 
-     * [Tooltip("Length of the Audio Clip")]
-     * [SerializeField] private float clipLength;
-     */
-
+    [Tooltip("Sound of the wall being broken")]
+    [SerializeField] private AudioClip wallBreakingSFX;
 
     private bool broken = false;
 
@@ -44,7 +36,11 @@ public class BreakableWall : MonoBehaviour
     {
         fixedWall.SetActive(false); //Set the fixed wall model to be inactive
         brokenWall.SetActive(true); //Set the broken wall model to be active
-        //AudioManager.Instance.Play3DSFX(wallBreak, clipLength, transform.position, 1f); //Play a sound using the audio manager
+
+        if(AudioManager.Instance != null)
+        {
+            AudioManager.Instance.Play3DSFX(wallBreakingSFX, wallBreakingSFX.length + 0.1f, transform.position, 1f); //Play a sound using the audio manager
+        }
         broken = true; //Set broken to true
     }
 

@@ -48,7 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BreakableWall
   fixedWall: {fileID: 8147718173551599373}
   brokenWall: {fileID: 6370389412889621380}
-  chunkParticles: {fileID: 5810542337089942720}
+  wallBreakingSFX: {fileID: 8300000, guid: 0a8a78edde44a184d9325f58ba8fa6f5, type: 3}
 --- !u!54 &2830519270611796943
 Rigidbody:
   m_ObjectHideFlags: 0
