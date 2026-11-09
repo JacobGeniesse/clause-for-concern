@@ -3941,6 +3941,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 744683894}
   m_CullTransparentMesh: 1
+--- !u!1 &750486837 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1410978948527311846, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
+  m_PrefabInstance: {fileID: 176720525448687485}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &750486838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 750486837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb57ead5b4f2afb4c852c870fb3437e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyVLManager
+  voiceLines: {fileID: 11400000, guid: ceaa39714a5471545954137d401e7736, type: 2}
 --- !u!4 &757470108 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8032219425687360066, guid: 80e7930f986ea7240a3279b05a6985e4, type: 3}
@@ -10082,6 +10100,10 @@ PrefabInstance:
       propertyPath: 'speedIntervals.Array.data[1]'
       value: 0.25
       objectReference: {fileID: 0}
+    - target: {fileID: 4518359072441430551, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
+      propertyPath: lungeDuration
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6402515349885983208, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.98
@@ -10122,10 +10144,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8828839929467725926, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
+      propertyPath: maxIdleVLCooldown
+      value: 35
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1410978948527311846, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 750486838}
   m_SourcePrefab: {fileID: 100100000, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
 --- !u!1001 &958432383248088599
 PrefabInstance:
@@ -10201,7 +10230,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4906420726696469859, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

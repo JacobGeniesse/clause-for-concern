@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 340021b0712445a49997908d784bd8e4, type: 3}
+  m_Name: OfficeGhoul
+  m_EditorClassIdentifier: Assembly-CSharp::Voicelines
+  categories:
+  - takeDamage
+  - stunStart
+  - stunIdle
+  - stunRecover
+  - startChase
+  - lunge
+  - idle
+  - attackSuccess
+  soundCollections:
+  - categoryName: takeDamage
+    priority: 2
+    voiceLineList:
+    - {fileID: 8300000, guid: f5235e2c2c327504f8de25e956d26e20, type: 3}
+    - {fileID: 8300000, guid: b52b495ccbf08154fb106119b14cf91c, type: 3}
+    - {fileID: 8300000, guid: f8422109076a9bd48b52f41e23cf8873, type: 3}
+  - categoryName: stunStart
+    priority: 2
+    voiceLineList:
+    - {fileID: 8300000, guid: c22d6a3aa19c5884596510f824c2627b, type: 3}
+  - categoryName: stunIdle
+    priority: 3
+    voiceLineList:
+    - {fileID: 8300000, guid: 13a0788e1d068e44589d2721b172c22d, type: 3}
+  - categoryName: stunRecover
+    priority: 4
+    voiceLineList:
+    - {fileID: 8300000, guid: aa498878d23ff954d95c95aeda2b095b, type: 3}
+    - {fileID: 8300000, guid: 26b83759633c70248befa6a3e8c2028c, type: 3}
+    - {fileID: 8300000, guid: 337740a7fb430294290bba26d3f2bd77, type: 3}
+  - categoryName: startChase
+    priority: 1
+    voiceLineList:
+    - {fileID: 8300000, guid: 47b742555ab59264eb65608704086144, type: 3}
+    - {fileID: 8300000, guid: 6f68c21be84fe4744aa7cc6cc7687ed1, type: 3}
+    - {fileID: 8300000, guid: 4ac0f9129cb78a24fa543a1a91f5410f, type: 3}
+  - categoryName: lunge
+    priority: 2
+    voiceLineList:
+    - {fileID: 8300000, guid: 7cbd70dbc1758134cb0d6245bd1c6a8d, type: 3}
+    - {fileID: 8300000, guid: f8980adc4804eac49b4fa7f442b557a3, type: 3}
+  - categoryName: idle
+    priority: 0
+    voiceLineList:
+    - {fileID: 8300000, guid: ed0eff60ff3a801409f302ea0b312438, type: 3}
+    - {fileID: 8300000, guid: 121a0ee4977b3734ba16b4bda8c13a1e, type: 3}
+    - {fileID: 8300000, guid: 3578fb5b98a2c4c49832c8c4c1b0b639, type: 3}
+    - {fileID: 8300000, guid: 147d58454bf6f7a46818f6cd60064c28, type: 3}
+    - {fileID: 8300000, guid: a68b49acd16b7bd46b4221e1b99daf4a, type: 3}
+  - categoryName: attackSuccess
+    priority: 1
+    voiceLineList:
+    - {fileID: 8300000, guid: ef599f6b5ea0bcc43821aedf9be7d9a8, type: 3}
+    - {fileID: 8300000, guid: fe788734373b10c40a1236ce1009d6bd, type: 3}
+    - {fileID: 8300000, guid: 2980b242c8d2c3b48863af626dcd3a37, type: 3}
