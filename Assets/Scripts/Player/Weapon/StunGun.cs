@@ -24,6 +24,10 @@ public class StunGun : MonoBehaviour
 
     private float nextFireTime = 0f; // the earliest time we are allowed to shoot again
 
+    [Tooltip("Sounds to play when shooting a projectile.")]
+    [SerializeField]private AudioClip[] shotSFX;
+
+
     void Awake(){
         fire = masterList["Fire"]; // find the fire action before OnEnable runs
         inventory = GetComponentInParent<PlayerInventory>();
@@ -65,6 +69,10 @@ public class StunGun : MonoBehaviour
     private void Shoot()
     {
         StunProjectile shot = null;
+        if(AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(shotSFX[Random.Range(0, shotSFX.Length)], 0.5f);
+        }
         if (ObjectPool.instance != null)
         {
             GameObject staple = ObjectPool.instance.Create(projectilePrefab.gameObject, muzzle.position, muzzle.rotation);

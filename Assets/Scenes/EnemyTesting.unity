@@ -2290,6 +2290,18 @@ PrefabInstance:
       propertyPath: projPrefab
       value: 
       objectReference: {fileID: 4363684252474872688, guid: 05817c068cfa79443a462bbcf1c64a9f, type: 3}
+    - target: {fileID: 8593921642612136468, guid: 001434d79942b9f4b84806d7f3ccec9b, type: 3}
+      propertyPath: shotSFX.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8593921642612136468, guid: 001434d79942b9f4b84806d7f3ccec9b, type: 3}
+      propertyPath: 'shotSFX.Array.data[0]'
+      value: 
+      objectReference: {fileID: 8300000, guid: ef4a301f08dfe7c4d8dbdd9cfb31e5f6, type: 3}
+    - target: {fileID: 8593921642612136468, guid: 001434d79942b9f4b84806d7f3ccec9b, type: 3}
+      propertyPath: 'shotSFX.Array.data[1]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 1e5b215e1fed9824581efc50964ec8ea, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
