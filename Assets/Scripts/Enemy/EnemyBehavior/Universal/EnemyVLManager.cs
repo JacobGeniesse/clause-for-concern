@@ -1,6 +1,7 @@
 using System.Linq;
 using System;
 using UnityEngine;
+using NUnit.Framework;
 
 public class EnemyVLManager : MonoBehaviour
 {
@@ -12,7 +13,6 @@ public class EnemyVLManager : MonoBehaviour
 
     public void Start()
     {
-        hrVoiceLines.Assemble();
     }
 
 
@@ -20,13 +20,13 @@ public class EnemyVLManager : MonoBehaviour
     {
         if (hrVoiceLines.categories.Contains(vlName))
         {
-            int chosenCategory = Array.FindIndex(hrVoiceLines.categories, x => x == vlName);
+            int chosenCategory = hrVoiceLines.categories.FindIndex(x => x == vlName);
 
-            if(hrVoiceLines.soundCollections[chosenCategory].Length > 0)
+            if(hrVoiceLines.soundCollections[chosenCategory].voiceLineList.Count > 0)
             {
-                int randomClip = UnityEngine.Random.Range(0, hrVoiceLines.soundCollections[chosenCategory].Length);
+                int randomClip = UnityEngine.Random.Range(0, hrVoiceLines.soundCollections[chosenCategory].voiceLineList.Count);
 
-                AudioManager.Instance.Play3DSFX(hrVoiceLines.soundCollections[chosenCategory][randomClip], hrVoiceLines.soundCollections[chosenCategory][randomClip].length + 0.2f, transform.position);
+                AudioManager.Instance.Play3DSFX(hrVoiceLines.soundCollections[chosenCategory].voiceLineList[randomClip], hrVoiceLines.soundCollections[chosenCategory].voiceLineList[randomClip].length + 0.2f, transform.position);
                 //Debug.Log(hrVoiceLines.soundCollections[chosenCategory][randomClip].name);
             }
         }

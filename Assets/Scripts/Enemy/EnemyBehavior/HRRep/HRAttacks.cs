@@ -6,7 +6,7 @@ using UnityEngine.AI;
 
 public class HRAttacks : MonoBehaviour
 {
-    private bool attacking; //bool for checking if the enemy is attacking
+    [SerializeField] private bool attacking; //bool for checking if the enemy is attacking
 
     [Tooltip("Damage dealt to the player by the grab.")]
     [SerializeField] private float damage = 20;
@@ -31,7 +31,8 @@ public class HRAttacks : MonoBehaviour
 
     //Variable for holding the grabAttack coroutine
     private IEnumerator grabAttack;
-
+    private IEnumerator animWait;
+    private bool activeAnim = false;
 
     private bool triedAttacking = true;
 
@@ -111,27 +112,49 @@ public class HRAttacks : MonoBehaviour
         }
     }
 
-
     //Function for the enemy trying to grab the player
     public Node.Status GrabAttempt()
     {
-        behaviorTree.canAttack = false;
-            Debug.Log("Trying to attack");
-            agent.destination = transform.position; //Stop the agent from moving
-
-            triedAttacking = true;
+        if (animWait == null)
+        {
             voiceLines.PlayVoiceLine("attackAttempt");
-            //If the player is within the grab hitbox
+            animWait = AnimConclusion(2f);
+            StartCoroutine(animWait);
+        }
+
+        Debug.Log("Trying to Grab");
+        if (activeAnim == true)
+        {
             if (attackCol.bounds.Contains(playerTrans.position))
             {
+                agent.destination = transform.position; //Stop the agent from moving
                 behaviorTree.canAttack = false;
                 playerMove.StopPlayer(); //Stop the player
                 return Node.Status.SUCCESS; //Pass success
             }
             else
             {
-                return Node.Status.FAILURE; //Otherwise pass failure and move on to the next func
+                return Node.Status.RUNNING;
             }
+        }
+        else
+        {
+            return Node.Status.FAILURE;
+        }
+
+        //If the player is within the grab hitbox
+        //if (attackCol.bounds.Contains(playerTrans.position))
+        //{
+        //    agent.destination = transform.position; //Stop the agent from moving
+        //    behaviorTree.canAttack = false;
+        //    playerMove.StopPlayer(); //Stop the player
+        //    return Node.Status.SUCCESS; //Pass success
+        //}
+        //else
+        //{
+        //    //Debug.Log("Failed Attack!");
+        //    return Node.Status.FAILURE; //Otherwise pass failure and move on to the next func
+        //}
     }
 
     //Node for grabbing and throwing the player
@@ -147,6 +170,7 @@ public class HRAttacks : MonoBehaviour
         //Check for if the attack sequence is still happening
         if (attacking == false)
         {
+            //Debug.Log("Finished grab attack");
             grabAttack = null;
             return Node.Status.SUCCESS; //After the attack is done, end the sequence
         }
@@ -167,12 +191,46 @@ public class HRAttacks : MonoBehaviour
     //Func for failing the grab if the player isn't in range once the actual grab happens
     public Node.Status FailGrab()
     {
-            behaviorTree.canAttack = false;
-            Debug.Log("I missed >:("); //Debug Message
+        if(behaviorTree.chasing == true)
+        {
+            return Node.Status.SUCCESS;
+        }
+        else
+        {
+            return Node.Status.FAILURE;
+        }
+    }
 
+    public Node.Status FailAnim()
+    {
+        if (animWait == null)
+        {
+            animWait = AnimConclusion(2f);
+            StartCoroutine(animWait);
+        }
+
+
+        if (activeAnim == false)
+        {
+            Debug.Log("I missed >:("); //Debug Message
+            animWait = null;
             voiceLines.PlayVoiceLine("attackFailure");
             return Node.Status.SUCCESS;
+        }
+        else
+        {
+            return Node.Status.RUNNING;
+        }
     }
+
+    private IEnumerator AnimConclusion(float animLength)
+    {
+        activeAnim = true;
+        yield return new WaitForSeconds(animLength);
+        activeAnim = false;
+        animWait = null;
+    }
+
 
     //Coroutine for executing a grab attack against the player
     private IEnumerator GrabAttack()

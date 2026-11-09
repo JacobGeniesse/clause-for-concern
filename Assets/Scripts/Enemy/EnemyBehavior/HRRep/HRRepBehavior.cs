@@ -126,7 +126,6 @@ public class HRRepBehavior : MonoBehaviour
     //Node for the HR Vision check
     private Node.Status Look()
     {
-        Debug.Log(sightScript.SightCheck(playerTrans));
         //Do a sight check, if the player is spotted, move towards them
         if (aggressive == true && sightScript.SightCheck(playerTrans))
         {
@@ -134,27 +133,29 @@ public class HRRepBehavior : MonoBehaviour
             {
                 chasing = true;
                 //Debug.Log("Sound");
-                voiceLines.PlayVoiceLine("startChase");
+                //voiceLines.PlayVoiceLine("startChase");
             }
 
             lastKnownLocation = playerTrans.position; //Update the last known location
-            //Debug.Log("I see you!"); //Debug Message
-            move.MoveToPOI(agent, playerTrans.position); //Start moving towards the player's position
 
             if (speedHandler.ShouldChangeSpeed(1))
             {
                 speedHandler.ChangeAgentSpeed(1); //Set the speed to the maximum
-            }
+            }            //Debug.Log("I see you!"); //Debug Message
+            
+            return move.MoveToPOI(agent, playerTrans.position); //Start moving towards the player's position
 
             //If the player is within a certain range, continue to the next node for the attack sequence
-            if (DistanceCheck(playerTrans) <= attackDistance && canAttack == true)
-            {
-                return Node.Status.SUCCESS;
-            }
-            else
-            {
-                return Node.Status.RUNNING; //If not, continue moving towards the player
-            }
+            //if (DistanceCheck(playerTrans) <= attackDistance && canAttack == true)
+            //{
+            //    canAttack = false;
+            //    StartAttackCoroutine();
+            //    return Node.Status.SUCCESS;
+            //}
+            //else
+            //{
+            //    return Node.Status.RUNNING; //If not, continue moving towards the player
+            //}
         }
         else
         {
@@ -164,7 +165,7 @@ public class HRRepBehavior : MonoBehaviour
 
     public Node.Status EndAttackSequence()
     {
-        StartAttackCoroutine();
+        lastKnownLocation = Vector3.zero;
         return Node.Status.SUCCESS;
     }
 
@@ -536,24 +537,32 @@ public class HRRepBehavior : MonoBehaviour
         chase.AddChild(look);
 
         //Attacking segments of the chase
-        Selector violence = new Selector("Try-Attack"); //Selector for grabbing the player
-        Sequence grabSuccess = new Sequence("Succeful-Grab"); //If the enemy successfully grabs the player
-        Leaf tryGrab = new Leaf("Try-to-Grab", attackScript.GrabAttempt); //Leaf 1: Try to grab the player
+        Sequence attack = new Sequence("Attacking");
+        Selector violence = new Selector("Try-Attack"); //Selector for trying to grab the player
+
+        attack.AddChild(violence);
+
+        Sequence grabSuccess = new Sequence("Successful-Grab"); //If the enemy successfully grabs the player
+        Leaf tryGrab = new Leaf("Attempt-Grab", attackScript.GrabAttempt); //Leaf 1: Try to grab the player
         Leaf grabAttack = new Leaf("Grab-Attack", attackScript.GrabAndThrow); //Leaf 2: Execute the grab attack coroutine
         Leaf endGrab = new Leaf("End-of-Grab", attackScript.EndGrab); //Leaf 3: End the grab and resume the chase
-        Sequence grabFail = new Sequence("Failed-Grab"); //Backup if the enemy fails to grab the player
-        Leaf failGrab = new Leaf("Fail-to-Grab", attackScript.FailGrab); //Leaf 1: Reset and try to resume the chase
 
-        Leaf endSequence = new Leaf("Add-Cooldown", EndAttackSequence);
         //Add leaves to the sequence
-        chase.AddChild(violence);
-        violence.AddChild(grabSuccess);
         grabSuccess.AddChild(tryGrab);
         grabSuccess.AddChild(grabAttack);
         grabSuccess.AddChild(endGrab);
-        violence.AddChild(grabFail);
+        violence.AddChild(grabSuccess);
+
+        Sequence grabFail = new Sequence("Failed-Grab"); //Backup if the enemy fails to grab the player
+        Leaf failGrab = new Leaf("Fail-to-Grab", attackScript.FailGrab); //Leaf 1: Reset and try to resume the chase
+        Leaf failAnim = new Leaf("Wait-Out-Failure", attackScript.FailAnim);
+
+        //Add leaves to the sequence
         grabFail.AddChild(failGrab);
-        chase.AddChild(endSequence);
+        //grabFail.AddChild(failAnim);
+        violence.AddChild(grabFail);
+
+        chase.AddChild(attack);
 
         //Define the losePlayer sequence
         Sequence losePlayer = new Sequence("Lose-Player"); //Make the sequence
@@ -576,6 +585,7 @@ public class HRRepBehavior : MonoBehaviour
         //Add the different behavior routes to the selector
         sensoryInput.AddChild(stun);
         sensoryInput.AddChild(chase);
+        //sensoryInput.AddChild(look);
         sensoryInput.AddChild(hear);
         sensoryInput.AddChild(losePlayer);
         sensoryInput.AddChild(patrolMethod);
