@@ -116,10 +116,10 @@ public class PlayerMovement : MonoBehaviour
         //Stop the player if the minimap is open
         if (Minimap.IsOpen)
         {
-            //Vector3 stopped = rb.linearVelocity;
-            //stopped.x = 0f;
-            //stopped.z = 0f;
-            //rb.linearVelocity = stopped;
+            Vector3 stopped = rb.linearVelocity;
+            stopped.x = 0f;
+            stopped.z = 0f;
+            rb.linearVelocity = stopped;
             return;
         }
 
