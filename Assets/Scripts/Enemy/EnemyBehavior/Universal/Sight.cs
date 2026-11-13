@@ -12,11 +12,18 @@ public class Sight : MonoBehaviour
 
     [SerializeField, HideInInspector] private bool detection; //Bool for if the enemy has spotted the target
 
+    [SerializeField] private bool seeThroughBW = false;
+
     private int layerMask;
+    private int secondaryMask;
 
     private void Start()
     {
         layerMask = 1 << 2;
+        if (seeThroughBW == true)
+        {
+            layerMask = layerMask + (1 << 9);
+        }
         ResetFOV();
     }
 
@@ -38,6 +45,7 @@ public class Sight : MonoBehaviour
             //If the object hit is the player, and the angle is within the vision radius, and the hit is within a certain range
             if (hit.collider.tag == "Player" && angleDif <= defaultFOVRadius)
             {
+                Debug.Log("I see you!");
                 //Return true for the player being seen
                 detection = true;
                 return detection;

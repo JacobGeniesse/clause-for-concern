@@ -144,7 +144,7 @@ public class OGAttacks : MonoBehaviour
 
         try
         {
-            enemySounds = GetComponent<EnemyVLManager>();
+            enemySounds = GetComponentInParent<EnemyVLManager>();
         }
         catch
         {
