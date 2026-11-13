@@ -45,7 +45,7 @@ public class Sight : MonoBehaviour
             //If the object hit is the player, and the angle is within the vision radius, and the hit is within a certain range
             if (hit.collider.tag == "Player" && angleDif <= defaultFOVRadius)
             {
-                Debug.Log("I see you!");
+                //Debug.Log("I see you!");
                 //Return true for the player being seen
                 detection = true;
                 return detection;

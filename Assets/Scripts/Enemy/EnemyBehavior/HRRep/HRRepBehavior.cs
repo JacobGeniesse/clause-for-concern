@@ -142,8 +142,8 @@ public class HRRepBehavior : MonoBehaviour
             {
                 speedHandler.ChangeAgentSpeed(1); //Set the speed to the maximum
             }            //Debug.Log("I see you!"); //Debug Message
-            
 
+            move.SetClearDistance(5);
             return move.MoveToPOI(agent, playerTrans.position); //Start moving towards the player's position
 
             //If the player is within a certain range, continue to the next node for the attack sequence
@@ -198,6 +198,7 @@ public class HRRepBehavior : MonoBehaviour
         //If there is a last known location, move towards it
         if (aggressive == true && lastKnownLocation != Vector3.zero)
         {
+            move.SetDefaultCD();
             return move.MoveToPOI(agent, lastKnownLocation);
             //Debug.Log("I can't see or hear you. I will investigate where I saw you last");
         }
@@ -249,6 +250,7 @@ public class HRRepBehavior : MonoBehaviour
         if (aggressive == true && coolingDown != true && chasing == false)
         {
             //Debug.Log("Aggressive");
+            move.SetDefaultCD();
             return teleportScript.WarpCheck();
         }
         else
@@ -274,6 +276,8 @@ public class HRRepBehavior : MonoBehaviour
     //Node for patrolling behavior
     private Node.Status Wander()
     {
+        move.SetDefaultCD();
+
         if (speedHandler.ShouldChangeSpeed(0))
         {
             speedHandler.ChangeAgentSpeed(0); //Set the speed to the minimum
@@ -586,7 +590,6 @@ public class HRRepBehavior : MonoBehaviour
         //Add the different behavior routes to the selector
         sensoryInput.AddChild(stun);
         sensoryInput.AddChild(chase);
-        //sensoryInput.AddChild(look);
         sensoryInput.AddChild(hear);
         sensoryInput.AddChild(losePlayer);
         sensoryInput.AddChild(patrolMethod);

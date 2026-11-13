@@ -293,7 +293,7 @@ public class OGAttacks : MonoBehaviour
             Debug.LogWarning("grabLength has an invalid time! Using backup value!");
             yield return new WaitForSeconds(1.5f); //Backup in case an invalid time was entered
         }
-        playerTrans.parent = null; //Let the player go
+        playerMove.ReturnToOriginalParent(); //Let the player go
         playerMove.AlterMoveState(true); //Let the player move again
 
         if(graceLength > 0)

@@ -36,6 +36,7 @@ public class PlayerMovement : MonoBehaviour
     private StunGun stunGun; //Reference to the stun gun script
     private PlayerNoiseManager playerNoiseManager;
 
+    private Transform originalParent;
 
     void Awake()// called when the script instance is being loaded, lookups happen before onEnable runs
     {
@@ -85,6 +86,11 @@ public class PlayerMovement : MonoBehaviour
         movement.canceled += OnMove; // calls OnMove when the move input is released
         sprint.performed += OnSprint; // calls OnSprint when sprint key is pressed
         sprint.canceled += OnSprint; // calls OnSprint when sprint key is released
+
+        if(originalParent == null)
+        {
+            originalParent = transform.parent;
+        }
     }
 
     void OnDisable(){
@@ -114,6 +120,12 @@ public class PlayerMovement : MonoBehaviour
             //stopped.x = 0f;
             //stopped.z = 0f;
             //rb.linearVelocity = stopped;
+            return;
+        }
+
+        if(transform.parent.transform.parent != null)
+        {
+            transform.position = transform.parent.transform.position;
             return;
         }
 
@@ -228,5 +240,10 @@ public class PlayerMovement : MonoBehaviour
         transform.parent = newParent; //Set the transform for the parent
         transform.position = newParent.position; //Set the player's position
         rb.position = newParent.position; //Set the rigidbody as a failsafe since this stuff is touchy for some reason.
+    }
+
+    public void ReturnToOriginalParent()
+    {
+        transform.parent = originalParent;
     }
 }

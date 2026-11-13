@@ -7,7 +7,9 @@ using UnityEngine.AI;
 public class MoveToPoint : MonoBehaviour
 {
     [Tooltip("How close the enemy needs to be to a patrol point to clear it")]
-    [SerializeField] private float clearDistance = 7; //Var for the distance at which the AI can clear a patrol point
+    [SerializeField] private float defaultClearDistance = 7; //Var for the distance at which the AI can clear a patrol point
+
+    private float clearDistance;
 
     [Tooltip("Walking sound effect for this enemy")]
     [SerializeField] private AudioClip[] walkingSound;
@@ -96,6 +98,16 @@ public class MoveToPoint : MonoBehaviour
         AudioManager.Instance.Play3DSFX(walkingSound[UnityEngine.Random.Range(0, walkingSound.Length)], clipLength, transform.position, 0.5f); //Play a sound using the audio manager
         yield return new WaitForSeconds(stepInterval); //Wait
         sfxCoroutine = null; //Free up the coroutine to play the sound again
+    }
+
+    public void SetClearDistance(float stoppingDistance)
+    {
+        clearDistance = stoppingDistance;
+    }
+
+    public void SetDefaultCD()
+    {
+        clearDistance = defaultClearDistance;
     }
 
 }

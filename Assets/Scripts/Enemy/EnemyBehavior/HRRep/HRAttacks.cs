@@ -36,6 +36,11 @@ public class HRAttacks : MonoBehaviour
 
     private bool triedAttacking = true;
 
+    private float rotationTarget = 0;
+
+    [SerializeField] private Collider physicalBody;
+
+    #region HelperScripts
     //Helper Scripts and other helper components
     private NavMeshAgent agent;
     private EnemyVLManager voiceLines;
@@ -45,6 +50,7 @@ public class HRAttacks : MonoBehaviour
     private Minimap map;
 
     private HRRepBehavior behaviorTree;
+    #endregion
 
     private void Start()
     {
@@ -115,6 +121,13 @@ public class HRAttacks : MonoBehaviour
     //Function for the enemy trying to grab the player
     public Node.Status GrabAttempt()
     {
+        if(rotationTarget != 0)
+        {
+            CalcRotation();
+        }
+
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(transform.rotation.x, transform.rotation.y + rotationTarget, transform.rotation.z), 25);
+
         if (animWait == null)
         {
             voiceLines.PlayVoiceLine("attackAttempt");
@@ -127,6 +140,7 @@ public class HRAttacks : MonoBehaviour
         {
             if (attackCol.bounds.Contains(playerTrans.position))
             {
+                rotationTarget = 0;
                 agent.destination = transform.position; //Stop the agent from moving
                 behaviorTree.canAttack = false;
                 playerMove.StopPlayer(); //Stop the player
@@ -141,20 +155,17 @@ public class HRAttacks : MonoBehaviour
         {
             return Node.Status.FAILURE;
         }
+    }
 
-        //If the player is within the grab hitbox
-        //if (attackCol.bounds.Contains(playerTrans.position))
-        //{
-        //    agent.destination = transform.position; //Stop the agent from moving
-        //    behaviorTree.canAttack = false;
-        //    playerMove.StopPlayer(); //Stop the player
-        //    return Node.Status.SUCCESS; //Pass success
-        //}
-        //else
-        //{
-        //    //Debug.Log("Failed Attack!");
-        //    return Node.Status.FAILURE; //Otherwise pass failure and move on to the next func
-        //}
+    private void CalcRotation()
+    {
+        Vector3 playerPos = playerTrans.position - transform.position;
+
+        float currentDif = (Vector3.Dot(transform.forward.normalized, playerPos.normalized));
+
+        currentDif = currentDif * Mathf.Rad2Deg;
+
+        rotationTarget = currentDif;
     }
 
     //Node for grabbing and throwing the player
@@ -191,14 +202,14 @@ public class HRAttacks : MonoBehaviour
     //Func for failing the grab if the player isn't in range once the actual grab happens
     public Node.Status FailGrab()
     {
-        if(behaviorTree.chasing == true)
-        {
+        //if(behaviorTree.chasing == true)
+        //{
             return Node.Status.SUCCESS;
-        }
-        else
-        {
-            return Node.Status.FAILURE;
-        }
+        //}
+        //else
+        //{
+        //    return Node.Status.FAILURE;
+        //}
     }
 
     public Node.Status FailAnim()
@@ -244,6 +255,7 @@ public class HRAttacks : MonoBehaviour
 
         playerMove.AlterMoveState(false); //prevent the player from moving
 
+        SafeThrow();
 
         if (windupLength > 0)
         {
@@ -256,7 +268,7 @@ public class HRAttacks : MonoBehaviour
         }
         voiceLines.PlayVoiceLine("attackSuccess");
 
-        playerTrans.parent = null; //release the player from the arm hitbox
+        playerMove.ReturnToOriginalParent(); //release the player from the arm hitbox
 
         //AudioManager.Instance.Play3DSFX(chuckGrunt, transform.position, 0.5f); //Play a sound using the audio manager
 
@@ -276,5 +288,21 @@ public class HRAttacks : MonoBehaviour
 
         triedAttacking = false;
         attacking = false; //The enemy is no longer attacking
+    }
+
+    //Function for finding a safe angle to throw the player
+    private void SafeThrow()
+    {
+        int degreesRot = 0;
+        while (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, pushForce * pushDuration, ~((1 << 6) + (1 << 8))))
+        {
+            degreesRot++;
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(new Vector3(transform.rotation.x, transform.rotation.y + 1, transform.rotation.z)), 25);
+
+            if(degreesRot >= 360)
+            {
+                break;
+            }
+        }
     }
 }
