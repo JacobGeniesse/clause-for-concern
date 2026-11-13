@@ -206,11 +206,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dc047dcba092324fa194205f554c6ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MoveToPoint
-  clearDistance: 5
+  defaultClearDistance: 7
   walkingSound:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 8300000, guid: 2abfb1867f21e5e4f94103e1703baeb5, type: 3}
+  speedIntervals:
+  - 1
+  - 0.75
 --- !u!114 &5843283611666548035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -259,6 +260,7 @@ MonoBehaviour:
   pushDuration: 0.25
   windupLength: 1.5
   cooldownLength: 2
+  physicalBody: {fileID: 0}
 --- !u!114 &118733015436479667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -435,6 +437,7 @@ MonoBehaviour:
   range: 20
   defaultFOVRadius: 100
   detection: 0
+  seeThroughBW: 1
 --- !u!1 &6491840255862314732
 GameObject:
   m_ObjectHideFlags: 0
@@ -481,7 +484,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Hearing
   loudRadius: 200
-  quietRadius: 10
+  quietRadius: 30
   targetSound: {x: 0, y: 0, z: 0}
 --- !u!114 &5247793118653027639
 MonoBehaviour:

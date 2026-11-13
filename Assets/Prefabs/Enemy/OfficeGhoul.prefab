@@ -70,7 +70,8 @@ MonoBehaviour:
   attackCol: {fileID: 3773629806145708939}
   damageAmount: 10
   grabLength: 2
-  lungeDuration: 2
+  graceLength: 1.5
+  lungeDuration: 1
   waitingPeriod: 3
 --- !u!1 &1410978948527311846
 GameObject:
@@ -92,13 +93,14 @@ GameObject:
   - component: {fileID: 610693814324703736}
   - component: {fileID: 35804012245929698}
   - component: {fileID: 8302545428140895101}
+  - component: {fileID: 4663544638281763749}
   m_Layer: 0
   m_Name: OfficeGhoul
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6402515349885983208
 Transform:
   m_ObjectHideFlags: 0
@@ -246,8 +248,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dc047dcba092324fa194205f554c6ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MoveToPoint
-  clearDistance: 2
-  walkingSound: {fileID: 8300000, guid: 2abfb1867f21e5e4f94103e1703baeb5, type: 3}
+  defaultClearDistance: 7
+  walkingSound:
+  - {fileID: 8300000, guid: 5812ad4268dc13446b035914eb7ee84b, type: 3}
+  - {fileID: 8300000, guid: 64e4f2a1903f6ca45bc8674202098634, type: 3}
+  speedIntervals:
+  - 1
+  - 0.25
 --- !u!114 &8828839929467725926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,6 +269,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OfficeGhoulPatrol
   minimumWait: 5
   maximumWait: 8
+  maxIdleVLCooldown: 35
 --- !u!114 &6174726722774034084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -322,6 +330,19 @@ MonoBehaviour:
   accelerations:
   - 120
   - 240
+--- !u!114 &4663544638281763749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1410978948527311846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb57ead5b4f2afb4c852c870fb3437e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyVLManager
+  voiceLines: {fileID: 11400000, guid: ceaa39714a5471545954137d401e7736, type: 2}
 --- !u!1 &6307447012523656105
 GameObject:
   m_ObjectHideFlags: 0
@@ -488,3 +509,4 @@ MonoBehaviour:
   range: 8
   defaultFOVRadius: 90
   detection: 0
+  seeThroughBW: 0

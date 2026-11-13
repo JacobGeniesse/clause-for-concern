@@ -5012,24 +5012,6 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
---- !u!1 &750486837 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1410978948527311846, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
-  m_PrefabInstance: {fileID: 176720525448687485}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &750486838
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 750486837}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb57ead5b4f2afb4c852c870fb3437e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyVLManager
-  voiceLines: {fileID: 11400000, guid: ceaa39714a5471545954137d401e7736, type: 2}
 --- !u!4 &757470108 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8032219425687360066, guid: 80e7930f986ea7240a3279b05a6985e4, type: 3}
@@ -12226,38 +12208,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: OfficeGhoul
       objectReference: {fileID: 0}
-    - target: {fileID: 1410978948527311846, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2459284034259341152, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
-      propertyPath: walkingSound.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2459284034259341152, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
-      propertyPath: speedIntervals.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2459284034259341152, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
-      propertyPath: 'walkingSound.Array.data[0]'
-      value: 
-      objectReference: {fileID: 8300000, guid: 5812ad4268dc13446b035914eb7ee84b, type: 3}
-    - target: {fileID: 2459284034259341152, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
-      propertyPath: 'walkingSound.Array.data[1]'
-      value: 
-      objectReference: {fileID: 8300000, guid: 64e4f2a1903f6ca45bc8674202098634, type: 3}
-    - target: {fileID: 2459284034259341152, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
-      propertyPath: 'speedIntervals.Array.data[0]'
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2459284034259341152, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
-      propertyPath: 'speedIntervals.Array.data[1]'
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 4518359072441430551, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
-      propertyPath: lungeDuration
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6402515349885983208, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
       propertyPath: m_LocalPosition.x
       value: 9.3
@@ -12298,21 +12248,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8204305407394277301, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
-      propertyPath: range
-      value: 14.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 8828839929467725926, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
-      propertyPath: maxIdleVLCooldown
-      value: 35
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1410978948527311846, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 750486838}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
 --- !u!1001 &958432383248088599
 PrefabInstance:
@@ -12322,10 +12261,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2087104908922544607, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
-      propertyPath: quietRadius
-      value: 30
-      objectReference: {fileID: 0}
     - target: {fileID: 3475110462979066267, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.38999993
@@ -12366,37 +12301,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3939496191004870335, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
-      propertyPath: walkingSound.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3939496191004870335, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
-      propertyPath: speedIntervals.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3939496191004870335, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
-      propertyPath: 'walkingSound.Array.data[0]'
-      value: 
-      objectReference: {fileID: 8300000, guid: 2abfb1867f21e5e4f94103e1703baeb5, type: 3}
-    - target: {fileID: 3939496191004870335, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
-      propertyPath: 'speedIntervals.Array.data[0]'
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3939496191004870335, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
-      propertyPath: 'speedIntervals.Array.data[1]'
-      value: 0.75
-      objectReference: {fileID: 0}
     - target: {fileID: 4906420726696469859, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
       propertyPath: m_Name
       value: HRRep
-      objectReference: {fileID: 0}
-    - target: {fileID: 4906420726696469859, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8003504734130367976, guid: 3c3d171280d5ac34584018cd002c16d4, type: 3}
-      propertyPath: seeThroughBW
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
