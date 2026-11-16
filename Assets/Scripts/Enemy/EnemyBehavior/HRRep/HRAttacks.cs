@@ -1,7 +1,8 @@
-using UnityEngine;
 using System;
 using System.Collections;
 using System.Linq;
+using Unity.VisualScripting;
+using UnityEngine;
 using UnityEngine.AI;
 
 public class HRAttacks : MonoBehaviour
@@ -36,9 +37,17 @@ public class HRAttacks : MonoBehaviour
 
     private bool triedAttacking = true;
 
+    private float throwRadius = 3f;
+
     private float rotationTarget = 0;
 
     [SerializeField] private Collider physicalBody;
+
+    private Quaternion storedRotation;
+    private Quaternion startRotation;
+
+    private Quaternion finalRotation;
+    private float rotTime = 0;
 
     #region HelperScripts
     //Helper Scripts and other helper components
@@ -54,6 +63,9 @@ public class HRAttacks : MonoBehaviour
 
     private void Start()
     {
+        storedRotation = transform.rotation;
+        finalRotation = transform.rotation;
+
         //Assign necessary script vars with try catch checks
 
         //Get the player body component
@@ -121,12 +133,12 @@ public class HRAttacks : MonoBehaviour
     //Function for the enemy trying to grab the player
     public Node.Status GrabAttempt()
     {
-        if(rotationTarget != 0)
-        {
-            CalcRotation();
-        }
 
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(transform.rotation.x, transform.rotation.y + rotationTarget, transform.rotation.z), 25);
+        //if (rotationTarget != 0)
+        //{
+        //    CalcRotation();
+        //    swingRot = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + rotationTarget, transform.rotation.eulerAngles.z);
+        //}
 
         if (animWait == null)
         {
@@ -138,10 +150,12 @@ public class HRAttacks : MonoBehaviour
         Debug.Log("Trying to Grab");
         if (activeAnim == true)
         {
+            //transform.LookAt(playerTrans);
+
             if (attackCol.bounds.Contains(playerTrans.position))
             {
                 rotationTarget = 0;
-                agent.destination = transform.position; //Stop the agent from moving
+                agent.isStopped = true; //Stop the agent from moving
                 behaviorTree.canAttack = false;
                 playerMove.StopPlayer(); //Stop the player
                 return Node.Status.SUCCESS; //Pass success
@@ -167,6 +181,54 @@ public class HRAttacks : MonoBehaviour
 
         rotationTarget = currentDif;
     }
+
+    public Node.Status SafetyRotation()
+    {
+        attacking = true; //The enemy is attacking
+
+        map.SetOpen(false);
+
+        //Attach the player to the enemy's arm hitbox for the purposes of the grab
+        playerMove.TetherObject(attackCol.transform);
+
+        playerMove.AlterMoveState(false); //prevent the player from moving
+
+        agent.updateRotation = false;
+        //Debug.Log(ThrowCheck());
+
+        if (finalRotation == storedRotation)
+        {
+            float offset = ThrowCheck();
+            //Debug.Log(offset);
+            finalRotation = Quaternion.Euler(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + offset, transform.rotation.eulerAngles.z);
+            startRotation = transform.rotation;
+            //Debug.Log(transform.rotation.eulerAngles);
+            //Debug.Log(finalRotation.eulerAngles);
+        }
+
+        transform.rotation = Quaternion.Slerp(startRotation, finalRotation, rotTime);
+
+        rotTime += 1 * Time.deltaTime;
+
+        //transform.rotation = finalRotation;
+
+        //Debug.Log(rotTime);
+        //Debug.Log(transform.rotation.eulerAngles);
+
+        if (Quaternion.Angle(transform.rotation, finalRotation) < 0.01f)
+        {
+            Debug.Log("Gotcha!");
+            rotTime = 0;
+            agent.updateRotation = true;
+            storedRotation = finalRotation;
+            return Node.Status.SUCCESS;
+        }
+        else
+        {
+            return Node.Status.RUNNING;
+        }
+    }
+
 
     //Node for grabbing and throwing the player
     public Node.Status GrabAndThrow()
@@ -195,6 +257,7 @@ public class HRAttacks : MonoBehaviour
     //Func for ending a grab sequence
     public Node.Status EndGrab()
     {
+        agent.isStopped = false;
         Debug.Log("I hit you!"); //Debug Message
         return Node.Status.SUCCESS;
     }
@@ -224,6 +287,7 @@ public class HRAttacks : MonoBehaviour
         if (activeAnim == false)
         {
             Debug.Log("I missed >:("); //Debug Message
+            agent.isStopped = false; //Stop the agent from moving
             animWait = null;
             voiceLines.PlayVoiceLine("attackFailure");
             return Node.Status.SUCCESS;
@@ -246,16 +310,8 @@ public class HRAttacks : MonoBehaviour
     //Coroutine for executing a grab attack against the player
     private IEnumerator GrabAttack()
     {
-        attacking = true; //The enemy is attacking
 
-        map.SetOpen(false);
-
-        //Attach the player to the enemy's arm hitbox for the purposes of the grab
-        playerMove.TetherObject(attackCol.transform);
-
-        playerMove.AlterMoveState(false); //prevent the player from moving
-
-        SafeThrow();
+        //SafeThrow();
 
         if (windupLength > 0)
         {
@@ -291,18 +347,51 @@ public class HRAttacks : MonoBehaviour
     }
 
     //Function for finding a safe angle to throw the player
-    private void SafeThrow()
+    private float ThrowCheck()
     {
-        int degreesRot = 0;
-        while (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, pushForce * pushDuration, ~((1 << 6) + (1 << 8))))
-        {
-            degreesRot++;
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(new Vector3(transform.rotation.x, transform.rotation.y + 1, transform.rotation.z)), 25);
 
-            if(degreesRot >= 360)
+        float directionsToCheck = 24;
+        float angle = 0;
+        for(int i = 0; i < directionsToCheck; i++)
+        {
+            angle += 2 * Mathf.PI / directionsToCheck;
+            //RayCastSweep(throwRadius, angle);
+            //RayCastSweep(throwRadius, -angle);
+            if (RayCastSweep(throwRadius, angle) != Vector3.zero)
             {
-                break;
+                Debug.Log(Vector3.SignedAngle(transform.forward, RayCastSweep(throwRadius, angle), Vector3.up));
+                return (Vector3.SignedAngle(transform.forward, RayCastSweep(throwRadius, angle), Vector3.up));
             }
+            else if (RayCastSweep(throwRadius, -angle) != Vector3.zero)
+            {
+                return -angle * directionsToCheck;
+            }
+        }
+        return 0;
+    }
+
+    private Vector3 RayCastSweep(float scanRadius, float currentAngle)
+    {
+        float targetOffsetX = (scanRadius * Mathf.Cos(currentAngle)) * transform.position.x;
+        float targetOffsetZ = (scanRadius * Mathf.Sin(currentAngle)) * transform.position.z;
+
+
+        Vector3 newTarget = new Vector3(targetOffsetX , transform.position.y, targetOffsetZ);
+
+
+        Debug.Log(currentAngle);
+
+        //Debug.Log(newTarget);
+
+        if (Physics.Raycast(transform.position, newTarget, out RaycastHit hit, scanRadius, ~(1 << 8)))
+        {
+            Debug.DrawRay(transform.position, newTarget, Color.red, 1f);
+            return Vector3.zero;
+        }
+        else
+        {
+            Debug.DrawRay(transform.position, newTarget, Color.green, 1f);
+            return newTarget;
         }
     }
 }

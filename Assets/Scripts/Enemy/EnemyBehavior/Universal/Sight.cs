@@ -20,6 +20,7 @@ public class Sight : MonoBehaviour
     private void Start()
     {
         layerMask = 1 << 2;
+        layerMask = layerMask + (1 << 8);
         if (seeThroughBW == true)
         {
             layerMask = layerMask + (1 << 9);

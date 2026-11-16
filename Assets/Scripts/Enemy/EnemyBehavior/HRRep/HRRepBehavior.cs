@@ -549,11 +549,13 @@ public class HRRepBehavior : MonoBehaviour
 
         Sequence grabSuccess = new Sequence("Successful-Grab"); //If the enemy successfully grabs the player
         Leaf tryGrab = new Leaf("Attempt-Grab", attackScript.GrabAttempt); //Leaf 1: Try to grab the player
+        Leaf safetyRotation = new Leaf("Rotate-to-Safe-Angle", attackScript.SafetyRotation);
         Leaf grabAttack = new Leaf("Grab-Attack", attackScript.GrabAndThrow); //Leaf 2: Execute the grab attack coroutine
         Leaf endGrab = new Leaf("End-of-Grab", attackScript.EndGrab); //Leaf 3: End the grab and resume the chase
 
         //Add leaves to the sequence
         grabSuccess.AddChild(tryGrab);
+        grabSuccess.AddChild(safetyRotation);
         grabSuccess.AddChild(grabAttack);
         grabSuccess.AddChild(endGrab);
         violence.AddChild(grabSuccess);

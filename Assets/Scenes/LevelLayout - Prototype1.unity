@@ -3108,11 +3108,11 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.16, g: 0.18, b: 0.22, a: 1}
-    m_HighlightedColor: {r: 0.24, g: 0.28, b: 0.36, a: 1}
+    m_NormalColor: {r: 0.745283, g: 0.745283, b: 0.745283, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
     m_PressedColor: {r: 0.12, g: 0.14, b: 0.18, a: 1}
-    m_SelectedColor: {r: 0.34, g: 0.42, b: 0.52, a: 1}
-    m_DisabledColor: {r: 0.16, g: 0.18, b: 0.22, a: 0.5}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_DisabledColor: {r: 0, g: 0, b: 0, a: 0.5}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -3163,9 +3163,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
+  m_Sprite: {fileID: 21300000, guid: c09ec278b90f4a7488e5209428aaf0ba, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -3510,7 +3510,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &95726142
 RectTransform:
   m_ObjectHideFlags: 0
@@ -18933,11 +18933,11 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.16, g: 0.18, b: 0.22, a: 1}
-    m_HighlightedColor: {r: 0.24, g: 0.28, b: 0.36, a: 1}
+    m_NormalColor: {r: 0.74509805, g: 0.74509805, b: 0.74509805, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
     m_PressedColor: {r: 0.12, g: 0.14, b: 0.18, a: 1}
-    m_SelectedColor: {r: 0.34, g: 0.42, b: 0.52, a: 1}
-    m_DisabledColor: {r: 0.16, g: 0.18, b: 0.22, a: 0.5}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_DisabledColor: {r: 0, g: 0, b: 0, a: 0.5}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -18988,9 +18988,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
+  m_Sprite: {fileID: 21300000, guid: d22261ce1a4acc64083ede80518416e4, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -30061,11 +30061,11 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.16, g: 0.18, b: 0.22, a: 1}
-    m_HighlightedColor: {r: 0.24, g: 0.28, b: 0.36, a: 1}
+    m_NormalColor: {r: 0.74509805, g: 0.74509805, b: 0.74509805, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
     m_PressedColor: {r: 0.12, g: 0.14, b: 0.18, a: 1}
-    m_SelectedColor: {r: 0.34, g: 0.42, b: 0.52, a: 1}
-    m_DisabledColor: {r: 0.16, g: 0.18, b: 0.22, a: 0.5}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_DisabledColor: {r: 0, g: 0, b: 0, a: 0.5}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -30116,9 +30116,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
+  m_Sprite: {fileID: 21300000, guid: 27983480855a90a428cf4e3c61030eae, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -32939,9 +32939,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ae271334084051e41bbe667a23050b88, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f863565e6d25e0949ad70cac93ee737b, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -51414,7 +51414,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1116916414
 RectTransform:
   m_ObjectHideFlags: 0
@@ -88053,7 +88053,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1823148967
 RectTransform:
   m_ObjectHideFlags: 0
@@ -91200,7 +91200,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1866145087
 Transform:
   m_ObjectHideFlags: 0
@@ -91232,7 +91232,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PhoneRig
   moveDuration: 0.45
   hiddenPosition: {x: -0.14, y: -0.48, z: 0.32}
-  shownPosition: {x: -0.08, y: 0.02, z: 0.42}
+  shownPosition: {x: -0.14, y: 0.005, z: 0.48}
   hiddenEuler: {x: 38, y: 0, z: 0}
   shownEuler: {x: 8, y: 0, z: 0}
 --- !u!1 &1877183332
