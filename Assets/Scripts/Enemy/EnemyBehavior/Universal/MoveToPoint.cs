@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,12 +7,33 @@ using UnityEngine.AI;
 public class MoveToPoint : MonoBehaviour
 {
     [Tooltip("How close the enemy needs to be to a patrol point to clear it")]
-    [SerializeField] private float clearDistance = 7; //Var for the distance at which the AI can clear a patrol point
+    [SerializeField] private float defaultClearDistance = 7; //Var for the distance at which the AI can clear a patrol point
+
+    private float clearDistance;
 
     [Tooltip("Walking sound effect for this enemy")]
-    [SerializeField] private AudioClip walkingSound;
+    [SerializeField] private AudioClip[] walkingSound;
     private float clipLength = 4.0f;
+
+    [SerializeField] private float[] speedIntervals;
+    private int currentInterval = 0;
+
+    private AgentSpeedChanger speedHandler;
+
     private IEnumerator sfxCoroutine = null; //Coroutine holder for the sfxCoroutine
+
+    private void Start()
+    {
+        try
+        {
+            speedHandler = GetComponent<AgentSpeedChanger>();
+        }
+        catch
+        {
+            throw new ArgumentException("No AgentSpeedChanger found!", nameof(MoveToPoint));
+        }
+    }
+
 
     //Helper Func for Moving to a point of interest
     public Node.Status MoveToPOI(NavMeshAgent agent, Vector3 destination)
@@ -28,9 +50,27 @@ public class MoveToPoint : MonoBehaviour
             agent.SetDestination(destination); //Set destination to the POI
         }
 
-        if(sfxCoroutine == null)
+        if (speedHandler.ShouldChangeSpeed(currentInterval))
         {
-            sfxCoroutine = step(1f);
+            if(sfxCoroutine != null)
+            {
+                StopCoroutine(sfxCoroutine);
+                sfxCoroutine = null;
+            }
+        }
+
+        if(sfxCoroutine == null )
+        {
+            if (speedHandler.ShouldChangeSpeed(0))
+            {
+                sfxCoroutine = step(speedIntervals[1]);
+                currentInterval = 1;
+            }
+            else
+            {
+                sfxCoroutine = step(speedIntervals[0]);
+                currentInterval = 0;
+            }
             StartCoroutine(sfxCoroutine);
         }
 
@@ -55,9 +95,19 @@ public class MoveToPoint : MonoBehaviour
     //Coroutine for playing a step sound effect on an interval
     private IEnumerator step(float stepInterval)
     {
-        AudioManager.Instance.Play3DSFX(walkingSound, clipLength, transform.position, 0.5f); //Play a sound using the audio manager
+        AudioManager.Instance.Play3DSFX(walkingSound[UnityEngine.Random.Range(0, walkingSound.Length)], clipLength, transform.position, 0.5f); //Play a sound using the audio manager
         yield return new WaitForSeconds(stepInterval); //Wait
         sfxCoroutine = null; //Free up the coroutine to play the sound again
+    }
+
+    public void SetClearDistance(float stoppingDistance)
+    {
+        clearDistance = stoppingDistance;
+    }
+
+    public void SetDefaultCD()
+    {
+        clearDistance = defaultClearDistance;
     }
 
 }

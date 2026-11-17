@@ -9,7 +9,18 @@ public class OGAttacks : MonoBehaviour
     private bool attacking = false; //Is the enemy attacking?
     private IEnumerator attackingCoroutine = null; //slot for the active attacking coroutine
     [SerializeField] private Collider attackCol; //Reference to the enemy's grab range
+
+    [Tooltip("Amount of damage to deal to the player.")]
     [SerializeField] private float damageAmount = 10; //Amount of damage dealt by the enemy
+
+    [Header("Grab Timing Variables")]
+    [Tooltip("Length of time the player is grabbed for.")]
+    [SerializeField] private float grabLength = 2f;
+
+    [Tooltip("Length of time before the enemy can move again after the player is freed from the grab.")]
+    [SerializeField] private float graceLength = 1.5f;
+    private EnemyVLManager enemySounds;
+
     #endregion
 
     #region Lunging Vars
@@ -25,11 +36,14 @@ public class OGAttacks : MonoBehaviour
     [SerializeField] private float waitingPeriod = 2; //Time the ghoul needs to wait before moving after a lunge
     #endregion
 
+    private bool chasing = false;
+
     #region HelperScripts
     private Sight sight; //Sight script
     private MoveToPoint move; //movement script
     private PlayerHealth playerHealth; //player health script
     private PlayerMovement playerMove; //player movementscript
+    private Minimap map;
     private Transform playerTrans; //player transform
     private NavMeshAgent agent; //This object's nav mesh agent
     private AgentSpeedChanger speedControl; //speed adjustment script
@@ -117,6 +131,25 @@ public class OGAttacks : MonoBehaviour
         {
             throw new ArgumentException("Unable to assign NavMeshAgent script.", nameof(OfficeGhoulBehavior));
         }
+
+        //Assign the Minimap component for deactivating the map upon being grabbed
+        try
+        {
+            map = FindAnyObjectByType<Minimap>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to find Minimap reference.", nameof(HRAttacks));
+        }
+
+        try
+        {
+            enemySounds = GetComponentInParent<EnemyVLManager>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to assign EnemyVLManager component", nameof(OfficeGhoulBehavior));
+        }
     }
 
 
@@ -126,6 +159,12 @@ public class OGAttacks : MonoBehaviour
         //Check if the player is visible and if they can be grabbed currently
         if (sight.SightCheck(playerTrans) && playerMove.canGrab == true)
         {
+            if(chasing != true)
+            {
+                enemySounds.PlayVoiceLine("startChase");
+                chasing = true;
+            }
+
             //If so
             move.MoveToPOI(agent, playerTrans.position); //Start moving towards the player's position
 
@@ -142,6 +181,7 @@ public class OGAttacks : MonoBehaviour
         else
         {
             //If not
+            chasing = false;
             return Node.Status.FAILURE; //Fail the check
         }
     }
@@ -152,6 +192,7 @@ public class OGAttacks : MonoBehaviour
         //start the lunging coroutine if it hasn't already begun
         if (lungeTimer == null)
         {
+            enemySounds.PlayVoiceLine("lunge");
             lungeTimer = LungeTimer(); //set the coroutine holder equal to lunge timer
             StartCoroutine(lungeTimer); //Start coroutine holder
         }
@@ -235,18 +276,36 @@ public class OGAttacks : MonoBehaviour
         //Debug.Log("Violence"); //Debug Message
         attacking = true; //Set attacking to true
         agent.destination = transform.position; //Stop the agent's movement
-
+        enemySounds.PlayVoiceLine("attackSuccess");
+        map.SetOpen(false);
         playerMove.AlterMoveState(false); //Stop the player from moving
         playerMove.StopPlayer(); //Stop the player's movement
         playerMove.TetherObject(attackCol.transform);
 
         playerHealth.TakeDamage(damageAmount); //Deal damage to the player
 
-        yield return new WaitForSeconds(1.5f); //Wait for the breakout anim to finish
-        playerTrans.parent = null; //Let the player go
+        if(grabLength > 0)
+        {
+            yield return new WaitForSeconds(grabLength); //Wait for the breakout anim to finish
+        }
+        else
+        {
+            Debug.LogWarning("grabLength has an invalid time! Using backup value!");
+            yield return new WaitForSeconds(1.5f); //Backup in case an invalid time was entered
+        }
+        playerMove.ReturnToOriginalParent(); //Let the player go
         playerMove.AlterMoveState(true); //Let the player move again
 
-        yield return new WaitForSeconds(1.5f); //Wait for the grace period anim to finish
+        if(graceLength > 0)
+        {
+            yield return new WaitForSeconds(graceLength); //Wait for the grace period anim to finish
+        }
+        else
+        {
+            Debug.LogWarning("graceLength has an invalid time! Using backup value!");
+            yield return new WaitForSeconds(1.5f); //Backup in case an invalid time was entered
+        }
+
         attacking = false; //Enemy is no longer attacking
     }
 
@@ -254,6 +313,7 @@ public class OGAttacks : MonoBehaviour
     public Node.Status FailureConfirmation()
     {
         //Debug.Log("Shucks I missed.");
+        chasing = false;
         return Node.Status.SUCCESS;
     }
 
@@ -262,6 +322,7 @@ public class OGAttacks : MonoBehaviour
     {
         speedControl.ChangeAgentSpeed(0); //Reset agent speed
 
+        enemySounds.PlayVoiceLine("stunIdle");
         //Declare the lunge cooldown coroutine
         if (cooldownCoroutine == null)
         {

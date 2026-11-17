@@ -9,11 +9,18 @@ public class EnemyHealth : MonoBehaviour
     [Tooltip("Is the enemy dead? DON'T TOUCH UNLESS DEBUGGING!")]
     public bool dead; //Is the enemy dead?
 
+    private EnemyVLManager voiceLines;
+
     //On enabling the enemy set the current health to the max health and have the enemy not be dead
     void OnEnable()
     {
         currentHealth = maxHealth; 
         dead = false;
+    }
+
+    private void Start()
+    {
+        voiceLines = GetComponent<EnemyVLManager>();
     }
 
     //Func for taking damage
@@ -26,6 +33,13 @@ public class EnemyHealth : MonoBehaviour
         if (currentHealth <= 0)
         {
             Die();
+        }
+        else
+        {
+            if(voiceLines != null)
+            {
+                voiceLines.PlayVoiceLine("takeDamage");
+            }
         }
     }
 

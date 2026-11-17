@@ -4,11 +4,18 @@ using UnityEngine.InputSystem;
 
 public class TaskManager : MonoBehaviour
 {
+    public static TaskManager Instance { get; private set; }
+
+    public event Action TaskChanged; // phone tasks tab refreshes on begin/complete
+
     [SerializeField] private string[] taskNames;
     [SerializeField] private string[] taskLocation;
     [SerializeField] private TaskInteractable[] taskObjects;
     private int currentTask;
     private Transform location;
+
+    public string CurrentTaskName { get; private set; }
+    public string CurrentTaskLocation { get; private set; }
 
     private float timerPenalty = 0;
     [SerializeField] float addedPenalty = 5f;
@@ -28,6 +35,19 @@ public class TaskManager : MonoBehaviour
     [SerializeField] TaskUI taskUI;
     private EnemyBehavior enemyBehavior;
     private HRRepBehavior hrBehavior;
+
+    void Awake()
+    {
+        Instance = this;
+    }
+
+    void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
 
     void Start()
     {
@@ -136,8 +156,11 @@ public class TaskManager : MonoBehaviour
         overdue = false;
         //nextStatusLog = Time.time + 10f;
         location = taskObjects[currentTask].transform;
+        CurrentTaskName = taskNames[currentTask];
+        CurrentTaskLocation = taskLocation[currentTask];
         //string where = location != null ? location.name : "nowhere";
-        taskUI.SetTask(taskNames[currentTask], taskLocation[currentTask]);
+        taskUI.SetTask(CurrentTaskName, CurrentTaskLocation);
+        TaskChanged?.Invoke();
         //Debug.Log($"Task started: {taskNames[currentTask]} at {taskLocation[currentTask]}. {maxLimit:0}s.");
     }
 

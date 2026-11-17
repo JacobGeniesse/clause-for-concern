@@ -1,11 +1,13 @@
 using UnityEngine;
-
+using System;
 public class PlayerHealth : MonoBehaviour
 {
     public static PlayerHealth Instance;
 
     public float maxHealth = 100; // max health of the player
     public float currentHealth; // current health of the player
+
+    public event Action<float> OnHealthChanged;
 
     private void Awake()
     {
@@ -31,6 +33,7 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(float damage){
         currentHealth -= damage; // subtracts the damage from the current health
+        OnHealthChanged?.Invoke(currentHealth); // checking if event has a listener, if it does ten send this value to it 
         if (currentHealth <= 0){
             Die(); // calls the Die function
         }
@@ -44,8 +47,10 @@ public class PlayerHealth : MonoBehaviour
 
     public void Heal(int amount){
         currentHealth += amount; // adds the amount to the current health
-        if(currentHealth > maxHealth){
+        
+        if (currentHealth > maxHealth){
             currentHealth = maxHealth; // sets the current health to the max health
         }
+        OnHealthChanged?.Invoke(currentHealth);
     }
 }

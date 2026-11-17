@@ -19,6 +19,7 @@ public class ItemPickup : MonoBehaviour, IInteractable
         if (inventory.AddItems(new StandardItem(itemType, amount, description)))
         {
             gameObject.SetActive(false);
+            Debug.Log(description.ToString());
         }
     }
     public void IncrementTask() // required by IInteractable

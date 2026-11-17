@@ -11,6 +11,7 @@ public class TraverseNodes : MonoBehaviour
     [SerializeField, HideInInspector] private int currentPatrol = 0; //Current patrol point
 
     private MoveToPoint move; //Ref to the move to point script
+    private AgentSpeedChanger agentSpeed;
 
     void Start()
     {
@@ -22,6 +23,15 @@ public class TraverseNodes : MonoBehaviour
         else
         {
             Debug.LogError($"No MoveToPoint script attached to {this.gameObject}!");
+        }
+
+        try
+        {
+            agentSpeed = GetComponent<AgentSpeedChanger>();
+        }
+        catch
+        {
+            throw new ArgumentException("No AgentSpeedChanger found!");
         }
     }
 
@@ -76,9 +86,11 @@ public class TraverseNodes : MonoBehaviour
             Debug.LogWarning("No Patrol Points to Move Between");
             return Node.Status.FAILURE;
         }
-        
+
         //Otherwise return the progress in moving between the current nodes
+
         return move.MoveToPOI(agent, patrolPoints[currentPatrol]);
+
     }
 
     //Helper func for incrementing the current patrol point target

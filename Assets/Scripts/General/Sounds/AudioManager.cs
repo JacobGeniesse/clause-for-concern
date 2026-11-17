@@ -43,6 +43,9 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private Transform soundObjectContainer;
     [HideInInspector] public List<GameObject> soundObjectPool = new List<GameObject>(); //List that serves as the SoundObject pool
 
+    private Transform playerTrans;
+    private float audioRange = 225;
+
     private void Awake()
     {
         // Enforce singleton pattern
@@ -60,6 +63,10 @@ public class AudioManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        audioRange = Mathf.Pow(soundObjectPrefab.GetComponent<AudioSource>().maxDistance, 2);
+
+        playerTrans = GameObject.Find("PlayerBody").GetComponent<Transform>();
+
         // Play the initial background music on start
         if (backgroundMusic != null)
         {
@@ -107,27 +114,50 @@ public class AudioManager : MonoBehaviour
     }
 
     //Function for playing a sound effect with 3D sound
-    public void Play3DSFX(AudioClip clip, float clipLength, Vector3 position, float volume = 1f)
+    public SoundObject Play3DSFX(AudioClip clip, float clipLength, Vector3 position, float volume = 1f)
     {
         //Check that the audio clip supplied exists
         if (clip != null)
         {
-            GameObject soundObject = ObjectPool.instance.Create(soundObjectPrefab, position, Quaternion.identity, soundObjectPool); //Pull a sound object from the object pool and place it where the call describes
+            GameObject soundObject = null;
             
-            if(soundObject.transform.parent != soundObjectContainer)
+            if(playerTrans != null)
+            {
+                Vector3 playerOffest = position - playerTrans.position;
+                float distanceToPlayer = Vector3.SqrMagnitude(playerOffest);
+                //Debug.Log(distanceToPlayer);
+
+                if (distanceToPlayer <= audioRange)
+                {
+                    soundObject = ObjectPool.instance.Create(soundObjectPrefab, position, Quaternion.identity, soundObjectPool); //Pull a sound object from the object pool and place it where the call describes
+                    soundObject.GetComponent<AudioSource>().volume = volume;
+                }
+            }
+            else
+            {
+                Debug.LogError("No player trans found!");
+                soundObject = ObjectPool.instance.Create(soundObjectPrefab, position, Quaternion.identity, soundObjectPool); //Pull a sound object from the object pool and place it where the call describes
+            }
+
+            if (soundObject != null && soundObject.transform.parent != soundObjectContainer)
             {
                 soundObject.transform.parent = soundObjectContainer; //Parent the sound object to the soundObjectContainer, in case a new sound object needed to be created
             }
 
-            if (soundObject.TryGetComponent<SoundObject>(out SoundObject soundObj))
+            if (soundObject != null && soundObject.TryGetComponent<SoundObject>(out SoundObject soundObj))
             {
                 soundObj.PlayClip(clip, clipLength); //If the new sound object has the sound object component created, trigger its behavior to play its audio clip
+
+                return soundObj;
             }
             else
             {
-                Debug.LogWarning("Supplied soundObjectPrefab prefab has no SoundObject script attached to it! Cannot play sound!");
+                //Debug.LogWarning("Supplied soundObjectPrefab prefab has no SoundObject script attached to it! Cannot play sound!");
             }
+
         }
+
+        return null;
     }
 
     //Function for loading the saved information partaining to volume settings

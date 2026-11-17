@@ -82,6 +82,7 @@ public class HearingSequence : MonoBehaviour
     //Node for investigating an active sound
     public Node.Status InvestigateSound()
     {
+        move.SetDefaultCD();
         return move.MoveToPOI(agent, interestingSound); //Move towards the sound of interest
     }
 

@@ -31,6 +31,12 @@ public class OfficeGhoulPatrol : MonoBehaviour
 
     private RenderCheck renderCheck; //Helper script for determining if the enemy is visible
 
+    [Tooltip("Time between idle voicelines")]
+    [SerializeField] private float maxIdleVLCooldown = 5f;
+    private float idleVLCooldown;
+
+    private EnemyVLManager enemySounds;
+
     private void Start()
     {
         //Create the range for the enemy to wander in
@@ -46,7 +52,7 @@ public class OfficeGhoulPatrol : MonoBehaviour
             throw new ArgumentException("Unable to assign originRoom component!", nameof(OfficeGhoulBehavior));
         }
         */
-
+        idleVLCooldown = maxIdleVLCooldown;
         //Assign the movement script
         try
         {
@@ -76,6 +82,15 @@ public class OfficeGhoulPatrol : MonoBehaviour
         {
             throw new ArgumentException("Unable to assign NavMeshAgent script.", nameof(OfficeGhoulBehavior));
         }
+
+        try
+        {
+            enemySounds = GetComponent<EnemyVLManager>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to assign EnemyVLManager component", nameof(OfficeGhoulBehavior));
+        }
     }
 
     //Node to check if the enemy should wander
@@ -97,6 +112,17 @@ public class OfficeGhoulPatrol : MonoBehaviour
         if(wanderPoint == Vector3.zero)
         {
             wanderPoint = new Vector3(UnityEngine.Random.Range(originPoint.x - wanderExtents/2, originPoint.x + wanderExtents/2), originPoint.y, UnityEngine.Random.Range(originPoint.z - wanderExtents/2, originPoint.z + wanderExtents/2));
+        }
+
+        if (idleVLCooldown > 0)
+        {
+            idleVLCooldown -= Time.deltaTime;
+        }
+        else
+        {
+            Debug.Log("Playing Sound");
+            enemySounds.PlayVoiceLine("idle");
+            idleVLCooldown = maxIdleVLCooldown;
         }
 
         return move.MoveToPOI(agent, wanderPoint);
@@ -166,6 +192,15 @@ public class OfficeGhoulPatrol : MonoBehaviour
     //Node for idling
     public Node.Status Idle()
     {
+        if(idleVLCooldown > 0)
+        {
+            idleVLCooldown -= Time.deltaTime;
+        }
+        else
+        {
+            enemySounds.PlayVoiceLine("idle");
+            idleVLCooldown = maxIdleVLCooldown;
+        }
         return Node.Status.SUCCESS;
     }
 

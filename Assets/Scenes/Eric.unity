@@ -41032,6 +41032,8 @@ MonoBehaviour:
   accel: 50
   maxWalkSpeed: 6
   maxRunSpeed: 10
+  pushForce: {x: 0, y: 0, z: 0}
+  canGrab: 1
 --- !u!54 &775931135
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -41130,8 +41132,6 @@ MonoBehaviour:
   projectileSpeed: 25
   stunDuration: 3
   fireCooldown: 0
-  maxAmmo: 20
-  currentAmmo: 20
 --- !u!4 &776402146 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6615886355407038530, guid: c959caebf4e276b47ab5362e36335720, type: 3}
@@ -53075,6 +53075,7 @@ MonoBehaviour:
   settingsCanvas: {fileID: 429647065}
   controlSettings: {fileID: 1376954260}
   volumeSettings: {fileID: 1801795881}
+  quitPanel: {fileID: 0}
   keyboardBindings: {fileID: 758232903}
   controllerBindings: {fileID: 50915511}
 --- !u!4 &1026179903 stripped
@@ -77986,7 +77987,6 @@ MonoBehaviour:
   deathSound: {fileID: 1512867455}
   jumpscareSound: {fileID: 270668199}
   gameOverCanvas: {fileID: 1759751661}
-  gameManager: {fileID: 1512867452}
 --- !u!4 &1512867450
 Transform:
   m_ObjectHideFlags: 0
@@ -78034,6 +78034,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   pauseMenu: {fileID: 1025034722}
   masterList: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  player: {fileID: 0}
+  saveFileId: 0
 --- !u!114 &1512867453
 MonoBehaviour:
   m_ObjectHideFlags: 0

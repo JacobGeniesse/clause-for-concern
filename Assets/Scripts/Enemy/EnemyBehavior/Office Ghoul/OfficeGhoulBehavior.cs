@@ -28,6 +28,8 @@ public class OfficeGhoulBehavior : MonoBehaviour
     private HearingSequence hearingSequence; //Reference to the hearing sequence script
     private OGAttacks attackScript; //Refrence to the office ghoul's attacking script
     private OfficeGhoulPatrol patrolScript; //Reference to the patrolling script
+
+    private EnemyVLManager enemySounds;
     #endregion
 
     void Start()
@@ -133,6 +135,15 @@ public class OfficeGhoulBehavior : MonoBehaviour
         catch
         {
             throw new ArgumentException("Unable to assign OfficeGhoulPatrol component", nameof(OfficeGhoulBehavior));
+        }
+
+        try
+        {
+            enemySounds = GetComponent<EnemyVLManager>();
+        }
+        catch
+        {
+            throw new ArgumentException("Unable to assign EnemyVLManager component", nameof(OfficeGhoulBehavior));
         }
     }
 
