@@ -22,6 +22,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject confirmFile1Deletion;
     [SerializeField] private GameObject confirmFile2Deletion;
     [SerializeField] private GameObject confirmFile3Deletion;
+    [SerializeField] private GameObject creditsPanel;
     
 
     [SerializeField] private Button loadFile1Button;
@@ -55,6 +56,7 @@ public class MainMenu : MonoBehaviour
         confirmFile1Deletion.SetActive(false);
         confirmFile2Deletion.SetActive(false);
         confirmFile3Deletion.SetActive(false);
+        creditsPanel.SetActive(false);
 
         // Have the keyboard bindings be active first
         keyboardBindings.SetActive(true);
@@ -177,6 +179,18 @@ public class MainMenu : MonoBehaviour
     public void CloseDeleteGamePanel()
     {
         deleteFilePanel.SetActive(false);
+    }
+
+    public void SwitchToCredits()
+    {
+        mainMenuPanel.SetActive(false);
+        creditsPanel.SetActive(true);
+    }
+
+    public void SwitchFromCredits()
+    {
+        creditsPanel.SetActive(false);
+        mainMenuPanel.SetActive(true);
     }
 
     public void StartGame()
