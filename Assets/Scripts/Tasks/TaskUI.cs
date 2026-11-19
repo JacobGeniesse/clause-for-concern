@@ -22,20 +22,29 @@ public class TaskUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timerSlider.value = taskManager.timeRemaining / taskManager.maxLimit;
-
-        if(taskManager.overdue == true)
+        if (taskManager == null)
         {
-            clockAnim.SetBool("Overtime", true);
+            return;
         }
-        else
+
+        if (timerSlider != null && taskManager.maxLimit > 0f)
         {
-            clockAnim.SetBool("Overtime", false);
+            timerSlider.value = taskManager.timeRemaining / taskManager.maxLimit;
+        }
+
+        if (clockAnim != null)
+        {
+            clockAnim.SetBool("Overtime", taskManager.overdue);
         }
     }
 
     public void SetTask(string taskName, string taskLocation)
     {
+        if (taskText == null)
+        {
+            return;
+        }
+
         taskText.text = $"Task: {taskName}\nLocation: {taskLocation}";
     }
 }

@@ -7,13 +7,19 @@ public class PhoneTasksUI : MonoBehaviour
     [SerializeField] TextMeshProUGUI nameLabel;
     [SerializeField] TextMeshProUGUI locationLabel;
     [SerializeField] GameObject emptyLabel;
+    [SerializeField] TextMeshProUGUI timerLabel;
+
+    static readonly Color timerColor = new Color(0.86f, 0.9f, 0.94f, 1f);
+    static readonly Color overdueColor = new Color(0.85f, 0.35f, 0.32f, 1f);
 
     TaskManager tasks;
+    string lastTimerText;
 
     void OnEnable()
     {
         BindTasks();
         Refresh();
+        RefreshTimer();
     }
 
     void OnDisable()
@@ -22,6 +28,11 @@ public class PhoneTasksUI : MonoBehaviour
         {
             tasks.TaskChanged -= Refresh;
         }
+    }
+
+    void LateUpdate()
+    {
+        RefreshTimer();
     }
 
     void BindTasks()
@@ -41,7 +52,7 @@ public class PhoneTasksUI : MonoBehaviour
 
     void Refresh()
     {
-        bool hasTask = tasks != null && !string.IsNullOrEmpty(tasks.CurrentTaskName);
+        bool hasTask = HasTask();
         if (nameLabel != null)
         {
             nameLabel.gameObject.SetActive(hasTask);
@@ -64,5 +75,47 @@ public class PhoneTasksUI : MonoBehaviour
 
         nameLabel.text = tasks.CurrentTaskName;
         locationLabel.text = tasks.CurrentTaskLocation;
+    }
+
+    void RefreshTimer()
+    {
+        bool hasTask = HasTask();
+        if (timerLabel != null)
+        {
+            timerLabel.gameObject.SetActive(hasTask);
+        }
+
+        if (!hasTask || timerLabel == null)
+        {
+            lastTimerText = null;
+            return;
+        }
+
+        string text;
+        Color color = timerColor;
+        if (tasks.overdue)
+        {
+            text = "OVERDUE";
+            color = overdueColor;
+        }
+        else
+        {
+            int seconds = Mathf.CeilToInt(Mathf.Max(0f, tasks.timeRemaining));
+            text = "TIME  " + (seconds / 60).ToString("00") + ":" + (seconds % 60).ToString("00");
+        }
+
+        if (text == lastTimerText)
+        {
+            return;
+        }
+
+        lastTimerText = text;
+        timerLabel.text = text;
+        timerLabel.color = color;
+    }
+
+    bool HasTask()
+    {
+        return tasks != null && !string.IsNullOrEmpty(tasks.CurrentTaskName);
     }
 }

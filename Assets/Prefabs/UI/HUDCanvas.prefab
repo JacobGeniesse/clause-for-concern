@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 579896203788625328}
   - component: {fileID: 1356320042916458501}
   - component: {fileID: 9081102378080957098}
+  - component: {fileID: 2448346347157069800}
   m_Layer: 5
   m_Name: HUDCanvas
   m_TagString: Untagged
@@ -104,6 +105,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &2448346347157069800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 368470628396652073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e4c91d2b8a04f6e9c3d5a1f0b2e8476, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HudCanvas
 --- !u!1 &4666831186300681529
 GameObject:
   m_ObjectHideFlags: 0
