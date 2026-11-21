@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -44,7 +45,7 @@ public class AudioManager : MonoBehaviour
     [HideInInspector] public List<GameObject> soundObjectPool = new List<GameObject>(); //List that serves as the SoundObject pool
 
     private Transform playerTrans;
-    private float audioRange = 225;
+    private float audioRange = 625;
 
     private void Awake()
     {
@@ -60,12 +61,37 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += FindPlayer;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= FindPlayer;
+    }
+
+    private void FindPlayer(Scene scene, LoadSceneMode mode)
+    {
+        if (playerTrans == null)
+        {
+            try
+            {
+                playerTrans = GameObject.Find("PlayerBody").GetComponent<Transform>();
+            }
+            catch
+            {
+                Debug.LogWarning("Unable to find player in this scene!");
+            }
+        }
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         audioRange = Mathf.Pow(soundObjectPrefab.GetComponent<AudioSource>().maxDistance, 2);
 
-        playerTrans = GameObject.Find("PlayerBody").GetComponent<Transform>();
+        
 
         // Play the initial background music on start
         if (backgroundMusic != null)
@@ -77,6 +103,7 @@ public class AudioManager : MonoBehaviour
         if (PlayerPrefs.HasKey("masterVolume"))
         {
             LoadVolume();
+            //Debug.Log("Functional");
         }
         else
         {
@@ -163,6 +190,8 @@ public class AudioManager : MonoBehaviour
     //Function for loading the saved information partaining to volume settings
     private void LoadVolume()
     {
+
+        Debug.Log(PlayerPrefs.GetFloat("masterVolume"));
         //Grabbed saved information
         masterSlider.value = PlayerPrefs.GetFloat("masterVolume");
         musicSlider.value = PlayerPrefs.GetFloat("musicVolume");

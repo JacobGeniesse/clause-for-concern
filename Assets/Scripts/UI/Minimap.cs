@@ -16,6 +16,8 @@ public class Minimap : MonoBehaviour
     [SerializeField] Transform player;
     [SerializeField] TaskManager taskManager;
 
+    [SerializeField] AudioClip openingSFX;
+
     InputAction mapToggle;
     PhoneRig phoneRig;
 
@@ -54,6 +56,7 @@ public class Minimap : MonoBehaviour
     {
         if (WasMapPressed() && phoneRig != null)
         {
+            AudioManager.Instance.PlaySFX(openingSFX);
             SetOpen(!phoneRig.IsRaised);
         }
     }
