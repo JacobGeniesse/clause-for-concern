@@ -3153,6 +3153,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: OfficeGhoul (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 1410978948527311846, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2459284034259341152, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
       propertyPath: walkingSound
       value: 
@@ -3363,7 +3367,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 562305183}
     m_Modifications:
     - target: {fileID: 2084965420701690673, guid: fc73f8cbf896c7e438358cc0b107ba50, type: 3}
       propertyPath: m_Name
@@ -3371,15 +3375,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3911344405119550129, guid: fc73f8cbf896c7e438358cc0b107ba50, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -84.406
+      value: 9.894005
       objectReference: {fileID: 0}
     - target: {fileID: 3911344405119550129, guid: fc73f8cbf896c7e438358cc0b107ba50, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.887
+      value: 1.06
       objectReference: {fileID: 0}
     - target: {fileID: 3911344405119550129, guid: fc73f8cbf896c7e438358cc0b107ba50, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 12.138
+      value: -8.462001
       objectReference: {fileID: 0}
     - target: {fileID: 3911344405119550129, guid: fc73f8cbf896c7e438358cc0b107ba50, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3387,15 +3391,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3911344405119550129, guid: fc73f8cbf896c7e438358cc0b107ba50, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3911344405119550129, guid: fc73f8cbf896c7e438358cc0b107ba50, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3911344405119550129, guid: fc73f8cbf896c7e438358cc0b107ba50, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3911344405119550129, guid: fc73f8cbf896c7e438358cc0b107ba50, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -12769,6 +12773,8 @@ Transform:
   - {fileID: 1475455456}
   - {fileID: 1993021802}
   - {fileID: 1227373989}
+  - {fileID: 757713183}
+  - {fileID: 1458991814}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &198710091
@@ -22881,6 +22887,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: OfficeGhoul (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 1410978948527311846, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2459284034259341152, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
       propertyPath: walkingSound
       value: 
@@ -22903,7 +22913,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6402515349885983208, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.064
       objectReference: {fileID: 0}
     - target: {fileID: 6402515349885983208, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
       propertyPath: m_LocalPosition.z
@@ -26166,6 +26176,7 @@ Transform:
   - {fileID: 1718670709}
   - {fileID: 100355661}
   - {fileID: 1204721464}
+  - {fileID: 1151162748}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &567750597
@@ -33143,7 +33154,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 198710090}
     m_Modifications:
     - target: {fileID: 519034628542356239, guid: d06530b32892ea0459bbc887c3332417, type: 3}
       propertyPath: m_LocalPosition.x
@@ -33163,15 +33174,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 519034628542356239, guid: d06530b32892ea0459bbc887c3332417, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 519034628542356239, guid: d06530b32892ea0459bbc887c3332417, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 519034628542356239, guid: d06530b32892ea0459bbc887c3332417, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 519034628542356239, guid: d06530b32892ea0459bbc887c3332417, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -33564,7 +33575,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 198710090}
     m_Modifications:
     - target: {fileID: 519034628542356239, guid: d06530b32892ea0459bbc887c3332417, type: 3}
       propertyPath: m_LocalPosition.x
@@ -33584,15 +33595,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 519034628542356239, guid: d06530b32892ea0459bbc887c3332417, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 519034628542356239, guid: d06530b32892ea0459bbc887c3332417, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 519034628542356239, guid: d06530b32892ea0459bbc887c3332417, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 519034628542356239, guid: d06530b32892ea0459bbc887c3332417, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -35471,6 +35482,11 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
+--- !u!4 &757713183 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 519034628542356239, guid: d06530b32892ea0459bbc887c3332417, type: 3}
+  m_PrefabInstance: {fileID: 699359485}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &758955661
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40773,6 +40789,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: OfficeGhoul (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1410978948527311846, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2459284034259341152, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
       propertyPath: walkingSound
       value: 
@@ -40795,7 +40815,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6402515349885983208, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -19.377
+      value: -13.7
       objectReference: {fileID: 0}
     - target: {fileID: 6402515349885983208, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
       propertyPath: m_LocalRotation.w
@@ -41445,7 +41465,7 @@ RectTransform:
   m_Father: {fileID: 613017130}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -44160,6 +44180,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: OfficeGhoul
       objectReference: {fileID: 0}
+    - target: {fileID: 1410978948527311846, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2459284034259341152, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
       propertyPath: walkingSound
       value: 
@@ -46224,7 +46248,7 @@ MonoBehaviour:
   timeLimit: 60
   timeRemaining: 0
   overdue: 0
-  taskUI: {fileID: 1922823346}
+  taskUI: {fileID: 2043502446}
 --- !u!114 &945598656
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46745,6 +46769,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6951489417617438933, guid: 26a915d6f4efa0d49ab9921909aeec03, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8191232364725154689, guid: 26a915d6f4efa0d49ab9921909aeec03, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8191232364725154689, guid: 26a915d6f4efa0d49ab9921909aeec03, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8395187030015178789, guid: 26a915d6f4efa0d49ab9921909aeec03, type: 3}
@@ -51895,6 +51927,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: OfficeGhoul (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 1410978948527311846, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2459284034259341152, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
       propertyPath: walkingSound
       value: 
@@ -56892,6 +56928,11 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
+--- !u!4 &1151162748 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3911344405119550129, guid: fc73f8cbf896c7e438358cc0b107ba50, type: 3}
+  m_PrefabInstance: {fileID: 89881947}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &1152720511
 Mesh:
   m_ObjectHideFlags: 0
@@ -60103,6 +60144,10 @@ PrefabInstance:
     - target: {fileID: 1410978948527311846, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
       propertyPath: m_Name
       value: OfficeGhoul (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1410978948527311846, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2459284034259341152, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
       propertyPath: walkingSound
@@ -65573,6 +65618,10 @@ PrefabInstance:
     - target: {fileID: 1410978948527311846, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
       propertyPath: m_Name
       value: OfficeGhoul (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1410978948527311846, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2459284034259341152, guid: 4296a93b9b10f8747888f54fbe1d88af, type: 3}
       propertyPath: walkingSound
@@ -72071,6 +72120,11 @@ Transform:
   - {fileID: 1601729883}
   m_Father: {fileID: 444947952}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1458991814 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 519034628542356239, guid: d06530b32892ea0459bbc887c3332417, type: 3}
+  m_PrefabInstance: {fileID: 700631869}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1459342643
 GameObject:
   m_ObjectHideFlags: 0
@@ -98510,7 +98564,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1922823346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103235,6 +103289,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 681523585}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2043502446 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4121805591529445719, guid: 26a915d6f4efa0d49ab9921909aeec03, type: 3}
+  m_PrefabInstance: {fileID: 954249677}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ea6640042868684a9f2492905ffee80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TaskUI
 --- !u!1 &2045207062
 GameObject:
   m_ObjectHideFlags: 0
@@ -108519,6 +108584,3 @@ SceneRoots:
   - {fileID: 869830598}
   - {fileID: 252091620}
   - {fileID: 1931238275}
-  - {fileID: 699359485}
-  - {fileID: 700631869}
-  - {fileID: 89881947}

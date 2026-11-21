@@ -46,8 +46,6 @@ MonoBehaviour:
     priority: 1
     voiceLineList:
     - {fileID: 8300000, guid: 47b742555ab59264eb65608704086144, type: 3}
-    - {fileID: 8300000, guid: 6f68c21be84fe4744aa7cc6cc7687ed1, type: 3}
-    - {fileID: 8300000, guid: 4ac0f9129cb78a24fa543a1a91f5410f, type: 3}
   - categoryName: lunge
     priority: 2
     voiceLineList:

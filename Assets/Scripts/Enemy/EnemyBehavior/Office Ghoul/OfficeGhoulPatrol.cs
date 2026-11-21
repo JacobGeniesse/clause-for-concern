@@ -33,7 +33,7 @@ public class OfficeGhoulPatrol : MonoBehaviour
 
     [Tooltip("Time between idle voicelines")]
     [SerializeField] private float maxIdleVLCooldown = 5f;
-    private float idleVLCooldown;
+    private float idleVLCooldown = 0;
 
     private EnemyVLManager enemySounds;
 
@@ -121,7 +121,7 @@ public class OfficeGhoulPatrol : MonoBehaviour
         else
         {
             Debug.Log("Playing Sound");
-            enemySounds.PlayVoiceLine("idle");
+            enemySounds.PlayVoiceLine("idle", 0.5f);
             idleVLCooldown = maxIdleVLCooldown;
         }
 
@@ -198,7 +198,7 @@ public class OfficeGhoulPatrol : MonoBehaviour
         }
         else
         {
-            enemySounds.PlayVoiceLine("idle");
+            enemySounds.PlayVoiceLine("idle", 0.5f);
             idleVLCooldown = maxIdleVLCooldown;
         }
         return Node.Status.SUCCESS;

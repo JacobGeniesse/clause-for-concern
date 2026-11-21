@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 503026869001963174}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.1, z: 1.577}
+  m_LocalPosition: {x: 0, y: -0.1, z: 1.782}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -53,8 +53,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.1, y: 1, z: 1.2}
-  m_Center: {x: 0, y: 0, z: -0.2}
+  m_Size: {x: 0.74, y: 1, z: 1.37}
+  m_Center: {x: 0, y: 0, z: -0.78}
 --- !u!114 &4518359072441430551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -100,7 +100,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6402515349885983208
 Transform:
   m_ObjectHideFlags: 0
@@ -188,7 +188,7 @@ CapsuleCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
@@ -267,8 +267,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 077d433de0fc085429e3fa4ea88b6c01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OfficeGhoulPatrol
-  minimumWait: 5
-  maximumWait: 8
+  minimumWait: 10
+  maximumWait: 25
   maxIdleVLCooldown: 35
 --- !u!114 &6174726722774034084
 MonoBehaviour:
@@ -400,8 +400,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b542c145dfc7a33499fd7b8e0f97f9a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Hearing
-  loudRadius: 45
-  quietRadius: 5
+  loudRadius: 65
+  quietRadius: 7
   targetSound: {x: 0, y: 0, z: 0}
 --- !u!1 &6455221182426891700
 GameObject:
@@ -431,7 +431,7 @@ Transform:
   m_GameObject: {fileID: 6455221182426891700}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.49999997, z: -1.174}
+  m_LocalPosition: {x: 0, y: 0.49999997, z: -1.35}
   m_LocalScale: {x: 0.5, y: 0.2, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -506,7 +506,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae05e7e0fcdfb9a4fb07b047da3eef9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Sight
-  range: 8
-  defaultFOVRadius: 90
+  range: 16
+  defaultFOVRadius: 70
   detection: 0
   seeThroughBW: 0

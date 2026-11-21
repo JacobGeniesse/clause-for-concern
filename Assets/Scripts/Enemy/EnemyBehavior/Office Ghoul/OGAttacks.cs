@@ -161,7 +161,7 @@ public class OGAttacks : MonoBehaviour
         {
             if(chasing != true)
             {
-                enemySounds.PlayVoiceLine("startChase");
+                enemySounds.PlayVoiceLine("startChase", 0.5f);
                 chasing = true;
             }
 
@@ -192,7 +192,6 @@ public class OGAttacks : MonoBehaviour
         //start the lunging coroutine if it hasn't already begun
         if (lungeTimer == null)
         {
-            enemySounds.PlayVoiceLine("lunge");
             lungeTimer = LungeTimer(); //set the coroutine holder equal to lunge timer
             StartCoroutine(lungeTimer); //Start coroutine holder
         }
@@ -228,6 +227,7 @@ public class OGAttacks : MonoBehaviour
     public IEnumerator LungeTimer()
     {
         lunging = true; //Declare the enemy lunging
+        enemySounds.PlayVoiceLine("lunge", 0.5f);
         //Debug.Log("Go");
         speedControl.ChangeAgentSpeed(1); //Set the agent's speed to its fast speed
         yield return new WaitForSecondsRealtime(lungeDuration); //Wait lunge duration seconds
@@ -276,7 +276,7 @@ public class OGAttacks : MonoBehaviour
         //Debug.Log("Violence"); //Debug Message
         attacking = true; //Set attacking to true
         agent.destination = transform.position; //Stop the agent's movement
-        enemySounds.PlayVoiceLine("attackSuccess");
+        enemySounds.PlayVoiceLine("attackSuccess", 0.5f);
         map.SetOpen(false);
         playerMove.AlterMoveState(false); //Stop the player from moving
         playerMove.StopPlayer(); //Stop the player's movement
@@ -322,10 +322,10 @@ public class OGAttacks : MonoBehaviour
     {
         speedControl.ChangeAgentSpeed(0); //Reset agent speed
 
-        enemySounds.PlayVoiceLine("stunIdle");
         //Declare the lunge cooldown coroutine
         if (cooldownCoroutine == null)
         {
+            enemySounds.PlayVoiceLine("stunIdle", 0.5f);
             cooldownCoroutine = LungeCooldown();
             StartCoroutine(cooldownCoroutine);
         }
