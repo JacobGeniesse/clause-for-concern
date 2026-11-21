@@ -25,6 +25,8 @@ public class PlayerInventory : MonoBehaviour
    [SerializeField] public int ammoCount = 0;   // Current ammo count of the stapler
    [SerializeField] public int maxAmmo = 5;    // Maximum ammo count for the stapler
 
+    [SerializeField] private AudioClip pickupSound;
+
     public event Action<int> OnAmmoChanged;
 
     void Awake()
@@ -41,13 +43,14 @@ public class PlayerInventory : MonoBehaviour
     }
 
    public bool AddKeyItem(KeyItem keyItem){
-    if(keyItemInventory.Contains(keyItem)){ // if keyitems has this key then return false
-        return false;
-    }
-    keyItemInventory.Add(keyItem); // add key to inventory
-    InventoryChanged?.Invoke();
+        if(keyItemInventory.Contains(keyItem)){ // if keyitems has this key then return false
+            return false;
+        }
+        AudioManager.Instance.PlaySFX(pickupSound);
+        keyItemInventory.Add(keyItem); // add key to inventory
+        InventoryChanged?.Invoke();
 
-    return true;
+        return true;
    }
 
     // Check if the key item is needed to perform the specified action
@@ -69,6 +72,7 @@ public class PlayerInventory : MonoBehaviour
 
     // Add an item to the standard item inventory
    public bool AddItems(StandardItem item){
+        AudioManager.Instance.PlaySFX(pickupSound);
         standardItemInventory.Add(item);
         InventoryChanged?.Invoke();
     return true;
