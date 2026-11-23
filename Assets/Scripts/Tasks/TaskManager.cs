@@ -171,7 +171,7 @@ public class TaskManager : MonoBehaviour
         {
             return;
         }
-        AudioManager.Instance.PlaySFX(notificationSound); //play SFX for adding a new task
+        AudioManager.Instance.PlaySFX(notificationSound, 0.75f); //play SFX for adding a new task
 
         IncrementTasks();
         taskObjects[currentTask].currentTask = true;

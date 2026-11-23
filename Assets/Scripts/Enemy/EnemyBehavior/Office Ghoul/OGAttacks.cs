@@ -161,6 +161,7 @@ public class OGAttacks : MonoBehaviour
         {
             if(chasing != true)
             {
+                //Debug.Log("A");
                 enemySounds.PlayVoiceLine("startChase", 0.5f);
                 chasing = true;
             }
