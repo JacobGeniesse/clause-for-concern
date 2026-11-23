@@ -114,16 +114,16 @@ public class OfficeGhoulPatrol : MonoBehaviour
             wanderPoint = new Vector3(UnityEngine.Random.Range(originPoint.x - wanderExtents/2, originPoint.x + wanderExtents/2), originPoint.y, UnityEngine.Random.Range(originPoint.z - wanderExtents/2, originPoint.z + wanderExtents/2));
         }
 
-        if (idleVLCooldown > 0)
-        {
-            idleVLCooldown -= Time.deltaTime;
-        }
-        else
-        {
-            Debug.Log("Playing Sound");
-            enemySounds.PlayVoiceLine("idle", 0.5f);
-            idleVLCooldown = maxIdleVLCooldown;
-        }
+        //if (idleVLCooldown > 0)
+        //{
+        //    idleVLCooldown -= Time.deltaTime;
+        //}
+        //else
+        //{
+        //    Debug.Log("Playing Sound");
+        //    enemySounds.PlayVoiceLine("idle", 0.5f);
+        //    idleVLCooldown = maxIdleVLCooldown;
+        //}
 
         return move.MoveToPOI(agent, wanderPoint);
     }

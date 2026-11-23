@@ -21,8 +21,12 @@ public class TaskManager : MonoBehaviour
     [SerializeField] float addedPenalty = 5f;
 
     [HideInInspector] public float maxLimit;
+
+    [Tooltip("Amount of time the player has to complete a task")]
     [SerializeField] float timeLimit = 60f;
 
+    [Tooltip("Amount of time between a task being completed and a new one being assigned")]
+    [SerializeField] private float maxInbetween;
 
     public Transform Location => location;
 
@@ -31,10 +35,19 @@ public class TaskManager : MonoBehaviour
     [HideInInspector] public float timeRemaining;
     [HideInInspector] public bool overdue;
     float nextStatusLog;
-
     [SerializeField] TaskUI taskUI;
     private EnemyBehavior enemyBehavior;
     private HRRepBehavior hrBehavior;
+
+    [Header("Audio Variables")]
+    [Tooltip("Sound that plays when a new task is assigned.")]
+    [SerializeField] private AudioClip notificationSound;
+
+    [Tooltip("Sound that plays when a player runs out of time.")]
+    [SerializeField] private AudioClip timesUpSound;
+    private bool playedTimesUp = false;
+
+
 
     void Awake()
     {
@@ -100,7 +113,6 @@ public class TaskManager : MonoBehaviour
                 hrBehavior.AlterAggression(false);
             }
 
-            timeRemaining -= Time.deltaTime;
             if (timeRemaining <= 0f)
             {
                 timeRemaining = 0f;
@@ -108,6 +120,10 @@ public class TaskManager : MonoBehaviour
                 timerPenalty = 0;
                 
                 //Debug.LogWarning($"Task overdue: {taskName}");
+            }
+            else
+            {
+                timeRemaining -= Time.deltaTime;
             }
         }
         else
@@ -120,6 +136,12 @@ public class TaskManager : MonoBehaviour
             if (hrBehavior != null && hrBehavior.aggressive == false)
             {
                 hrBehavior.AlterAggression(true);
+            }
+
+            if(playedTimesUp == false)
+            {
+                playedTimesUp = true;
+                AudioManager.Instance.PlaySFX(timesUpSound);
             }
         }
 
@@ -149,10 +171,13 @@ public class TaskManager : MonoBehaviour
         {
             return;
         }
+        AudioManager.Instance.PlaySFX(notificationSound); //play SFX for adding a new task
+
         IncrementTasks();
         taskObjects[currentTask].currentTask = true;
         timeRemaining = timeLimit - timerPenalty;
         maxLimit = timeRemaining;
+
         overdue = false;
         //nextStatusLog = Time.time + 10f;
         location = taskObjects[currentTask].transform;
@@ -167,13 +192,14 @@ public class TaskManager : MonoBehaviour
     public void CompleteTask()
     {
         taskObjects[currentTask].currentTask = false;
-    //Debug.Log($"Task completed: {taskNames[currentTask]}");
+        //Debug.Log($"Task completed: {taskNames[currentTask]}");
         if (maxLimit - timerPenalty > 30)
         {
             timerPenalty += addedPenalty;
         }
         BeginTask();
     }
+
 
     void LogStatus()
     {

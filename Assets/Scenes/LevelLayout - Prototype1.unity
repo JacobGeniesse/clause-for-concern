@@ -46246,9 +46246,12 @@ MonoBehaviour:
   addedPenalty: 0
   maxLimit: 0
   timeLimit: 60
+  maxInbetween: 10
   timeRemaining: 0
   overdue: 0
   taskUI: {fileID: 2043502446}
+  notificationSound: {fileID: 8300000, guid: 8a8a9e2177d438c47855212c10663095, type: 3}
+  timesUpSound: {fileID: 8300000, guid: 292cd42fda731964abbc3a0507d1c432, type: 3}
 --- !u!114 &945598656
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46721,6 +46724,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5300811363467770900, guid: 26a915d6f4efa0d49ab9921909aeec03, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5830922438322019401, guid: 26a915d6f4efa0d49ab9921909aeec03, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5830922438322019401, guid: 26a915d6f4efa0d49ab9921909aeec03, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6793391335891226927, guid: 26a915d6f4efa0d49ab9921909aeec03, type: 3}
@@ -54097,7 +54108,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1107330911
 Transform:
   m_ObjectHideFlags: 0
