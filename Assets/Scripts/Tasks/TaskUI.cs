@@ -12,6 +12,8 @@ public class TaskUI : MonoBehaviour
     [SerializeField] private TaskManager taskManager;
 
     [SerializeField] private Animator clockAnim;
+    [SerializeField] private Animator backgroundAnim;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -34,10 +36,12 @@ public class TaskUI : MonoBehaviour
         if(taskManager.overdue == true)
         {
             clockAnim.SetBool("Overtime", true);
+            backgroundAnim.speed = 2;
         }
         else
         {
             clockAnim.SetBool("Overtime", false);
+            backgroundAnim.speed = 1;
         }
     }
 

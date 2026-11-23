@@ -4658,3 +4658,4 @@ MonoBehaviour:
   taskText: {fileID: 7554431371015768983}
   taskManager: {fileID: 0}
   clockAnim: {fileID: 6740874919399442409}
+  backgroundAnim: {fileID: 2537911406288359775}
