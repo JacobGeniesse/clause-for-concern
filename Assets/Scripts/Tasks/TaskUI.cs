@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 public class TaskUI : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class TaskUI : MonoBehaviour
     [SerializeField] private Animator clockAnim;
     [SerializeField] private Animator backgroundAnim;
 
+    [SerializeField] private Image sliderFill;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -32,6 +34,20 @@ public class TaskUI : MonoBehaviour
     void Update()
     {
         timerSlider.value = taskManager.timeRemaining / taskManager.maxLimit;
+
+        if(timerSlider.value >= 0.5f)
+        {
+            sliderFill.color = Color.green;
+        }
+        else if(timerSlider.value < 0.5f && timerSlider.value >= 0.2f)
+        {
+            sliderFill.color = Color.yellow;
+        }
+        else
+        {
+            sliderFill.color = Color.red;
+        }
+
 
         if(taskManager.overdue == true)
         {
